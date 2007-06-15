@@ -3,6 +3,8 @@
 # Set up the all dotfiles in the current directory in the user's home
 # directory using symlinks ("ln -s .* ~").
 #
+# Sudish Joseph, 2007-06-15
+#
 
 sub main();
 sub prompt_y_or_n($);
