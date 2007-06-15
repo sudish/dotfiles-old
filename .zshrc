@@ -1,0 +1,180 @@
+# zsh init file       -*- ksh -*-
+
+# Set a reasonable path, remove dirs that don't exist on this machine
+unsetopt ksh_arrays
+d=( ~/bin \
+    /opt/local/apache2/bin \
+    /opt/local/sbin \
+    /opt/local/bin \
+    /usr/local/sbin \
+    /usr/local/bin \
+    /usr/X11R6/bin \
+    /usr/sbin \
+    /usr/bin \
+    /bin \
+    /sbin \
+   ${(s.:.)${PATH}} )       # zsh pukes if i do this in a typeset
+s=()
+typeset -U d            # delete duplicates
+for dir in "$d[@]"; do      # delete nonexistent dirs
+    [[ -d $dir && $dir != '.' ]] && s=($s $dir)
+done
+PATH=${(j.:.)${s}}
+unset d s dir
+
+# Use UTF8 under OS X
+[[ `uname` == 'Darwin' ]] && export LC_CTYPE=en_US.UTF-8
+
+# prompt string
+PROMPT='%B%#%b '
+RPROMPT='%(1v:[%B+%b]:)%m:%~%(?..[%B%?%b])'
+
+# check for backgrounded jobs
+set_psvar () {
+    if jobs % >& /dev/null; then
+    psvar=("")
+    else
+    psvar=()
+    fi
+}
+
+precmd () {
+    set_psvar
+}
+
+bindkey -e
+bindkey ' ' magic-space
+bindkey '[A' history-search-backward
+bindkey '[B' history-search-forward
+
+# some of these are defaults and should be pruned
+setopt allexport always_last_prompt always_to_end append_history auto_cd \
+    auto_list auto_menu auto_name_dirs auto_param_keys \
+    auto_param_slash auto_pushd auto_remove_slash cdable_vars \
+    complete_aliases complete_in_word correct extended_glob \
+    hist_allow_clobber hash_cmds hash_list_all \
+    hist_ignore_dups hist_no_store list_types long_list_jobs kshoptionprint \
+    magic_equal_subst mark_dirs no_clobber no_no_match pushd_ignore_dups \
+    pushd_silent pushd_to_home pushd_minus sun_keyboard_hack
+unsetopt bg_nice bsd_echo mail_warning chase_links correct_all list_ambiguous
+DIRSTACKSIZE=20
+HISTSIZE=5000
+SAVEHIST=3000
+HISTFILE=$HOME/.history_zsh
+MAILCHECK=300
+MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
+SELECTMIN=0
+
+##
+EDITOR=vi
+VISUAL=vi
+ENSCRIPT='-BL 66'
+PROCMAILOG=$HOME/Mail/log.procmail
+PGPPATH=$HOME/lib/.pgp
+MYSQL_PS1='\u@\h/\d> '
+
+# enable color ls o/p
+LS_COLOR_OPTS="--color=tty"
+ls $LS_COLOR_OPTS >/dev/null 2>&1 || LS_COLOR_OPTS=""
+[[ `uname` == 'Darwin' ]] && CLICOLOR=y
+
+# X11 for OS X doesn't set the fully qualified DISPLAY name
+[[ `uname` == 'Darwin' && -n "$DISPLAY" ]] && export DISPLAY=:0.0
+
+# GNU patch
+VERSION_CONTROL=existing
+
+# Java under OS X
+[ `uname` = Darwin ] && JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+
+# miscellaneous functions
+l  ()       { ls $LS_COLOR_OPTS -al $* }
+lh ()       { ls $LS_COLOR_OPTS -alh $* }
+lf ()       { ls $LS_COLOR_OPTS -F $* }
+
+# push long, commonly used, commands into the edit buffer to save typing
+sjcc () {
+  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib" ./configure --verbose --help'
+}
+sjxcc () {
+  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include -I/usr/X11R6/include" LDFLAGS="-L/usr/local/lib  -L/usr/X11R6/lib -R/usr/local/lib -R/usr/X11R6/lib" ./configure --verbose --help'
+}
+
+
+##
+# aliases
+alias ls='ls -F' h=history j='jobs -lp' m=less md=mkdir
+alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
+
+expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
+if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then
+    alias ping='ping -s'
+    alias tnetstat='netstat -f inet -P tcp'
+fi
+
+# shortcut definitions
+test -r ~/.zdirs  && source ~/.zdirs
+test -r ~/.zhosts && source ~/.zhosts
+
+# color_xterm needs to be told the hard way
+#ttyctl -u
+#stty 38400 imaxbel iexten echoctl echoke \
+#     werase '^W'  lnext '^V'  intr '^C'  quit '^\'  erase '^?'  \
+#     kill   '^U'  eof '^D'    susp '^Z'  stop '^S'  start '^Q'
+#ttyctl -f
+
+# Timezone (`EST5EDT' is the POSIX version)
+TZ=EST5EDT
+
+# Use keychain to start and manage ssh-agent
+if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
+    kcfiles=""
+    for enctype in rsa dsa ; do
+        for file in "id_$enctype" ; do
+            [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
+        done
+    done
+    if [[ -n "$kcfiles" ]] ; then
+        keychain --agents ssh --nocolor -q `echo $kcfiles`
+        source $HOME/.keychain/`hostname`-sh
+    else
+        echo "No ssh keyfiles for keychain\!"
+    fi
+    unset kcfiles enctype file
+fi
+
+autoload -U compinit promptinit
+compinit
+promptinit
+
+# The following lines were added by compinstall
+
+zstyle ':completion:*' ambiguous true
+zstyle ':completion:*' auto-description 'specify: %d'
+zstyle ':completion:*' completer _list _expand _complete _correct _approximate
+zstyle ':completion:*' condition false
+zstyle ':completion:*' file-sort name
+zstyle ':completion:*' ignore-parents parent pwd .. directory
+zstyle ':completion:*' insert-ids menu
+zstyle ':completion:*' insert-unambiguous true
+zstyle ':completion:*' list-colors ''
+zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
+zstyle ':completion:*' matcher-list '+' '+r:|[._-]=* r:|=*' '+m:{a-z}={A-Z}' '+m:{a-zA-Z}={A-Za-z} l:|=* r:|=*'
+zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' original false
+zstyle ':completion:*' preserve-prefix '//[^/]##/'
+zstyle ':completion:*' prompt 'Error count: %e'
+zstyle ':completion:*' remove-all-dups true
+zstyle ':completion:*' use-compctl false
+zstyle ':completion:*' use-perl true
+zstyle ':completion:*' verbose true
+zstyle ':completion::complete:*' use-cache 1
+zstyle :compinstall filename '/Users/sj/.zshrc'
+
+autoload -Uz compinit
+compinit
+# End of lines added by compinstall
+
+### Local Variables:
+### auto-fill-function: nil
+### End:
