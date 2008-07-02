@@ -48,22 +48,25 @@ bindkey '[A' history-search-backward
 bindkey '[B' history-search-forward
 
 # some of these are defaults and should be pruned
-setopt allexport always_last_prompt always_to_end append_history auto_cd \
-    auto_list auto_menu auto_name_dirs auto_param_keys \
-    auto_param_slash auto_pushd auto_remove_slash cdable_vars \
-    complete_aliases complete_in_word correct extended_glob \
-    hist_allow_clobber hash_cmds hash_list_all \
-    hist_ignore_dups hist_no_store list_types long_list_jobs kshoptionprint \
-    magic_equal_subst mark_dirs no_clobber no_no_match pushd_ignore_dups \
-    pushd_silent pushd_to_home pushd_minus sun_keyboard_hack
+setopt \
+  allexport always_last_prompt always_to_end append_history auto_list auto_menu \
+  auto_name_dirs auto_param_keys auto_param_slash auto_pushd auto_remove_slash \
+  cdable_vars check_jobs complete_aliases complete_in_word correct extended_glob \
+  extended_history hash_cmds hash_list_all hist_allow_clobber hist_find_no_dups \
+  hist_ignore_all_dups hist_ignore_dups hist_no_store hist_reduce_blanks \
+  hist_save_no_dups kshoptionprint list_beep list_packed list_types long_list_jobs \
+  magic_equal_subst mark_dirs no_clobber no_no_match \
+  pushd_ignore_dups pushd_minus pushd_silent pushd_to_home share_history \
+  sun_keyboard_hack transient_rprompt
 unsetopt bg_nice bsd_echo mail_warning chase_links correct_all list_ambiguous
 DIRSTACKSIZE=20
-HISTSIZE=5000
-SAVEHIST=3000
+HISTSIZE=10000
+SAVEHIST=10000
 HISTFILE=$HOME/.history_zsh
-MAILCHECK=300
-MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
+#MAILCHECK=300
+#MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
 SELECTMIN=0
+LESS=-R
 
 ##
 EDITOR=vi
@@ -103,13 +106,13 @@ sjxcc () {
 
 ##
 # aliases
-alias ls='ls -F' h=history j='jobs -lp' m=less md=mkdir
+alias ls='ls -F' h=history j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 
 expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
 if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then
-    alias ping='ping -s'
-    alias tnetstat='netstat -f inet -P tcp'
+  alias ping='ping -s'
+  alias tnetstat='netstat -f inet -P tcp'
 fi
 
 # shortcut definitions
@@ -128,19 +131,20 @@ TZ=EST5EDT
 
 # Use keychain to start and manage ssh-agent
 if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
-    kcfiles=""
+  kcfiles=""
+  for prefix in id damballa ; do
     for enctype in rsa dsa ; do
-        for file in "id_$enctype" ; do
-            [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
-        done
+      file="${prefix}_$enctype"
+      [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
     done
-    if [[ -n "$kcfiles" ]] ; then
-        keychain --agents ssh --nocolor -q `echo $kcfiles`
-        source $HOME/.keychain/`hostname`-sh
-    else
-        echo "No ssh keyfiles for keychain\!"
-    fi
-    unset kcfiles enctype file
+  done
+  if [[ -n "$kcfiles" ]] ; then
+    keychain --agents ssh --nocolor -q `echo $kcfiles`
+    source $HOME/.keychain/`hostname`-sh
+  else
+    echo "No ssh keyfiles for keychain!"
+  fi
+  unset kcfiles enctype file
 fi
 
 autoload -U compinit promptinit
