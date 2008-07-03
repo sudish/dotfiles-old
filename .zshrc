@@ -3,6 +3,7 @@
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin \
+    /opt/local/lib/postgresql81/bin \
     /opt/local/apache2/bin \
     /opt/local/sbin \
     /opt/local/bin \
@@ -44,6 +45,8 @@ precmd () {
 
 bindkey -e
 bindkey ' ' magic-space
+bindkey '' backward-delete-char
+bindkey '' backward-delete-char
 bindkey '[A' history-search-backward
 bindkey '[B' history-search-forward
 
@@ -54,9 +57,9 @@ setopt \
   cdable_vars check_jobs complete_aliases complete_in_word correct extended_glob \
   extended_history hash_cmds hash_list_all hist_allow_clobber hist_find_no_dups \
   hist_ignore_all_dups hist_ignore_dups hist_no_store hist_reduce_blanks \
-  hist_save_no_dups kshoptionprint list_beep list_packed list_types long_list_jobs \
-  magic_equal_subst mark_dirs no_clobber no_no_match \
-  pushd_ignore_dups pushd_minus pushd_silent pushd_to_home share_history \
+  hist_save_no_dups inc_append_history kshoptionprint list_beep list_packed \
+  list_types long_list_jobs magic_equal_subst mark_dirs no_clobber no_no_match \
+  pushd_ignore_dups pushd_minus pushd_silent pushd_to_home \
   sun_keyboard_hack transient_rprompt
 unsetopt bg_nice bsd_echo mail_warning chase_links correct_all list_ambiguous
 DIRSTACKSIZE=20
