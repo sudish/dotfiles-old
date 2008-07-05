@@ -135,11 +135,8 @@ TZ=EST5EDT
 # Use keychain to start and manage ssh-agent
 if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
   kcfiles=""
-  for prefix in id damballa ; do
-    for enctype in rsa dsa ; do
-      file="${prefix}_$enctype"
-      [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
-    done
+  for file in {id,damballa}_{dsa,rsa} ; do
+    [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
   done
   if [[ -n "$kcfiles" ]] ; then
     keychain --agents ssh --nocolor -q `echo $kcfiles`
