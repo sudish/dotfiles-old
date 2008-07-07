@@ -50,17 +50,20 @@ sub main() {
   }
   
   foreach my $entry (@dotfiles) {
-    if (-e "$homedir/$entry") {
-      if (!prompt_y_or_n("$homedir/$entry already exists, OK to overwrite?")) {
-        print "Skipping $entry\n";
+    my ($file) = ($entry =~ m{([^/]+)$});
+    my $target = "$homedir/$file";
+    
+    if (-e $target) {
+      if (!prompt_y_or_n("$target already exists, OK to overwrite?")) {
+        print "Skipping $file\n";
         next;
       }
-      unlink "$homedir/$entry" or die "couldn't unlink $homedir/$entry: $!";
+      unlink $target or die "couldn't unlink $target: $!";
     }
     
-    print "Linking $entry to $homedir\n";
-    symlink "$pwd/$entry", "$homedir/$entry" 
-      or die "couldn't symlink $pwd/$entry -> $homedir/$entry: $!";
+    print "Linking $file to $homedir\n";
+    symlink "$pwd/$entry", $target 
+      or die "couldn't symlink $pwd/$entry -> $target: $!";
   }
 }
 
