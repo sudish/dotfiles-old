@@ -42,9 +42,6 @@ sub main() {
     push @dotfiles, map { $dir eq "." ? $_ : "$dir/$_" } @entries;
     closedir DIR;    
   }
-
-  print "[@dotfiles]\n";
-  exit 0;
   
   print "Going to symlink the following entries to $homedir: @dotfiles\n";
   unless (prompt_y_or_n("OK?")) {
