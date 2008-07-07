@@ -7,7 +7,6 @@
 #
 
 sub main();
-sub get_dotfiles($);
 sub prompt_y_or_n($);
 
 main();
@@ -28,11 +27,25 @@ sub main() {
     exit 0;
   }
 
-  opendir THISDIR, "." or die "couldn't opendir(.): $!\n";
-  # all entries but ., .. and .svn
-  my @dotfiles = grep { /^\./ and !/^\.(\.|svn)?$/ } readdir THISDIR;
-  closedir THISDIR;
+  # Always scan current directory
+  my @dirs = (".");
 
+  # Get any platform-specific files as well:
+  my $osname = lc `uname`;
+  chomp $osname;
+  push @dirs, $osname if -d $osname;
+
+  foreach my $dir (@dirs) {
+    opendir DIR, $dir or die "couldn't opendir(.): $!\n";
+    # all entries but ., .. and .svn
+    my @entries = grep { /^\./ and !/^\.(\.|svn)?$/ } readdir DIR;
+    push @dotfiles, map { $dir eq "." ? $_ : "$dir/$_" } @entries;
+    closedir DIR;    
+  }
+
+  print "[@dotfiles]\n";
+  exit 0;
+  
   print "Going to symlink the following entries to $homedir: @dotfiles\n";
   unless (prompt_y_or_n("OK?")) {
     print "Quitting\n";
@@ -52,25 +65,6 @@ sub main() {
     symlink "$pwd/$entry", "$homedir/$entry" 
       or die "couldn't symlink $pwd/$entry -> $homedir/$entry: $!";
   }
-}
-
-sub get_dotfiles($) {
-  my $dir = shift @_;
-  my @dotfiles;
-  my $dir_prefix = $dir eq "." ? "" : "$dir/";
-  
-  opendir $h, $dir or die "couldn't opendir $dir: $!\n";
-  foreach my $ent (readdir $h) {
-    if ($ent =~ /^\./ and $ent !~ /^\.(\.|svn)?$/) {
-      push @dotfiles, $dir_prefix . $ent;
-    }
-    elsif (-d $dir_prefix . $ent and $ent !~ /^\.(\.|svn)?$/) {
-      push @dotfiles, get_dotfiles($dir_prefix . $ent);
-    }
-  }
-  closedir $h;
-  
-  return @dotfiles;
 }
 
 sub prompt_y_or_n($) {
