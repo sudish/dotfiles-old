@@ -140,7 +140,7 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
     [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
   done
   if [[ -n "$kcfiles" ]] ; then
-    keychain --agents ssh --nocolor -q `echo $kcfiles`
+    keychain --agents ssh --nocolor -q $kcfiles
     source $HOME/.keychain/`hostname`-sh
   else
     echo "No ssh keyfiles for keychain!"
