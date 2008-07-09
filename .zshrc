@@ -135,17 +135,17 @@ TZ=EST5EDT
 
 # Use keychain to start and manage ssh-agent
 if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
-  kcfiles=""
+  kcfiles=()
   for file in {id,damballa}_{dsa,rsa} ; do
-    [[ -r ~/.ssh/$file ]] && kcfiles="$kcfiles $file"
+    [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
   done
   if [[ -n "$kcfiles" ]] ; then
-    keychain --agents ssh --nocolor -q $kcfiles
+    keychain --agents ssh --nocolor -q "$kcfiles[@]"
     source $HOME/.keychain/`hostname`-sh
   else
     echo "No ssh keyfiles for keychain!"
   fi
-  unset kcfiles enctype file
+  unset kcfiles file
 fi
 
 autoload -U compinit promptinit
