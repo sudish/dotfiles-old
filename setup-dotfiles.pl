@@ -6,7 +6,10 @@
 # Sudish Joseph, 2007-06-15
 #
 
+use strict;
+
 sub main();
+sub make_relative_path($$);
 sub prompt_y_or_n($);
 
 main();
@@ -21,12 +24,6 @@ sub main() {
   chomp $pwd;
   die "couldn't determine pwd (got $pwd)!" unless -d $pwd;
 
-  if (0) {
-    my @dotfiles = get_dotfiles('.');
-    print "@dotfiles\n";
-    exit 0;
-  }
-
   # Always scan current directory
   my @dirs = (".");
 
@@ -35,12 +32,13 @@ sub main() {
   chomp $osname;
   push @dirs, $osname if -d $osname;
 
+  my @dotfiles;
   foreach my $dir (@dirs) {
     opendir DIR, $dir or die "couldn't opendir(.): $!\n";
     # all entries but ., .. and .svn
     my @entries = grep { /^\./ and !/^\.(\.|svn)?$/ } readdir DIR;
     push @dotfiles, map { $dir eq "." ? $_ : "$dir/$_" } @entries;
-    closedir DIR;    
+    closedir DIR;
   }
   
   print "Going to symlink the following entries to $homedir: @dotfiles\n";
@@ -52,19 +50,26 @@ sub main() {
   foreach my $entry (@dotfiles) {
     my ($file) = ($entry =~ m{([^/]+)$});
     my $target = "$homedir/$file";
-    
-    if (-e $target) {
-      if (!prompt_y_or_n("$target already exists, OK to overwrite?")) {
+
+    unless (-l $target) {
+      if (!prompt_y_or_n("$target exists and is not a symlink, OK to overwrite?")) {
         print "Skipping $file\n";
         next;
       }
-      unlink $target or die "couldn't unlink $target: $!";
     }
-    
-    print "Linking $file to $homedir\n";
-    symlink "$pwd/$entry", $target 
-      or die "couldn't symlink $pwd/$entry -> $target: $!";
+
+    unlink $target or die "couldn't unlink $target: $!";
+    my $link_path = make_relative_path($homedir, "$pwd/$entry");
+    print "Linking ~/$file -> $link_path\n";
+    symlink $link_path, $target 
+      or die "couldn't symlink $link_path -> $target: $!";
   }
+}
+
+sub make_relative_path($$) {
+  my ($prefix, $path) = @_;
+  
+  return ($path =~ m{^$prefix/?(.*)}) ? $1 : $path;
 }
 
 sub prompt_y_or_n($) {
