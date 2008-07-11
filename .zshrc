@@ -148,33 +148,27 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
   unset kcfiles file
 fi
 
-autoload -U compinit promptinit
-compinit
+autoload -U promptinit
 promptinit
 
 # The following lines were added by compinstall
 
-zstyle ':completion:*' ambiguous true
-zstyle ':completion:*' auto-description 'specify: %d'
-zstyle ':completion:*' completer _list _expand _complete _correct _approximate
-zstyle ':completion:*' condition false
+zstyle ':completion:*' completer _expand _complete _correct _approximate
+zstyle ':completion:*' completions 1
+zstyle ':completion:*' expand suffix
 zstyle ':completion:*' file-sort name
+zstyle ':completion:*' glob 1
 zstyle ':completion:*' ignore-parents parent pwd .. directory
-zstyle ':completion:*' insert-ids menu
 zstyle ':completion:*' insert-unambiguous true
 zstyle ':completion:*' list-colors ''
 zstyle ':completion:*' list-prompt %SAt %p: Hit TAB for more, or the character to insert%s
-zstyle ':completion:*' matcher-list '+' '+r:|[._-]=* r:|=*' '+m:{a-z}={A-Z}' '+m:{a-zA-Z}={A-Za-z} l:|=* r:|=*'
-zstyle ':completion:*' max-errors 2
+zstyle ':completion:*' matcher-list '' 'l:|=* r:|=*' 'r:|[._-]=** r:|=**' 'm:{a-z}={A-Z}'
+zstyle ':completion:*' max-errors 1
 zstyle ':completion:*' original false
-zstyle ':completion:*' preserve-prefix '//[^/]##/'
-zstyle ':completion:*' prompt 'Error count: %e'
-zstyle ':completion:*' remove-all-dups true
+zstyle ':completion:*' substitute 1
 zstyle ':completion:*' use-compctl false
-zstyle ':completion:*' use-perl true
 zstyle ':completion:*' verbose true
-zstyle ':completion::complete:*' use-cache 1
-zstyle :compinstall filename '/Users/sj/.zshrc'
+zstyle :compinstall filename '~.zcomp'
 
 autoload -Uz compinit
 compinit
