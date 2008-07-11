@@ -51,14 +51,16 @@ sub main() {
     my ($file) = ($entry =~ m{([^/]+)$});
     my $target = "$homedir/$file";
 
-    unless (-l $target) {
-      if (!prompt_y_or_n("$target exists and is not a symlink, OK to overwrite?")) {
-        print "Skipping $file\n";
-        next;
+    if (-e $target) {
+      if (not -l $target) {
+        if (!prompt_y_or_n("$target is not a symlink, OK to overwrite?")) {
+          print "Skipping $file\n";
+          next;
+        }
       }
+      unlink $target or die "couldn't unlink $target: $!\n";
     }
 
-    unlink $target or die "couldn't unlink $target: $!";
     my $link_path = make_relative_path($homedir, "$pwd/$entry");
     print "Linking ~/$file -> $link_path\n";
     symlink $link_path, $target 
