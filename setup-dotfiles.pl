@@ -41,7 +41,8 @@ sub main() {
     closedir DIR;
   }
   
-  print "Going to symlink the following entries to $homedir: @dotfiles\n";
+  print "Creating symlinks for:\n";
+  foreach my $dotfile (@dotfiles) { print "\t$dotfile\n"; }
   unless (prompt_y_or_n("OK?")) {
     print "Quitting\n";
     exit 0;
