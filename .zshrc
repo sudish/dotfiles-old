@@ -4,7 +4,7 @@
 unsetopt ksh_arrays
 d=( ~/bin \
     /var/lib/gems/1.8/bin \
-    /opt/local/lib/postgresql81/bin \
+    /opt/local/lib/postgresql83/bin \
     /opt/local/apache2/bin \
     /opt/local/sbin \
     /opt/local/bin \
