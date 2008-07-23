@@ -52,7 +52,7 @@ sub main() {
     my ($file) = ($entry =~ m{([^/]+)$});
     my $target = "$homedir/$file";
 
-    if (-e $target) {
+    if (-e $target or -l $target) {
       if (not -l $target) {
         if (!prompt_y_or_n("$target is not a symlink, OK to overwrite?")) {
           print "Skipping $file\n";
