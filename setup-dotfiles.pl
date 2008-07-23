@@ -30,7 +30,7 @@ sub main() {
   # Get any platform-specific files as well:
   my $osname = lc `uname`;
   chomp $osname;
-  push @dirs, $osname if -d $osname;
+  push @dirs, "_uname/$osname" if -d "_uname/$osname";
 
   my @dotfiles;
   foreach my $dir (@dirs) {
