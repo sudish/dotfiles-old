@@ -143,7 +143,8 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
     keychain --agents ssh --nocolor -q "$kcfiles[@]"
     source $HOME/.keychain/`hostname`-sh
   else
-    echo "No ssh keyfiles for keychain!"
+    fgrep ForwardAgent ~/.ssh/config >/dev/null 2>&1 || \
+      echo "No ssh keyfiles for keychain!"
   fi
   unset kcfiles file
 fi
