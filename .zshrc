@@ -124,7 +124,7 @@ sjxcc () {
 
 ##
 # aliases
-alias ls='ls -F' h=history j='jobs -lp' m='less -R' md=mkdir
+alias ls="ls $LS_COLOR_OPTS -F" h=history j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 
 expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
