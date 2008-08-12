@@ -27,9 +27,23 @@ unset d s dir
 # Use UTF8 under OS X
 [[ `uname` == 'Darwin' ]] && export LC_CTYPE=en_US.UTF-8
 
+# Portable color prompt hackery! 
+# Obtained from http://aperiodic.net/phil/prompt/prompt.txt
+autoload colors zsh/terminfo
+if [[ "$terminfo[colors]" -ge 8 ]]; then
+  colors
+fi
+for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
+  eval SJ_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+  eval SJ_LIGHT_$color='%{$fg[${(L)color}]%}'
+  (( count = $count + 1 ))
+done
+SJ_NO_COLOR="%{$terminfo[sgr0]%}"
+
+
 # prompt string
 PROMPT='%B%#%b '
-RPROMPT='%(1v:[%B+%b]:)%m:%~%(?..[%B%?%b])'
+RPROMPT='$SJ_GREEN%m$SJ_NO_COLOR%B:%b$SJ_MAGENTA%~$SJ_NO_COLOR%(?..[$SJ_RED%B%?%b$SJ_NO_COLOR])%(1v:[$SJ_RED%B+%b$SJ_NO_COLOR]:)'
 
 # check for backgrounded jobs
 set_psvar () {
@@ -60,7 +74,7 @@ setopt \
   hist_ignore_all_dups hist_ignore_dups hist_no_store hist_reduce_blanks \
   hist_save_no_dups inc_append_history kshoptionprint list_beep list_packed \
   list_types long_list_jobs magic_equal_subst mark_dirs no_clobber no_no_match \
-  pushd_ignore_dups pushd_minus pushd_silent pushd_to_home \
+  prompt_subst pushd_ignore_dups pushd_minus pushd_silent pushd_to_home \
   sun_keyboard_hack transient_rprompt
 unsetopt bg_nice bsd_echo mail_warning chase_links correct_all list_ambiguous
 DIRSTACKSIZE=20
