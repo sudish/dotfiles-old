@@ -158,7 +158,7 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
     source $HOME/.keychain/`hostname`-sh
   else
     fgrep ForwardAgent ~/.ssh/config >/dev/null 2>&1 || \
-      echo "No ssh keyfiles for keychain!"
+      echo "No ForwardAgent or ssh keyfiles for keychain!"
   fi
   unset kcfiles file
 fi
