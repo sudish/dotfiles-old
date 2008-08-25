@@ -114,13 +114,22 @@ lh ()       { ls $LS_COLOR_OPTS -alh $* }
 lf ()       { ls $LS_COLOR_OPTS -F $* }
 
 # push long, commonly used, commands into the edit buffer to save typing
+sj_configure () {
+  for i in . .. ; do
+    [[ -x $i/configure ]] && { echo $i/configure; return; }
+  done
+  echo "Couldn't find configure in ./ or ../" 1>&2
+  echo could_not_locate_configure
+}
 sjcc () {
-  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib" ./configure --verbose --help'
+  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
 }
-sjxcc () {
-  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include -I/usr/X11R6/include" LDFLAGS="-L/usr/local/lib  -L/usr/X11R6/lib -R/usr/local/lib -R/usr/X11R6/lib" ./configure --verbose --help'
+sjlcc () {
+  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib"' `sj_configure` '--verbose --help'
 }
-
+sjemacsconfigure () {
+  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --enable-cocoa-experimental-ctrl-g --without-pop --without-x --with-x-toolkit=no --with-ns'
+}
 
 ##
 # aliases
