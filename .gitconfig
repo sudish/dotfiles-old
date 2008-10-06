@@ -1,2 +1,18 @@
 [user]
 	name = Sudish Joseph
+	email = sudish@damballa.com
+[core]
+	fsyncobjectfiles = true
+[alias]
+	st = status
+	ci = commit
+[diff]
+	renames = copy
+[merge]
+	log = true
+[color]
+	branch = auto
+	diff = auto
+	interactive = auto
+	status = auto
+	ui = auto
