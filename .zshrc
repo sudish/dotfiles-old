@@ -17,7 +17,7 @@ d=( ~/bin \
     /sbin \
    ${(s.:.)${PATH}} )       # zsh pukes if i do this in a typeset
 s=()
-typeset -U d            # delete duplicates
+typeset -U d                # delete duplicates
 for dir in "$d[@]"; do      # delete nonexistent dirs
     [[ -d $dir && $dir != '.' ]] && s=($s $dir)
 done
