@@ -27,7 +27,7 @@ unset d s dir
 # Use UTF8 under OS X
 [[ `uname` == 'Darwin' ]] && export LC_CTYPE=en_US.UTF-8
 
-# Portable zsh color prompt hackery! 
+# Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
 autoload colors zsh/terminfo
 if [[ "$terminfo[colors]" -ge 8 ]]; then
