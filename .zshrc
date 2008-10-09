@@ -10,7 +10,6 @@ d=( ~/bin \
     /opt/local/bin \
     /usr/local/sbin \
     /usr/local/bin \
-#    /usr/X11R6/bin \
     /usr/sbin \
     /usr/bin \
     /bin \
