@@ -2,18 +2,7 @@
 
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
-d=( ~/bin \
-    /var/lib/gems/1.8/bin \
-    /opt/local/lib/postgresql83/bin \
-    /opt/local/apache2/bin \
-    /opt/local/sbin \
-    /opt/local/bin \
-    /usr/local/sbin \
-    /usr/local/bin \
-    /usr/sbin \
-    /usr/bin \
-    /bin \
-    /sbin \
+d=( `cat ~/.sj-config/PATH`
    ${(s.:.)${PATH}} )       # zsh pukes if i do this in a typeset
 s=()
 typeset -U d                # delete duplicates
