@@ -2,7 +2,7 @@
 
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
-d=( `cat ~/.sj-config/PATH`
+d=( ~/bin `cat ~/.sj-config/PATH`
    ${(s.:.)${PATH}} )       # zsh pukes if i do this in a typeset
 s=()
 typeset -U d                # delete duplicates
@@ -72,7 +72,7 @@ HISTFILE=$HOME/.history_zsh
 #MAILCHECK=300
 #MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
 SELECTMIN=0
-LESS=-R
+#LESS=-R
 
 ##
 EDITOR=vi
@@ -123,6 +123,7 @@ sjemacsconfigure () {
 # aliases
 alias ls="ls $LS_COLOR_OPTS -F" h=history j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
+alias hist_sync='fc -RI'
 
 expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
 if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then

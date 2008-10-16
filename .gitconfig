@@ -7,6 +7,7 @@
 	st = status
 	ci = commit
 	co = checkout
+	de = describe --all
 [diff]
 	renames = copy
 [merge]
@@ -17,3 +18,5 @@
 	interactive = auto
 	status = auto
 	ui = auto
+[gui]
+	pruneduringfetch = true
