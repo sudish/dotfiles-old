@@ -57,7 +57,7 @@ bindkey '[B' history-search-forward
 setopt \
   allexport always_last_prompt always_to_end append_history auto_list auto_menu \
   auto_name_dirs auto_param_keys auto_param_slash auto_pushd auto_remove_slash \
-  cdable_vars check_jobs complete_aliases complete_in_word correct extended_glob \
+  check_jobs complete_aliases complete_in_word correct extended_glob \
   extended_history hash_cmds hash_list_all hist_allow_clobber hist_find_no_dups \
   hist_ignore_all_dups hist_ignore_dups hist_no_store hist_reduce_blanks \
   hist_save_no_dups inc_append_history kshoptionprint list_beep list_packed \
@@ -121,9 +121,9 @@ sjemacsconfigure () {
 
 ##
 # aliases
-alias ls="ls $LS_COLOR_OPTS -F" h=history j='jobs -lp' m='less -R' md=mkdir
+alias ls="ls $LS_COLOR_OPTS -F" j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
-alias hist_sync='fc -RI'
+alias h=history hs='fc -RI'
 
 expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
 if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then
