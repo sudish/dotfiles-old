@@ -72,6 +72,7 @@ HISTFILE=$HOME/.history_zsh
 #MAILCHECK=300
 #MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
 SELECTMIN=0
+PAGER=less
 #LESS=-R
 
 ##
