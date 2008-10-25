@@ -19,7 +19,7 @@ sub main() {
   my $homedir = $ENV{HOME};
   die "Home directory $homedir is not a directory or can't be accessed!"
     unless -d $homedir;
-  
+
   my $pwd = `pwd`;
   chomp $pwd;
   die "couldn't determine pwd (got $pwd)!" unless -d $pwd;
@@ -27,10 +27,18 @@ sub main() {
   # Always scan current directory
   my @dirs = (".");
 
-  # Get any platform-specific files as well:
+  # Platform-specific files
   my $osname = lc `uname`;
   chomp $osname;
-  push @dirs, "_uname/$osname" if -d "_uname/$osname";
+  push @dirs, "_uname/$osname"
+              if length $osname > 0 and -d "_uname/$osname";
+
+  # Host-specific files, using just the first part of the hostname
+  my $hostname = lc `hostname`;
+  chomp $hostname;
+  $hostname =~ s/\..*$//;
+  push @dirs, "_hostname/$hostname"
+              if length $hostname > 0 and -d "_hostname/$hostname";
 
   my @dotfiles;
   foreach my $dir (@dirs) {
@@ -40,14 +48,14 @@ sub main() {
     push @dotfiles, map { $dir eq "." ? $_ : "$dir/$_" } @entries;
     closedir DIR;
   }
-  
+
   print "Creating symlinks for:\n";
   foreach my $dotfile (@dotfiles) { print "\t$dotfile\n"; }
   unless (prompt_y_or_n("OK?")) {
     print "Quitting\n";
     exit 0;
   }
-  
+
   foreach my $entry (@dotfiles) {
     my ($file) = ($entry =~ m{([^/]+)$});
     my $target = "$homedir/$file";
