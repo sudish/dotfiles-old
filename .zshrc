@@ -13,14 +13,14 @@ PATH=${(j.:.)${s}}
 unset d s dir
 
 # Use UTF8 under OS X
-[[ `uname` == 'Darwin' ]] && export LC_CTYPE=en_US.UTF-8
+[[ `uname` == Darwin ]] && export LC_CTYPE=en_US.UTF-8
 # Whoever decided to have linux ls ignore leading periods when sorting
 # should be taken out and shot.  LC_COLLATE restores sanity, but why
 # is it needed in the first place?  This is predicated on Linux
 # because GNU ls behaves sanely out of the box under OS X -- weird,
 # since Linux ls is GNU ls and it behaves differently there.  I also
 # prefer UTF8 over C under OS X, thankyouverymuch.
-[[ `uname` == `Linux` ]] && export LC_COLLATE=en_US.C
+[[ `uname` == Linux ]] && export LC_COLLATE=en_US.C
 
 # Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
