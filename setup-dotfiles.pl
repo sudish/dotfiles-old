@@ -44,7 +44,7 @@ sub main() {
   foreach my $dir (@dirs) {
     opendir DIR, $dir or die "couldn't opendir(.): $!\n";
     # all entries but ., .. and .svn
-    my @entries = grep { /^\./ and !/^\.(\.|svn|.*~)?$/ } readdir DIR;
+    my @entries = grep { /^\./ and !/^\.(\.|svn|git|.*~)?$/ } readdir DIR;
     push @dotfiles, map { $dir eq "." ? $_ : "$dir/$_" } @entries;
     closedir DIR;
   }
