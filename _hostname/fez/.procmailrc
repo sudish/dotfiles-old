@@ -6,12 +6,16 @@ LOGABSTRACT=all
 LOGFILE=$HOME/Procmail/log
 VERBOSE=OFF
 
+ORIG_FROM=`formail -fcz -x From: | sed -e 's/^.*<\(.*\)>/\1/'`
+FROM_ADDR="\"$ORIG_FROM\" <sudish@absonant.org>"
+TO_ADDR='sudish@absonant.org'
+
 # Gmail quirks:
 # . From: must be a registered address to use their submit port
 # . To: must be a registered address or the message goes to the Sent folder
 
 :0 fh
-| formail -f -i 'From: sudish@gmail.com' -i 'To: sudish@gmail.com' -I 'Message-Id:'
+| formail -f -i "From: $FROM_ADDR" -i "To: $TO_ADDR"
 
 :0
 ! sudish@gmail.com
