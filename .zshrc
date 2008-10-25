@@ -12,8 +12,10 @@ done
 PATH=${(j.:.)${s}}
 unset d s dir
 
-# Use UTF8 under OS X
-[[ `uname` == Darwin ]] && export LC_CTYPE=en_US.UTF-8
+# Use UTF8 everywhere
+#[[ `uname` == Darwin ]] && export LC_CTYPE=en_US.UTF-8
+export LC_CTYPE=en_US.UTF-8
+export LC_ALL=en_US.UTF-8
 # Whoever decided to have linux ls ignore leading periods when sorting
 # should be taken out and shot.  LC_COLLATE restores sanity, but why
 # is it needed in the first place?  This is predicated on Linux
