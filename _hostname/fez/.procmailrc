@@ -1,0 +1,100 @@
+# procmailrc			-*- text -*-
+#
+
+SHELL=/bin/sh
+COMSAT=OFF
+
+PATH=$HOME/bin:/usr/local/cyrus/bin:/usr/local/bin:/usr/local/sbin:/usr/sbin:/usr/bin:/bin:/sbin
+
+# The cyrus imap deliver program
+imap_deliver=/usr/lib/cyrus-imapd/deliver
+
+# We use qmail-inject for all forwarding
+qmail_inject=/var/qmail/bin/qmail-inject
+
+LOGABSTRACT=all
+LOGFILE=$HOME/Procmail/log
+VERBOSE=OFF
+
+# Deliver to INBOX by default
+DEFAULT=Mail
+#MAILDIR=$HOME/Mail
+
+# The canonical regexp for my addresses, for reference
+# ^TO_(sudish|sj)@(gmail|mindspring|absonant)\.(com|org)
+
+#### drop anything marked as such by EarthLink AntiVirus into a Virus folder
+:0 w
+* ^X-ELNK-AV
+* !^X-ELNK-AV: *0
+| $imap_deliver -r "$SENDER" -a sj -m Spam.Virus sj
+
+#### eliminate duplicate messages
+:0 Wh: .msgid.lock
+* !^Resent-(To|From):.*(sj|sudish)@
+| formail -D 131072 $HOME/Procmail/msgid.cache
+
+
+#### munge headers to our satisfaction
+
+# add Lines:, Message-Id:, Subject: as needed,
+:0 fh
+* B ?? 1^1 ^(.|$)
+| formail -f -a "Lines: $=" -a Message-Id: -a "Subject: (none)"
+
+# add a References: header, if needed, by looking at In-Reply-To:
+# the regexp used here (<[^<>]*@[^<>]*>) is pretty weak -- rfc822 allows
+# msg-id's we'll be rejecting, but it'll work for the most common case
+:0 fhw 
+* !^References:
+* In-Reply-To:.*\/<[^<>]*@[^<>]*>
+| formail -f -a "References: $MATCH"
+
+### IMAP folder deliveries
+
+#### Spam filtering
+
+# SpamAssassin marking
+:0 fw: spamassassin.lock
+* < 256000
+| spamassassin
+
+# If SpamAssassin thinks something is spam, put it in Spam.SpamAssassin
+:0 w
+* ^X-Spam-Status: yes
+| $imap_deliver -r "$SENDER" -a sj -m Spam.SpamAssassin sj
+
+# Anything not sorted out so far and from a daemon gets separated out
+:0 w
+* ^FROM_DAEMON
+| $imap_deliver -r "$SENDER" -a sj -m Daemons sj
+
+#
+# Anything directly addressed to me goes to INBOX,
+#
+:0
+* ^TO_(sudish|sj)@(gmail|vitrue|mindspring|absonant)\.(com|org)
+{ IMAP_FOLDER=Inbox }
+:0
+* IMAP_FOLDER ?? Inbox
+{
+    :0 w
+    | $imap_deliver -r "$SENDER" -a sj sj
+}
+
+# Default: probably spam
+:0 w
+| $imap_deliver -r "$SENDER" -a sj -m Spam.Possible sj
+
+
+#
+# Anything that errors out above is going to land up in $DEFAULT (~/Mail)
+#
+
+
+# Local Variables:
+# mode:text
+# auto-fill-function: nil
+# enable-local-eval:t
+# eval: (progn (setq font-lock-keywords '(("#.*" . font-lock-comment-face) ("^[\t ]*:.*" . font-lock-type-face) ("[A-Za-z_]+=.*" . font-lock-keyword-face) ("^[ \t]*\\*.*" . font-lock-reference-face))) (font-lock-mode))
+# End:
