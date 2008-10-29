@@ -8,7 +8,7 @@ VERBOSE=OFF
 
 ORIG_FROM=`formail -fcz -x From: | sed -e 's/^.*<\(.*\)>/\1/'`
 FROM_ADDR="\"$ORIG_FROM\" <sudish@absonant.org>"
-TO_ADDR='sudish@absonant.org'
+TO_ADDR='sudish@gmail.com'
 
 # Gmail quirks:
 # . From: must be a registered address to use their submit port

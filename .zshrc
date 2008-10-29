@@ -98,7 +98,7 @@ ls $LS_COLOR_OPTS >/dev/null 2>&1 || LS_COLOR_OPTS=""
 [[ `uname` == 'Darwin' ]] && CLICOLOR=y
 
 # X11 for OS X doesn't set the fully qualified DISPLAY name
-[[ `uname` == 'Darwin' && -n "$DISPLAY" ]] && export DISPLAY=:0.0
+[[ `uname` == Darwin && -n "$DISPLAY" ]] && export DISPLAY=:0.0
 
 # GNU patch
 VERSION_CONTROL=existing
@@ -161,9 +161,10 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
   for file in {id,damballa}_{dsa,rsa} ; do
     [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
   done
+  sj_keyhost=sudish # use a fixed hostname, no nfs here
   if [[ -n "$kcfiles" ]] ; then
-    keychain --agents ssh --nocolor -q "$kcfiles[@]"
-    source $HOME/.keychain/`hostname`-sh
+    keychain --agents ssh --host "$sj_keyhost" -q "$kcfiles[@]"
+    source "$HOME/.keychain/${sj_keyhost}-sh"
   else
     fgrep ForwardAgent ~/.ssh/config >/dev/null 2>&1 || \
       echo "No ForwardAgent or ssh keyfiles for keychain!"
