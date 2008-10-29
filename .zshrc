@@ -12,17 +12,17 @@ done
 PATH=${(j.:.)${s}}
 unset d s dir
 
-# Use UTF8 everywhere
-#[[ `uname` == Darwin ]] && export LC_CTYPE=en_US.UTF-8
-export LC_CTYPE=en_US.UTF-8
-export LC_ALL=en_US.UTF-8
-# Whoever decided to have linux ls ignore leading periods when sorting
-# should be taken out and shot.  LC_COLLATE restores sanity, but why
-# is it needed in the first place?  This is predicated on Linux
-# because GNU ls behaves sanely out of the box under OS X -- weird,
-# since Linux ls is GNU ls and it behaves differently there.  I also
-# prefer UTF8 over C under OS X, thankyouverymuch.
-[[ `uname` == Linux ]] && export LC_COLLATE=en_US.C
+# Use UTF8 in some places
+case `uname` in
+    Darwin) 
+	export LC_CTYPE=en_US.UTF8
+	export LC_ALL=en_US.UTF8
+	;;
+    Linux)
+	# These lead to sundry madness under Linux, just say No! for now.
+	unset LANG LC_ALL LC_CTYPE LC_COLLATE
+	;;
+esac
 
 # Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
