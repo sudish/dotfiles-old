@@ -12,17 +12,8 @@ done
 PATH=${(j.:.)${s}}
 unset d s dir
 
-# Use UTF8 in some places
-case `uname` in
-    Darwin) 
-	export LC_CTYPE=en_US.UTF8
-	export LC_ALL=en_US.UTF8
-	;;
-    Linux)
-	# These lead to sundry madness under Linux, just say No! for now.
-	unset LANG LC_ALL LC_CTYPE LC_COLLATE
-	;;
-esac
+# These lead to sundry madness under Linux, just say No! for now.
+unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
 # Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
