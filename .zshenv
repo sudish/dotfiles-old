@@ -1,3 +1,6 @@
+# set up fink env
+[[ -f /sw/bin/init.sh ]] && . /sw/bin/init.sh
+
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin `cat ~/.sj-config/PATH`

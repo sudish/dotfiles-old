@@ -99,13 +99,13 @@ sj_configure () {
   echo could_not_locate_configure
 }
 sjcc () {
-  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
+  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
 }
 sjlcc () {
-  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib"' `sj_configure` '--verbose --help'
+  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib"' `sj_configure` '--verbose --help'
 }
 sjemacsconfigure () {
-  print -z 'CC=gcc CXX=g++ CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --enable-cocoa-experimental-ctrl-g --without-pop --without-x --with-x-toolkit=no --with-ns'
+  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --enable-cocoa-experimental-ctrl-g --without-pop --without-x --with-x-toolkit=no --with-ns'
 }
 
 ##
