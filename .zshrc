@@ -18,8 +18,12 @@ SJ_NO_COLOR="%{$terminfo[sgr0]%}"
 
 
 # prompt string
-PROMPT='%B%#%b '
-RPROMPT='$SJ_GREEN%m$SJ_NO_COLOR%B:%b$SJ_BLUE%~$SJ_NO_COLOR%(?..[$SJ_RED%B%?%b$SJ_NO_COLOR])%(1v:[$SJ_RED%B+%b$SJ_NO_COLOR]:)'
+if [[ "$TERM" = dumb ]]; then
+    PROMPT='%#'
+else
+    PROMPT='%B%#%b '
+    RPROMPT='$SJ_GREEN%m$SJ_NO_COLOR%B:%b$SJ_BLUE%~$SJ_NO_COLOR%(?..[$SJ_RED%B%?%b$SJ_NO_COLOR])%(1v:[$SJ_RED%B+%b$SJ_NO_COLOR]:)'
+fi
 
 # check for backgrounded jobs
 set_psvar () {
