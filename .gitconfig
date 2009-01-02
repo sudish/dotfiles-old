@@ -3,6 +3,7 @@
 	email = sudish@damballa.com
 [core]
 	fsyncobjectfiles = true
+	preloadindex = true
 [alias]
 	st = status
 	ci = commit

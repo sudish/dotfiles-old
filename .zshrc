@@ -117,6 +117,8 @@ sjemacsconfigure () {
 alias ls="ls $LS_COLOR_OPTS -F" j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
+alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
+alias ec='emacsclient -nc'
 
 expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
 if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then
