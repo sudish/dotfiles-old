@@ -177,7 +177,7 @@ zstyle ':completion:*' original false
 zstyle ':completion:*' substitute 1
 zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
-zstyle :compinstall filename '~.zcomp'
+zstyle :compinstall filename '~/.zcomp'
 
 autoload -Uz compinit
 compinit
