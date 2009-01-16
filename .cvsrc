@@ -1,0 +1,4 @@
+cvs -q
+diff -u -N
+status -v
+rdiff -u
