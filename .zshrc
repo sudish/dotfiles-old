@@ -80,6 +80,10 @@ LS_COLOR_OPTS="--color=tty"
 ls $LS_COLOR_OPTS >/dev/null 2>&1 || LS_COLOR_OPTS=""
 [[ `uname` == 'Darwin' ]] && CLICOLOR=y
 
+# enable color grep o/p
+GREP_COLOR_OPTS="--color=auto"
+grep $GREP_COLOR_OPTS local /etc/hosts >/dev/null 2>&1 || GREP_COLOR_OPTS=""
+
 # X11 for OS X doesn't set the fully qualified DISPLAY name
 [[ `uname` == Darwin && -n "$DISPLAY" ]] && export DISPLAY=:0.0
 
@@ -114,7 +118,11 @@ sjemacsconfigure () {
 
 ##
 # aliases
-alias ls="ls $LS_COLOR_OPTS -F" j='jobs -lp' m='less -R' md=mkdir
+alias  grep="grep $GREP_COLOR_OPTS"
+alias fgrep="fgrep $GREP_COLOR_OPTS"
+alias egrep="egrep $GREP_COLOR_OPTS"
+alias ls="ls $LS_COLOR_OPTS -F"
+alias j='jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
