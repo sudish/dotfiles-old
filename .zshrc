@@ -1,7 +1,7 @@
 # zsh init file       -*- ksh -*-
 
 # These lead to sundry madness under Linux, just say No! for now.
-unset LANG LC_ALL LC_CTYPE LC_COLLATE
+[[ `uname` = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
 # Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
@@ -9,12 +9,12 @@ autoload colors zsh/terminfo
 if [[ "$terminfo[colors]" -ge 8 ]]; then
   colors
 fi
-for color in RED GREEN YELLOW BLUE MAGENTA CYAN WHITE; do
-  eval SJ_$color='%{$terminfo[bold]$fg[${(L)color}]%}'
-  eval SJ_LIGHT_$color='%{$fg[${(L)color}]%}'
+for color in red green yellow blue magenta cyan white; do
+  eval SJ_C$color='%{$terminfo[bold]$fg[${(L)color}]%}'
+  eval SJ_CL$color='%{$fg[${(L)color}]%}'
   (( count = $count + 1 ))
 done
-SJ_NO_COLOR="%{$terminfo[sgr0]%}"
+SJ_Cnone="%{$terminfo[sgr0]%}"
 
 
 # prompt string
@@ -22,21 +22,29 @@ if [[ "$TERM" = dumb ]]; then
     PROMPT='%# '
 else
     PROMPT='%B%#%b '
-    RPROMPT='$SJ_GREEN%m$SJ_NO_COLOR%B:%b$SJ_BLUE%~$SJ_NO_COLOR%(?..[$SJ_RED%B%?%b$SJ_NO_COLOR])%(1v:[$SJ_RED%B+%b$SJ_NO_COLOR]:)'
+    RPROMPT='%B%m:%~%(?..[$SJ_Cred%?$SJ_Cnone])%(1v:[$SJ_Cred+$SJ_Cnone]:)%b'
 fi
 
 # check for backgrounded jobs
 set_psvar () {
     if jobs % >& /dev/null; then
-    psvar=("")
+	psvar=("")
     else
-    psvar=()
+	psvar=()
     fi
 }
 
 precmd () {
     set_psvar
 }
+
+# preexec () {
+#     zsh_git_preexec_update_vars
+# }
+
+# chpwd () {
+#     zsh_git_chpwd_update_vars
+# }
 
 bindkey -e
 bindkey ' ' magic-space
@@ -151,7 +159,7 @@ TZ=EST5EDT
 # Use keychain to start and manage ssh-agent
 if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
   kcfiles=()
-  for file in {id,damballa}_{dsa,rsa} ; do
+  for file in {id,github,damballa}_{dsa,rsa} ; do
     [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
   done
   sj_keyhost=sudish # use a fixed hostname, no nfs here

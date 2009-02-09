@@ -1,6 +1,6 @@
 [user]
 	name = Sudish Joseph
-	email = sudish@damballa.com
+	email = sudish@gmail.com
 [core]
 	fsyncobjectfiles = true
 	preloadindex = true
@@ -13,6 +13,7 @@
 [diff]
 	renames = copy
 [merge]
+	stat = true
 	log = true
 [color]
 	branch = auto
@@ -22,3 +23,5 @@
 	ui = auto
 [gui]
 	pruneduringfetch = true
+[github]
+	user = sudish
