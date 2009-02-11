@@ -198,7 +198,3 @@ zstyle :compinstall filename '~/.zcomp'
 autoload -Uz compinit
 compinit
 # End of lines added by compinstall
-
-### Local Variables:
-### auto-fill-function: nil
-### End:
