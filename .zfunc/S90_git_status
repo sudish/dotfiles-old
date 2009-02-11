@@ -85,13 +85,14 @@ sj_git_ps1() {
     local cb
     cb="$SJ_Cgreen"
     [[ -n $__ZSH_GIT_SVN ]] && cb="$SJ_Cblue"
+    cb+='%B'
 
     local res
     # the branch name
-    res="$cb%B$__ZSH_GIT_BRANCH%b$SJ_Cnone"
+    res="$cb$__ZSH_GIT_BRANCH$SJ_Cnone"
 
     # is the repo dirty?
-    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb%B$__ZSH_GIT_STATUS%b$SJ_Cnone"
+    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb$__ZSH_GIT_STATUS$SJ_Cnone"
 
     # is there something in the git stash?
     [[ -n $__ZSH_GIT_STASH ]] && res+="$SJ_Ccyan%B$__ZSH_GIT_STASH%b$SJ_Cnone"
@@ -99,7 +100,7 @@ sj_git_ps1() {
     # are we rebasing, etc.?
     [[ -n $__ZSH_GIT_STATE ]] && res+="$SJ_Cred%B$__ZSH_GIT_STATE%b$SJ_Cnone"
 
-    echo "%B[%b$res%B]%b"
+    echo "$cb(%b$res$cb)%b$SJ_Cnone"
 }
 
 

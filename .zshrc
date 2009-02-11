@@ -39,7 +39,7 @@ if [[ "$TERM" = dumb ]]; then
 else
     PROMPT='%B%#%b '
     RPROMPT='%B%m:%~%(?..[$SJ_Cred%?$SJ_Cnone])%(1v:[$SJ_Cred+$SJ_Cnone]:)%b'
-    RPROMPT+='$(sj_git_ps1)'
+    RPROMPT+=' $(sj_git_ps1)'
 fi
 
 bindkey -e
