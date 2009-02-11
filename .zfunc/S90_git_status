@@ -1,0 +1,119 @@
+#!/bin/zsh
+#
+# SJ: Obtained from http://www.jukie.net/~bart/conf/zsh.d/S55_git
+# and from Shawn O. Pearce's completion script for bash:
+# http://repo.or.cz/w/git.git?a=blob_plain;f=contrib/completion/git-completion.bash;hb=master
+
+# A caching mechanism for parsed git information.
+#
+#   setopt prompt_subst
+#   RPROMPT="$(get_git_prompt_info)"
+#
+__ZSH_GIT_DIR=
+__ZSH_GIT_BRANCH=
+__ZSH_GIT_STATE=
+__ZSH_GIT_STATUS=
+__ZSH_GIT_STASH=
+__ZSH_GIT_SVN=
+
+get_git_status() {
+    local git_dir branch
+    psvar=()
+
+    [[ -n $SJ_DEBUG ]] && echo "parsing git state" >/dev/tty
+
+    __ZSH_GIT_DIR=
+    git_dir=$(git rev-parse --git-dir 2>/dev/null) || return
+
+    __ZSH_GIT_STATE=
+    if [[ -d $git_dir/rebase-apply ]]; then
+        if [[ -f $git_dir/rebase-apply/rebasing ]]; then
+            __ZSH_GIT_STATE="|REBASE"
+        elif [[ -f $git_dir/rebase-apply/applying ]]; then
+            __ZSH_GIT_STATE="|AM"
+        else
+            __ZSH_GIT_STATE="|AM/REBASE"
+        fi
+        branch="$(git symbolic-ref HEAD 2>/dev/null)"
+    elif [[ -f $git_dir/rebase-merge/interactive ]]; then
+        __ZSH_GIT_STATE="|REBASE -i"
+        branch="$(cat "$git_dir/rebase-merge/head-name")"
+    elif [[ -d $git_dir/rebase-merge ]]; then
+        __ZSH_GIT_STATE="|REBASE -m"
+        branch="$(cat "$git_dir/rebase-merge/head-name")"
+    elif [[ -f $git_dir/MERGE_HEAD ]]; then
+        __ZSH_GIT_STATE="|MERGING"
+        branch="$(git symbolic-ref HEAD 2>/dev/null)"
+    else
+        if [[ -f $git_dir/BISECT_LOG ]]; then
+	    __ZSH_GIT_STATE="|BISECTING"
+	fi
+        branch="$(git symbolic-ref HEAD 2>/dev/null)" || \
+	    branch="$(git describe --exact-match HEAD 2>/dev/null)" || \
+	    branch="$(cut -c1-7 "$git_dir/HEAD")..."
+    fi
+
+    __ZSH_GIT_STASH=
+    if [[ -e $git_dir/refs/stash ]]; then
+	__ZSH_GIT_STASH='$'
+    fi
+
+    __ZSH_GIT_SVN=
+    if [[ -e $git_dir/svn/.metadata ]]; then
+	__ZSH_GIT_SVN='S'
+    fi
+
+    __ZSH_GIT_STATUS=
+    git diff --no-ext-diff --ignore-submodules --quiet --exit-code \
+	|| __ZSH_GIT_STATUS+='*'
+    if git rev-parse --quiet --verify HEAD >/dev/null; then
+	git diff-index --cached --quiet --ignore-submodules HEAD -- \
+	    || __ZSH_GIT_STATUS+="+"
+    else
+	__ZSH_GIT_STATUS+="#"
+    fi
+
+    __ZSH_GIT_FULL_DIR=$(readlink -f ${git_dir:h})
+    __ZSH_GIT_DIR="${__ZSH_GIT_FULL_DIR/$HOME/~}"
+    __ZSH_GIT_BRANCH="${branch#refs/heads/}"
+
+}
+
+sj_git_ps1() {
+    [[ -n $__ZSH_GIT_DIR ]] || return
+
+    local cb
+    cb="$SJ_Cgreen"
+    [[ -n $__ZSH_GIT_SVN ]] && cb="$SJ_Cblue"
+
+    local res
+    # the branch name
+    res="$cb%B$__ZSH_GIT_BRANCH%b$SJ_Cnone"
+
+    # is the repo dirty?
+    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb%B$__ZSH_GIT_STATUS%b$SJ_Cnone"
+
+    # is there something in the git stash?
+    [[ -n $__ZSH_GIT_STASH ]] && res+="$SJ_Ccyan%B$__ZSH_GIT_STASH%b$SJ_Cnone"
+
+    # are we rebasing, etc.?
+    [[ -n $__ZSH_GIT_STATE ]] && res+="$SJ_Cred%B$__ZSH_GIT_STATE%b$SJ_Cnone"
+
+    echo "%B[%b$res%B]%b"
+}
+
+
+# hook into zsh per-command funcs
+autoload -Uz add-zsh-hook
+zsh_git_chpwd_update() {
+    get_git_status
+}
+
+zsh_git_precmd_update() {
+    case $(history $(($HISTCMD - 1)) ) in   # last command entered
+        *git*) get_git_status ;;
+    esac
+}
+
+add-zsh-hook precmd zsh_git_precmd_update
+add-zsh-hook chpwd  zsh_git_chpwd_update

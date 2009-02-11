@@ -1,7 +1,24 @@
 # zsh init file       -*- ksh -*-
 
+emulate zsh
+
+source ~/.zfunc/S[0-9]*_*
+
 # These lead to sundry madness under Linux, just say No! for now.
 [[ `uname` = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
+
+# hooks run before/on/after each command
+set_psvar () {
+    if jobs % >& /dev/null; then
+	psvar=("")
+    else
+	psvar=()
+    fi
+}
+
+# zsh per-command hooks
+autoload -Uz add-zsh-hook
+add-zsh-hook precmd set_psvar
 
 # Portable zsh color prompt hackery!
 # Obtained from http://aperiodic.net/phil/prompt/prompt.txt
@@ -16,35 +33,14 @@ for color in red green yellow blue magenta cyan white; do
 done
 SJ_Cnone="%{$terminfo[sgr0]%}"
 
-
 # prompt string
 if [[ "$TERM" = dumb ]]; then
     PROMPT='%# '
 else
     PROMPT='%B%#%b '
     RPROMPT='%B%m:%~%(?..[$SJ_Cred%?$SJ_Cnone])%(1v:[$SJ_Cred+$SJ_Cnone]:)%b'
+    RPROMPT+='$(sj_git_ps1)'
 fi
-
-# check for backgrounded jobs
-set_psvar () {
-    if jobs % >& /dev/null; then
-	psvar=("")
-    else
-	psvar=()
-    fi
-}
-
-precmd () {
-    set_psvar
-}
-
-# preexec () {
-#     zsh_git_preexec_update_vars
-# }
-
-# chpwd () {
-#     zsh_git_chpwd_update_vars
-# }
 
 bindkey -e
 bindkey ' ' magic-space
@@ -52,6 +48,10 @@ bindkey '' backward-delete-char
 bindkey '' backward-delete-char
 bindkey '[A' history-search-backward
 bindkey '[B' history-search-forward
+
+# zsh built-in help system (bound to ESC h by default)
+unalias run-help
+autoload -Uz run-help
 
 # some of these are defaults and should be pruned
 setopt \
@@ -99,7 +99,8 @@ grep $GREP_COLOR_OPTS local /etc/hosts >/dev/null 2>&1 || GREP_COLOR_OPTS=""
 VERSION_CONTROL=existing
 
 # Java under OS X
-[ `uname` = Darwin ] && JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+[ `uname` = Darwin ] && \
+    JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 
 # miscellaneous functions
 l  ()       { ls $LS_COLOR_OPTS -al $* }
