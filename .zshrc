@@ -20,25 +20,18 @@ set_psvar () {
 autoload -Uz add-zsh-hook
 add-zsh-hook precmd set_psvar
 
-# Portable zsh color prompt hackery!
-# Obtained from http://aperiodic.net/phil/prompt/prompt.txt
+# zsh provides color codes, nice
 autoload colors zsh/terminfo
-if [[ "$terminfo[colors]" -ge 8 ]]; then
+if [[ $terminfo[colors] -ge 8 ]]; then
   colors
 fi
-for color in red green yellow blue magenta cyan white; do
-  eval SJ_C$color='%{$terminfo[bold]$fg[${(L)color}]%}'
-  eval SJ_CL$color='%{$fg[${(L)color}]%}'
-  (( count = $count + 1 ))
-done
-SJ_Cnone="%{$terminfo[sgr0]%}"
 
 # prompt string
-if [[ "$TERM" = dumb ]]; then
+if [[ $TERM = dumb ]]; then
     PROMPT='%# '
 else
     PROMPT='%B%#%b '
-    RPROMPT='%B%m:%~%(?..[$SJ_Cred%?$SJ_Cnone])%(1v:[$SJ_Cred+$SJ_Cnone]:)%b'
+    RPROMPT='%B%m:%~%(?..[%F{red}%?%f])%(1v:[%F{red}+%f]:)%b'
     RPROMPT+=' $(sj_git_ps1)'
 fi
 
@@ -55,16 +48,18 @@ autoload -Uz run-help
 
 # some of these are defaults and should be pruned
 setopt \
-  allexport always_last_prompt always_to_end append_history auto_list auto_menu \
-  auto_name_dirs auto_param_keys auto_param_slash auto_pushd auto_remove_slash \
-  check_jobs complete_aliases complete_in_word correct extended_glob \
-  extended_history hash_cmds hash_list_all hist_allow_clobber hist_find_no_dups \
-  hist_ignore_all_dups hist_ignore_dups hist_no_store hist_reduce_blanks \
-  hist_save_no_dups inc_append_history kshoptionprint list_beep list_packed \
-  list_types long_list_jobs magic_equal_subst mark_dirs no_clobber no_no_match \
-  prompt_subst pushd_ignore_dups pushd_minus pushd_silent pushd_to_home \
-  sun_keyboard_hack transient_rprompt
-unsetopt bg_nice bsd_echo mail_warning chase_links correct_all list_ambiguous
+    allexport always_last_prompt always_to_end append_history auto_list \
+    auto_menu auto_name_dirs auto_param_keys auto_param_slash auto_pushd \
+    auto_remove_slash check_jobs complete_aliases complete_in_word \
+    correct extended_glob extended_history hash_cmds hash_list_all \
+    hist_allow_clobber hist_find_no_dups hist_ignore_all_dups \
+    hist_ignore_dups hist_no_store hist_reduce_blanks hist_save_no_dups \
+    inc_append_history kshoptionprint list_beep list_packed \
+    list_types long_list_jobs magic_equal_subst mark_dirs no_clobber \
+    no_no_match prompt_subst pushd_ignore_dups pushd_minus pushd_silent \
+    pushd_to_home sun_keyboard_hack transient_rprompt
+unsetopt bg_nice bsd_echo chase_links correct_all list_ambiguous \
+    mail_warning multi_func_def
 DIRSTACKSIZE=20
 HISTSIZE=10000
 SAVEHIST=10000
@@ -86,20 +81,20 @@ MYSQL_PS1='\u@\h/\d> '
 # enable color ls o/p
 LS_COLOR_OPTS="--color=tty"
 ls $LS_COLOR_OPTS >/dev/null 2>&1 || LS_COLOR_OPTS=""
-[[ `uname` == 'Darwin' ]] && CLICOLOR=y
+[[ `uname` = Darwin ]] && CLICOLOR=y
 
 # enable color grep o/p
 GREP_COLOR_OPTS="--color=auto"
 grep $GREP_COLOR_OPTS local /etc/hosts >/dev/null 2>&1 || GREP_COLOR_OPTS=""
 
 # X11 for OS X doesn't set the fully qualified DISPLAY name
-[[ `uname` == Darwin && -n "$DISPLAY" ]] && export DISPLAY=:0.0
+[[ `uname` = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
 
 # GNU patch
 VERSION_CONTROL=existing
 
 # Java under OS X
-[ `uname` = Darwin ] && \
+[[ `uname` = Darwin ]] && \
     JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 
 # miscellaneous functions
@@ -122,7 +117,7 @@ sjlcc () {
   print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib"' `sj_configure` '--verbose --help'
 }
 sjemacsconfigure () {
-  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --enable-cocoa-experimental-ctrl-g --without-pop --without-x --with-x-toolkit=no --with-ns'
+  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --without-pop --without-x --with-x-toolkit=no --with-ns'
 }
 
 ##
@@ -164,7 +159,7 @@ if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
     [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
   done
   sj_keyhost=sudish # use a fixed hostname, no nfs here
-  if [[ -n "$kcfiles" ]] ; then
+  if [[ -n $kcfiles ]] ; then
     keychain --agents ssh --host "$sj_keyhost" -q "$kcfiles[@]"
     source "$HOME/.keychain/${sj_keyhost}-sh"
   else
