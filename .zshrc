@@ -113,12 +113,6 @@ sj_configure () {
 sjcc () {
   print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
 }
-sjlcc () {
-  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS CPPFLAGS="-I/usr/local/include" LDFLAGS="-L/usr/local/lib -R/usr/local/lib"' `sj_configure` '--verbose --help'
-}
-sjemacsconfigure () {
-  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --without-pop --without-x --with-x-toolkit=no --with-ns'
-}
 
 ##
 # aliases
