@@ -1,0 +1,16 @@
+%packager		Sudish Joseph <sudish@mindspring.com>
+%distribution		Sudish's RPMs
+%vendor			Sudish Joseph
+%_signature		gpg
+%_gpg_name		Sudish Joseph
+%_topdir		/home/sj/src/RPM/redhat
+%_tmppath		/home/sj/src/RPM/tmp
+
+%_rpmtopdir		%{_topdir}/%{name}
+%_builddir		%{_rpmtopdir}/BUILD
+%_rpmdir		%{_rpmtopdir}/RPMS
+%_sourcedir		%{_rpmtopdir}/SOURCES
+%_specdir		%{_rpmtopdir}/SPECS
+%_srcrpmdir		%{_rpmtopdir}/SRPMS
+%_smp_mflags  -j3
+%__arch_install_post   /usr/lib/rpm/check-rpaths   /usr/lib/rpm/check-buildroot
