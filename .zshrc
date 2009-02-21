@@ -134,8 +134,8 @@ test -r ~/.zhosts && source ~/.zhosts
 # Timezone (`EST5EDT' is the POSIX version)
 TZ=EST5EDT
 
-autoload -U promptinit
-promptinit
+#autoload -U promptinit
+#promptinit
 
 # The following lines were added by compinstall
 
