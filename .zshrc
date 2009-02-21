@@ -134,23 +134,6 @@ test -r ~/.zhosts && source ~/.zhosts
 # Timezone (`EST5EDT' is the POSIX version)
 TZ=EST5EDT
 
-# Use keychain to start and manage ssh-agent
-if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
-  kcfiles=()
-  for file in {id,github,damballa}_{dsa,rsa} ; do
-    [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
-  done
-  sj_keyhost=sudish # use a fixed hostname, no nfs here
-  if [[ -n $kcfiles ]] ; then
-    keychain --agents ssh --host "$sj_keyhost" -q "$kcfiles[@]"
-    source "$HOME/.keychain/${sj_keyhost}-sh"
-  else
-    fgrep ForwardAgent ~/.ssh/config >/dev/null 2>&1 || \
-      echo "No ForwardAgent or ssh keyfiles for keychain!"
-  fi
-  unset kcfiles file
-fi
-
 autoload -U promptinit
 promptinit
 
