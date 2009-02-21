@@ -21,8 +21,7 @@ sj_emacsbuild () {
     local build_dir
     build_dir=sj-build.$$
 
-    git clean -qxfd
-    # [[ -d $build_dir ]] && rm -rf $build_dir
+    git clean -qxfd	    # [[ -d $build_dir ]] && rm -rf $build_dir
     mkdir $build_dir || { echo "couldn't mkdir $build_dir: $!"; return 1 }
     cd $build_dir
 
@@ -33,7 +32,17 @@ sj_emacsbuild () {
 }
 
 sj_emacsinstall () {
-    mv /Applications/Emacs.app /tmp/Emacs-$$.app \
-	&& mv nextstep/Emacs.app /Applications \
-	&& git tag -f sj-install sj-build
+    local old new bak
+    
+    old=/Applications/Emacs.app
+    new=nextstep/Emacs.app
+    bak=/tmp/Emacs-$(date -r $old '+%s').app
+    
+    if [[ -x $new ]]; then
+	mv $old $bak \
+	    && mv $new $old \
+	    && git tag -f sj-install sj-build
+    else
+	echo "$new doesn't exist"
+    fi
 }
