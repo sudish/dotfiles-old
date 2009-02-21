@@ -1,24 +1,13 @@
 # zsh init file
 
+uname=$(uname)
+
 for zsfile in ~/.zfunc/S[0-9][0-9]_*; do
     source $zsfile
 done
 
 # These lead to sundry madness under Linux, just say No! for now.
-[[ `uname` = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
-
-# hooks run before/on/after each command
-set_psvar () {
-    if jobs % >& /dev/null; then
-	psvar=("")
-    else
-	psvar=()
-    fi
-}
-
-# zsh per-command hooks
-autoload -Uz add-zsh-hook
-add-zsh-hook precmd set_psvar
+[[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
 # zsh provides color codes, nice
 autoload colors zsh/terminfo
@@ -30,9 +19,14 @@ fi
 if [[ $TERM = dumb ]]; then
     PROMPT='%# '
 else
+    # Classic UNIX prompt on the left
     PROMPT='%B%#%b '
-    RPROMPT='%B%m:%~%(?..[%F{red}%?%f])%(1v:[%F{red}+%f]:)%b'
-    RPROMPT+=' $(sj_git_ps1)'
+
+    # Information overload on the right
+    RPROMPT='%B%m:%~'
+    RPROMPT+='%(?..[%F{red}%?%f])' # Exit status if last job failed
+    RPROMPT+='%(1j:%F{magenta}[+]%f:)%b' # Are there any backgrounded jobs?
+    RPROMPT+=' $(sj_git_ps1)'	   # VCS status info for pwd
 fi
 
 bindkey -e
@@ -46,7 +40,7 @@ bindkey '[B' history-search-forward
 unalias run-help
 autoload -Uz run-help
 
-# some of these are defaults and should be pruned
+# zsh options.  some of these are defaults and should be pruned
 setopt \
     allexport always_last_prompt always_to_end append_history auto_list \
     auto_menu auto_name_dirs auto_param_keys auto_param_slash auto_pushd \
@@ -57,44 +51,39 @@ setopt \
     inc_append_history kshoptionprint list_beep list_packed \
     list_types long_list_jobs magic_equal_subst mark_dirs no_clobber \
     no_no_match prompt_subst pushd_ignore_dups pushd_minus pushd_silent \
-    pushd_to_home sun_keyboard_hack transient_rprompt
+    pushd_to_home sun_keyboard_hack transient_rprompt 2>/dev/null
 unsetopt bg_nice bsd_echo chase_links correct_all list_ambiguous \
-    mail_warning multi_func_def
+    mail_warning multi_func_def xxx 2>/dev/null
 DIRSTACKSIZE=20
 HISTSIZE=10000
 SAVEHIST=10000
 HISTFILE=$HOME/.history_zsh
-#MAILCHECK=300
-#MAILPATH="/usr/spool/mail/$LOGNAME?New Mail."
 SELECTMIN=0
-PAGER=less
-#LESS=-R
 
-##
+# Options for various programs
+PAGER=less
 EDITOR=vi
 VISUAL=vi
-ENSCRIPT='-BL 66'
+#LESS=-R
 PROCMAILOG=$HOME/Mail/log.procmail
-PGPPATH=$HOME/lib/.pgp
 MYSQL_PS1='\u@\h/\d> '
+VERSION_CONTROL=existing	# GNU patch
 
 # enable color ls o/p
 LS_COLOR_OPTS="--color=tty"
-ls $LS_COLOR_OPTS >/dev/null 2>&1 || LS_COLOR_OPTS=""
-[[ `uname` = Darwin ]] && CLICOLOR=y
+ls $LS_COLOR_OPTS >&| /dev/null || unset LS_COLOR_OPTS
+[[ $uname = Darwin ]] && CLICOLOR=y # Enable color in OS X ls
 
 # enable color grep o/p
 GREP_COLOR_OPTS="--color=auto"
-grep $GREP_COLOR_OPTS local /etc/hosts >/dev/null 2>&1 || GREP_COLOR_OPTS=""
+grep $GREP_COLOR_OPTS localhost /etc/hosts >&| /dev/null || \
+    unset GREP_COLOR_OPTS
 
 # X11 for OS X doesn't set the fully qualified DISPLAY name
-[[ `uname` = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
-
-# GNU patch
-VERSION_CONTROL=existing
+[[ $uname = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
 
 # Java under OS X
-[[ `uname` = Darwin ]] && \
+[[ $uname = Darwin ]] && \
     JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 
 # miscellaneous functions
@@ -104,14 +93,14 @@ lf ()       { ls $LS_COLOR_OPTS -F $* }
 
 # push long, commonly used, commands into the edit buffer to save typing
 sj_configure () {
-  for i in . .. ; do
-    [[ -x $i/configure ]] && { echo $i/configure; return; }
-  done
-  echo "Couldn't find configure in ./ or ../" 1>&2
-  echo could_not_locate_configure
+    for i in . .. ; do
+	[[ -x $i/configure ]] && { echo $i/configure; return; }
+    done
+    echo "Couldn't find configure in ./ or ../" 1>&2
+    echo could_not_locate_configure
 }
 sjcc () {
-  print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
+    print -z 'CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall" CXXFLAGS=$CFLAGS' `sj_configure` '--verbose --help'
 }
 
 ##
@@ -126,10 +115,9 @@ alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias ec='emacsclient -nc'
 
-expr "$OSTYPE" : ".*[Bb][Ss][Dd].*" >/dev/null 2>&1 && alias make=gmake
-if expr "$OSTYPE" : "[Ss]olaris.*" >/dev/null 2>&1 ; then
-  alias ping='ping -s'
-  alias tnetstat='netstat -f inet -P tcp'
+if [[ $uname = Solaris ]] ; then
+    alias ping='ping -s'
+    alias tnetstat='netstat -f inet -P tcp'
 fi
 
 # shortcut definitions
