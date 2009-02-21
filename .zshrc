@@ -1,8 +1,8 @@
-# zsh init file       -*- ksh -*-
+# zsh init file
 
-emulate zsh
-
-source ~/.zfunc/S[0-9]*_*
+for zsfile in ~/.zfunc/S[0-9][0-9]_*; do
+    source $zsfile
+done
 
 # These lead to sundry madness under Linux, just say No! for now.
 [[ `uname` = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
