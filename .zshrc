@@ -162,5 +162,5 @@ zstyle ':completion:*' verbose true
 zstyle :compinstall filename '~/.zcomp'
 
 autoload -Uz compinit
-compinit
+compinit -u
 # End of lines added by compinstall
