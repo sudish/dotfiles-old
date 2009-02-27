@@ -29,3 +29,5 @@
 	pruneduringfetch = true
 [github]
 	user = sudish
+[pack]
+	threads = 0
