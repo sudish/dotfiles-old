@@ -86,7 +86,7 @@ sub make_relative_path($$) {
 sub prompt_y_or_n($) {
   my $prompt = shift @_;
   
-  print $prompt, " (y/n): ";
+  print $prompt, " (y/N): ";
   my $response = <>;
   return ($response =~ /^[yY]/) ? 1 : 0;
 }
