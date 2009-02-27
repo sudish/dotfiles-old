@@ -31,3 +31,5 @@
 	user = sudish
 [pack]
 	threads = 0
+[gc]
+	pruneexpire = 30 days
