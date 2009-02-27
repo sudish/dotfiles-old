@@ -1,10 +1,15 @@
 # zsh init file
 
+# A lot of things are conditionalized on $uname
 uname=$(uname)
 
+# Load various startup files, prioritized by name
 for zsfile in ~/.zfunc/S[0-9][0-9]_*; do
     source $zsfile
 done
+
+# Additional locations for functions and completions
+fpath+=~/.zcompletions
 
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE

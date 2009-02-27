@@ -1,0 +1,39 @@
+#compdef gem
+
+# gem 1.2.0
+
+typeset -A opt_args
+local context state line ret=1
+local -a cmds
+cmds=( 'build' 'cert' 'check' 'cleanup' 'contents' 'dependency' 'environment' 'fetch' 'generate_index' 'help' 'install' 'list' 'lock' 'mirror' 'outdated' 'pristine' 'query' 'rdoc' 'search' 'server' 'sources' 'specification' 'stale' 'uninstall' 'unpack' 'update' 'which' )
+
+_arguments \
+    '(1 * -)'{-h,--help}'[print help message]' \
+    '(1 * -)'{-v,--version}'[print the version]' \
+    "(-)1: :->cmds" \
+    '*: :->args' && ret=0
+
+case $state in
+    cmds)
+	_describe -t commands 'gem command' cmds && ret=0
+	;;
+    args)
+	case $line[1] in
+	    (fetch|install)
+            if ( [[ ${+_packages} -eq 0 ]] || _cache_invalid packages ) && ! _retrieve_cache packages; then
+		_packages=(${${(f)"$(_call_program packages $words[1] list -r 2>/dev/null |sed '1,3d')"}/(#b)([^ ]##) # (*)/${match[1]}})
+	    	_store_cache packages _packages
+            fi
+	    
+            _wanted packages expl 'gem package' compadd $_packages && ret=0
+	    ;;
+	    (clean|uninstall|unpack)
+            local -a packages
+            packages=(${${(f)"$(_call_program packages $words[1] list -l 2>/dev/null |sed '1,3d')"}/(#b)([^ ]##) # (*)/${match[1]}})
+	    _wanted packages expl 'gem package' compadd $packages && ret=0
+	    ;;
+	esac
+	;;
+esac
+return ret
+# vim: ft=zsh sw=2 ts=2 et:
