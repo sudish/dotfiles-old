@@ -23,9 +23,9 @@ else
     PROMPT='%B%#%b '
 
     # Information overload on the right
-    RPROMPT='%B%m:%~'
-    RPROMPT+='%(?..[%F{red}%?%f])' # Exit status if last job failed
-    RPROMPT+='%(1j:%F{magenta}[+]%f:)%b' # Are there any backgrounded jobs?
+    RPROMPT="%B%m:%~%b"
+    RPROMPT+="%(?..%B[%b$cb[red]%?$cb[none]%B]%b)" # Exit status of last job
+    RPROMPT+="%(1j:$cb[magenta][+]$cb[none]:)" # Are there backgrounded jobs?
     RPROMPT+=' $(sj_git_ps1)'	   # VCS status info for pwd
 fi
 

@@ -88,25 +88,25 @@ get_git_status() {
 sj_git_ps1() {
     [[ -n $__ZSH_GIT_DIR ]] || return
 
-    local cb
-    cb="%F{green}"
-    [[ -n $__ZSH_GIT_SVN ]] && cb="%F{blue}"
-    #cb+='%B'
+    local col
+    col="$cb[green]"
+    [[ -n $__ZSH_GIT_SVN ]] && col="$cb[blue]"
+    #col+='%B'
 
     local res
     # the branch name
-    res="$cb$__ZSH_GIT_BRANCH%f"
+    res="$col$__ZSH_GIT_BRANCH$cb[none]"
 
     # is the repo dirty?
-    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb$__ZSH_GIT_STATUS%f"
+    [[ -n $__ZSH_GIT_STATUS ]] && res+="$col$__ZSH_GIT_STATUS$cb[none]"
 
     # is there something in the git stash?
-    [[ -n $__ZSH_GIT_STASH ]] && res+="%F{cyan}$__ZSH_GIT_STASH%f"
+    [[ -n $__ZSH_GIT_STASH ]] && res+="$cb[cyan]$__ZSH_GIT_STASH$cb[none]"
 
     # are we rebasing, etc.?
-    [[ -n $__ZSH_GIT_STATE ]] && res+="%F{red}$__ZSH_GIT_STATE%f"
+    [[ -n $__ZSH_GIT_STATE ]] && res+="$cb[red]$__ZSH_GIT_STATE$cb[none]"
 
-    echo "%B$cb(%f$res$cb)%f%b"
+    echo "$col($cb[none]$res$col)$cb[none]"
 }
 
 
