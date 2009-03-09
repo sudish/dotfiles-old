@@ -41,7 +41,7 @@ sj_emacsinstall () {
     if [[ -x $new ]]; then
 	mv $old $bak \
 	    && mv $new $old \
-	    && git tag -f sj-install sj-build
+	    && git tag -f sj-install
     else
 	echo "$new doesn't exist"
     fi
