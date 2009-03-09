@@ -1,0 +1,20 @@
+#!/bin/zsh
+#
+# Init zsh color handling
+#
+
+# zsh provides color codes, nice
+autoload colors zsh/terminfo
+if [[ $terminfo[colors] -ge 8 ]]; then
+  colors
+fi
+
+# Bold versions of the color arrays in the colors module
+typeset -A cb cn
+for color in red green yellow blue magenta cyan white; do
+    cb[$color]="%{$terminfo[bold]$fg[${(L)color}]%}"
+    cn[$color]='%{$fg[${(L)color}]%}'
+done
+cb[none]="%{$terminfo[sgr0]%}"
+cn[none]="%{$terminfo[sgr0]%}"
+

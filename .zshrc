@@ -14,11 +14,6 @@ fpath+=~/.zcompletions
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
-# zsh provides color codes, nice
-autoload colors zsh/terminfo
-if [[ $terminfo[colors] -ge 8 ]]; then
-  colors
-fi
 
 # prompt string
 if [[ $TERM = dumb ]]; then
