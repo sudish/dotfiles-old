@@ -4,6 +4,7 @@
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
+    ~/.cabal/bin
     /var/lib/gems/1.8/bin
     /sw/sbin
     /sw/bin
