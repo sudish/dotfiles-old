@@ -25,6 +25,8 @@
 	interactive = auto
 	status = auto
 	ui = auto
+[color "diff"]
+	commit = blue
 [gui]
 	pruneduringfetch = true
 [github]

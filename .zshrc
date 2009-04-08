@@ -70,14 +70,15 @@ MYSQL_PS1='\u@\h/\d> '
 VERSION_CONTROL=existing	# GNU patch
 
 # enable color ls o/p
-LS_COLOR_OPTS="--color=tty"
+LS_COLOR_OPTS='--color=tty'
 ls $LS_COLOR_OPTS >&| /dev/null || unset LS_COLOR_OPTS
 [[ $uname = Darwin ]] && CLICOLOR=y # Enable color in OS X ls
 
-# enable color grep o/p
-GREP_COLOR_OPTS="--color=auto"
+# enable color grep/ack o/p
+GREP_COLOR_OPTS='--color=auto'
 grep $GREP_COLOR_OPTS localhost /etc/hosts >&| /dev/null || \
     unset GREP_COLOR_OPTS
+ACK_COLOR_MATCH='bold red'
 
 # X11 for OS X doesn't set the fully qualified DISPLAY name
 [[ $uname = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
