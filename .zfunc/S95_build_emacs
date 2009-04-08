@@ -3,7 +3,8 @@
 # Functions to ease building Emacs from the repo
 #
 
-EMACS_CC_FLAGS=(CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-O2 -pipe -Wall")
+EMACS_CC_FLAGS=(CC=gcc-4.2 CXX=g++-4.2 \
+    CFLAGS="-pipe -Wall -fast -march=core2 -mtune=core2")
 EMACS_CONF_FLAGS=(--verbose --with-ns \
     --without-pop --without-x --with-x-toolkit=no)
 
