@@ -32,6 +32,8 @@
 	conflictstyle = diff3
 [pack]
 	threads = 0
+[push]
+	default = current
 [user]
 	name = Sudish Joseph
 	email = sudish@gmail.com
