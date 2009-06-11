@@ -1,3 +1,0 @@
-svnroot: svn+ssh://svn.damballa/svn/hooker
-drake_path: eng/release/trunk/drake_svn.yml
-workdir: ./drake_work
