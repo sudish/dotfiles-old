@@ -1,22 +1,9 @@
-[user]
-	name = Sudish Joseph
-	email = sudish@gmail.com
-[core]
-	fsyncobjectfiles = true
-	preloadindex = true
 [alias]
 	st = status
 	ci = commit
 	co = checkout
 	de = describe --all
 	l  = log --decorate
-[diff]
-	renames = copy
-[merge]
-	stat = true
-	log = true
-	verbosity = 2
-	conflictstyle = diff3
 [clean]
 	requireForce = true
 [color]
@@ -27,11 +14,24 @@
 	ui = auto
 [color "diff"]
 	commit = blue
-[gui]
-	pruneduringfetch = true
-[github]
-	user = sudish
-[pack]
-	threads = 0
+[core]
+	fsyncobjectfiles = true
+	preloadindex = true
+[diff]
+	renames = copy
 [gc]
 	pruneexpire = 30 days
+[github]
+	user = sudish
+[gui]
+	pruneduringfetch = true
+[merge]
+	stat = true
+	log = true
+	verbosity = 2
+	conflictstyle = diff3
+[pack]
+	threads = 0
+[user]
+	name = Sudish Joseph
+	email = sudish@gmail.com
