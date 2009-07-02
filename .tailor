@@ -1,0 +1,20 @@
+[DEFAULT]
+verbose = True
+git-command = /opt/local/bin/git
+projects = haskell-mode
+
+[haskell-mode]
+source = cvs:source
+target = git:target
+start-revision = INITIAL
+root-directory = /Users/sj/src/git/haskell-mode
+state-file = tailor.state
+subdir = .
+
+[cvs:source]
+module = fptools/CONTRIB/haskell-modes/emacs
+repository = :pserver:anoncvs@cvs.haskell.org:/cvs
+
+[git:target]
+module = haskell-mode
+repository = file:///Users/sj/src/git/haskell-emacs
