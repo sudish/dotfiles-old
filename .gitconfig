@@ -4,6 +4,7 @@
 	co = checkout
 	de = describe --all
 	l  = log --decorate
+	lg = log --oneline --decorate
 [clean]
 	requireForce = true
 [color]
