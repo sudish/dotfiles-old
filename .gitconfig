@@ -2,9 +2,14 @@
 	st = status
 	ci = commit
 	co = checkout
+	up = remote update
 	de = describe --all
-	l  = log --decorate
+	l  = log --stat --decorate
+	lc = log ORIG_HEAD.. --stat --no-merges
 	lg = log --oneline --decorate
+	dc = diff --color-words
+	changes  = diff --name-status -r
+	diffstat = diff --stat -r
 [clean]
 	requireForce = true
 [color]
@@ -38,3 +43,7 @@
 [user]
 	name = Sudish Joseph
 	email = sudish@gmail.com
+
+# Local Variables:
+# mode: conf-unix
+# End:
