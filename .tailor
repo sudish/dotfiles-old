@@ -1,20 +1,40 @@
 [DEFAULT]
 verbose = True
 git-command = /opt/local/bin/git
-projects = haskell-mode
+projects = haskell-mode, bbdb
 
 [haskell-mode]
-source = cvs:source
-target = git:target
+source = cvs:haskell-mode
+target = git:haskell-mode
 start-revision = INITIAL
 root-directory = /Users/sj/src/git/haskell-mode
 state-file = tailor.state
 subdir = .
 
-[cvs:source]
+[cvs:haskell-mode]
 module = fptools/CONTRIB/haskell-modes/emacs
 repository = :pserver:anoncvs@cvs.haskell.org:/cvs
 
-[git:target]
+[git:haskell-mode]
 module = haskell-mode
 repository = file:///Users/sj/src/git/haskell-emacs
+
+[bbdb]
+source = cvs:bbdb
+target = git:bbdb
+start-revision = INITIAL
+root-directory = /Users/sj/src/git/bbdb
+state-file = tailor.state
+subdir = .
+
+[cvs:bbdb]
+module = bbdb
+repository = :pserver:anonymous@bbdb.cvs.sourceforge.net:/cvsroot/bbdb
+
+[git:bbdb]
+module = bbdb
+repository = file:///Users/sj/src/git/haskell-emacs
+
+# Local Variables:
+# mode: conf-unix
+# End:
