@@ -16,8 +16,6 @@ module = fptools/CONTRIB/haskell-modes/emacs
 repository = :pserver:anoncvs@cvs.haskell.org:/cvs
 
 [git:haskell-mode]
-module = haskell-mode
-repository = file:///Users/sj/src/git/haskell-emacs
 
 [bbdb]
 source = cvs:bbdb
@@ -32,8 +30,6 @@ module = bbdb
 repository = :pserver:anonymous@bbdb.cvs.sourceforge.net:/cvsroot/bbdb
 
 [git:bbdb]
-module = bbdb
-repository = file:///Users/sj/src/git/haskell-emacs
 
 # Local Variables:
 # mode: conf-unix
