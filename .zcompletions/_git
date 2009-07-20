@@ -753,7 +753,7 @@ _git-update-index () {
 (( $+functions[_git-write-tree] )) ||
 _git-write-tree () {
   _arguments \
-    '--missing-ok[ignore objects in the index that are missing in the object database]'
+    '--missing-ok[ignore objects in the index that are missing in the object database]' \
     '--prefix=-[write tree representing given sub-directory]:sub-directory:_directories -r ""' && ret=0
 }
 
@@ -1282,7 +1282,7 @@ _git-upload-archive () {
 (( $+functions[_git-send-pack] )) ||
 _git-send-pack () {
   _arguments \
-    '(--receive-pack --exec)'{--receive-pack=-,--exec=-}'[specify path to git-receive-pack on remote side]:remote path'
+    '(--receive-pack --exec)'{--receive-pack=-,--exec=-}'[specify path to git-receive-pack on remote side]:remote path' \
     '--all[update all refs that exist locally]' \
     '--force[update remote orphaned refs]' \
     $verbose_arg \
@@ -1331,9 +1331,9 @@ _git-add () {
     '(-v --verbose)'{-v,--verbose}'[show files as they are added]' \
     '(-f --force)'{-f,--force}'[allow adding otherwise ignored files]' \
     '(-i --interactive : -)'{-i,--interactive}'[add contents interactively to the index]' \
-    '(-p --patch : -)'{-p,--patch}'[like -i but go directly into patch mode for specified files]' \
-    '(-u --update)'{-u,--update}'[update only files git already knows about]' \
-    '(-A --all)'{-A,--all}'[act as both add . and add -u]' \
+    '(-p --patch)'{-p,--patch}'[like -i but go directly into patch mode for specified files]' \
+    '(-u --update -A --all)'{-u,--update}'[update only files git already knows about]' \
+    '(-A --all -u --update)'{-A,--all}'[act as both add . and add -u]' \
     '(-N --intent-to-add)'{-N,--intent-to-add}'[record only that the path will be added later]' \
     '--refresh[do not add files, but refresh their stat() info in the index]' \
     '--ignore-errors[continue adding if an error occurs]' \
@@ -1815,8 +1815,8 @@ _git-log () {
   case $state in
     (files)
       _arguments -S \
-        '::index file:__git_cached_files' \
-        '*::branch:__git_commit_ranges2' && ret=0
+        ':branch:__git_commit_ranges2' \
+        '*:index file:__git_cached_files' && ret=0
       ;;
   esac
 }
