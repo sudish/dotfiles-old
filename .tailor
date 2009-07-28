@@ -7,7 +7,7 @@ projects = haskell-mode, bbdb
 source = cvs:haskell-mode
 target = git:haskell-mode
 start-revision = INITIAL
-root-directory = /Users/sj/src/git/haskell-mode
+root-directory = /Users/sj/src/git/haskell/haskell-mode
 state-file = tailor.state
 subdir = .
 
