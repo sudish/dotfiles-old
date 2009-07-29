@@ -2,6 +2,7 @@
 verbose = True
 git-command = /opt/local/bin/git
 projects = haskell-mode, bbdb
+patch-name-format=
 
 [haskell-mode]
 source = cvs:haskell-mode
