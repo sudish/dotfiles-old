@@ -1,4 +1,3 @@
 :set +s
-:set -Wall -fno-warn-type-defaults
-:def hg  \x -> return $ ":!hoogle --color=true " ++ x
-:def hgi \x -> return $ ":!hoogle --color=true --info " ++ x
+:def hg  \x -> return $ ":!hoogle --color=true '" ++ x ++ "'"
+:def hgi \x -> return $ ":!hoogle --color=true --info '" ++ x ++ "'"
