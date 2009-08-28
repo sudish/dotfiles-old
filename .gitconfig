@@ -5,7 +5,7 @@
 	up = remote update --prune
 	de = describe --all
 	l  = log --stat --decorate
-	lc = log ORIG_HEAD.. --stat --no-merges
+	lc = log ORIG_HEAD.. --stat --no-merges --decorate
 	lg = log --oneline --decorate
 	dc = diff --color-words
 	changes  = diff --name-status -r
