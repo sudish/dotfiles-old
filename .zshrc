@@ -4,7 +4,7 @@
 uname=$(uname)
 
 # Load various startup files, prioritized by name
-for zsfile in ~/.zfunc/S[0-9][0-9]_*; do
+for zsfile in ~/.zshinit/S[0-9][0-9]_*; do
     source $zsfile
 done
 
