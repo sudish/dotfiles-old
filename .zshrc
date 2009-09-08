@@ -9,7 +9,7 @@ for zsfile in ~/.zshinit/S[0-9][0-9]_*; do
 done
 
 # Additional locations for functions and completions
-fpath+=~/.zcompletions
+fpath+=~/.zfunc
 
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
