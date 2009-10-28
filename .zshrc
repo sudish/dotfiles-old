@@ -14,6 +14,13 @@ fpath+=~/.zfunc
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
+# tmux suffers from color bleed when *started* with OS X Terminal's
+# default TERM=xterm-color -- even though tmux itself switches to a
+# screen-derived terminfo entry.  The xterm and xterm-256color
+# terminfo entries don't tickle this (tmux?) bug.
+if [[ $TERM_PROGRAM = Apple_Terminal && $TERM = xterm-color ]]; then
+    TERM=xterm-256color
+fi
 
 # prompt string
 if [[ $TERM = dumb ]]; then
@@ -81,11 +88,15 @@ grep $GREP_COLOR_OPTS localhost /etc/hosts >&| /dev/null || \
 ACK_COLOR_MATCH='bold red'
 
 # X11 for OS X doesn't set the fully qualified DISPLAY name
-[[ $uname = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
+#[[ $uname = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
 
 # Java under OS X
 [[ $uname = Darwin ]] && \
     JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
+
+# Target OS X compilers at current OS rev or better
+[[ $uname = Darwin && -x /usr/bin/sw_vers ]] && \
+    MACOSX_DEPLOYMENT_TARGET=`/usr/bin/sw_vers -productVersion`
 
 # miscellaneous functions
 l  ()       { ls $LS_COLOR_OPTS -al $* }
@@ -115,6 +126,7 @@ alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias ec='emacsclient -nc'
+alias t='\tmux -2 -u'
 
 if [[ $uname = Solaris ]] ; then
     alias ping='ping -s'
