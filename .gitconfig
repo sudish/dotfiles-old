@@ -40,6 +40,8 @@
 	threads = 0
 [push]
 	default = current
+[ui]
+  color = true
 [user]
 	name = Sudish Joseph
 	email = sudish@gmail.com

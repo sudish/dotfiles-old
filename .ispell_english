@@ -1,5 +1,6 @@
 admin
 API
+args
 bio
 blog
 cadr
@@ -12,12 +13,14 @@ cricinfo
 dataflow
 datastore
 db
+dirs
 doc
 downloadable
 DVR
 erlang
 evite
 facebook
+ghc
 GNUstep
 haskell
 href
@@ -33,6 +36,7 @@ mach
 mag
 magit
 metadata
+mk
 Mumbai
 nailgun
 NYTimes
