@@ -14,14 +14,6 @@ fpath+=~/.zfunc
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
-# tmux suffers from color bleed when *started* with OS X Terminal's
-# default TERM=xterm-color -- even though tmux itself switches to a
-# screen-derived terminfo entry.  The xterm and xterm-256color
-# terminfo entries don't tickle this (tmux?) bug.
-if [[ $TERM_PROGRAM = Apple_Terminal && $TERM = xterm-color ]]; then
-    TERM=xterm-256color
-fi
-
 # prompt string
 if [[ $TERM = dumb ]]; then
     PROMPT='%# '
