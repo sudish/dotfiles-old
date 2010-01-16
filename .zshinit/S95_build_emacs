@@ -4,7 +4,7 @@
 #
 
 EMACS_CC_FLAGS=(CC=gcc-4.2 CXX=g++-4.2 \
-    CFLAGS="-pipe -Wall -fast -arch x86_64 -m64 -march=core2 -mtune=core2")
+    CFLAGS="-pipe -Wall -O3 -arch x86_64 -m64 -march=core2 -mtune=core2")
 EMACS_CONF_FLAGS=(--verbose --with-ns \
     --without-pop --without-x --with-x-toolkit=no)
 
