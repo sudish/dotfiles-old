@@ -113,7 +113,7 @@ alias  grep="grep $GREP_COLOR_OPTS"
 alias fgrep="fgrep $GREP_COLOR_OPTS"
 alias egrep="egrep $GREP_COLOR_OPTS"
 alias ls="ls $LS_COLOR_OPTS -F"
-alias j='jobs -lp' m='less -R' md=mkdir
+alias jobs='\jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
