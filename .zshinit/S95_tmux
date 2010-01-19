@@ -7,18 +7,18 @@ function tc() {
     local conf_file="$conf_dir/$1"
 
     if [[ -z $1 || ! -r $conf_file ]] ; then
-	[[ -z $1 ]] && echo "Usage: $0 <configuration>"
-	[[ ! -r $conf_file ]] && echo "No such configuration: $conf_file"
-	return 1
+        [[ -z $1 ]] && echo "Usage: $0 <configuration>"
+        [[ ! -r $conf_file ]] && echo "No such configuration: $conf_file"
+        return 1
     fi
     
     if [[ -z $TMUX ]] ; then
-	# We're not running inside a tmux session, so start one and
-	# then run the config inside it.  No window is created by
-	# default when new-session is asked to exec commands, so we
-	# explicitly ask for one here.
-	tmux new-session "tmux new-window; source $conf_file" 
+        # We're not running inside a tmux session, so start one and
+        # then run the config inside it.  No window is created by
+        # default when new-session is asked to exec commands, so we
+        # explicitly ask for one here.
+        tmux new-session "tmux new-window; tmux source $conf_file" 
     else
-	source $conf_file
+        tmux source $conf_file
     fi
 }
