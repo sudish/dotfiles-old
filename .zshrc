@@ -63,10 +63,13 @@ SELECTMIN=0
 PAGER=less
 EDITOR=vi
 VISUAL=vi
-#LESS=-R
 PROCMAILOG=$HOME/Mail/log.procmail
 MYSQL_PS1='\u@\h/\d> '
 VERSION_CONTROL=existing	# GNU patch
+#LESS=-R
+if which pygmentize 2>/dev/null 1>&2 ; then
+    LESSOPEN='|/opt/local/bin/pygmentize %s 2>/dev/null '
+fi
 
 # enable color ls o/p
 LS_COLOR_OPTS='--color=tty'
