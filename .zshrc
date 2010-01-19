@@ -118,7 +118,7 @@ alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias ec='emacsclient -nc'
-alias t='\tmux -2 -u'
+alias t='tmux'
 
 if [[ $uname = Solaris ]] ; then
     alias ping='ping -s'
