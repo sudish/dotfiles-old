@@ -1,7 +1,7 @@
 [DEFAULT]
 verbose = True
 git-command = /opt/local/bin/git
-projects = haskell-mode, bbdb
+projects = tmux, haskell-mode, bbdb
 patch-name-format=
 
 [haskell-mode]
@@ -17,6 +17,20 @@ module = fptools/CONTRIB/haskell-modes/emacs
 repository = :pserver:anoncvs@cvs.haskell.org:/cvs
 
 [git:haskell-mode]
+
+[tmux]
+source = cvs:tmux
+target = git:tmux
+start-revision = INITIAL
+root-directory = /Users/sj/src/git/tmux
+state-file = tailor.state
+subdir = .
+
+[cvs:tmux]
+module = tmux
+repository = :pserver:anonymous@tmux.cvs.sourceforge.net:/cvsroot/tmux
+
+[git:tmux]
 
 [bbdb]
 source = cvs:bbdb
