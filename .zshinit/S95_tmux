@@ -17,7 +17,9 @@ function tc() {
         # then run the config inside it.  No window is created by
         # default when new-session is asked to exec commands, so we
         # explicitly ask for one here.
-        tmux new-session "tmux new-window; tmux source $conf_file" 
+        # It'd be nice if the following worked, but it doesn't:
+        # tmux new-session \; new-window \; source $conf_file
+        tmux new-session "tmux new-window \\; source $conf_file"
     else
         tmux source $conf_file
     fi
