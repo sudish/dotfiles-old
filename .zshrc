@@ -65,6 +65,7 @@ EDITOR=vi
 VISUAL=vi
 PROCMAILOG=$HOME/Mail/log.procmail
 MYSQL_PS1='\u@\h/\d> '
+PGOPTIONS='-c client_min_messages=WARNING'
 VERSION_CONTROL=existing	# GNU patch
 #LESS=-R
 if which pygmentize 2>/dev/null 1>&2 ; then
