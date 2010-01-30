@@ -13,13 +13,13 @@ function tc() {
     fi
     
     if [[ -z $TMUX ]] ; then
-        # We're not running inside a tmux session, so start one and
-        # then run the config inside it.  No window is created by
-        # default when new-session is asked to exec commands, so we
-        # explicitly ask for one here.
-        # It'd be nice if the following worked, but it doesn't:
-        # tmux new-session \; new-window \; source $conf_file
-        tmux new-session "tmux new-window \\; source $conf_file"
+	# Pre tmux-1.2, Nicholas Marriott says: "new-session without
+	# -d implies attach and that stops further command
+	# processing."  So we source using a shell cmd inside tmux:
+	# tmux new-session "tmux new-window \\; source $conf_file"
+	#
+	# new-session does the right thing in tmux-1.2 and later:
+        tmux new-session \; source $conf_file
     else
         tmux source $conf_file
     fi

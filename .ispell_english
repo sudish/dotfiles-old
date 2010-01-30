@@ -8,6 +8,8 @@ calibre
 Cassandra
 clojure
 com
+conf
+config
 CouchDB
 cricinfo
 dataflow
@@ -25,6 +27,8 @@ GNUstep
 haskell
 href
 HyperSpec
+iirc
+imo
 indie
 iphone
 ISBN
@@ -51,11 +55,15 @@ readme
 remix
 repo
 ringtone
+scriptability
 SICP
 stat
 stylesheet
+subshells
 Sudish
 svn
+tmux
+tmux's
 wikis
 workflow
 YA
