@@ -4,14 +4,20 @@
 # tmux session if run outside one.
 function tc() {
     local conf_dir="$HOME/.tmux_configs"
-    local conf_file="$conf_dir/$1"
 
-    if [[ -z $1 || ! -r $conf_file ]] ; then
-        [[ -z $1 ]] && echo "Usage: $0 <configuration>"
-        [[ ! -r $conf_file ]] && echo "No such configuration: $conf_file"
-        return 1
+    if [[ $# = 0 || -z $1 ]]; then
+	echo "Usage: $0 <configuration> [tmux new options]"
+	return 1
     fi
-    
+
+    local conf_file="$conf_dir/$1"
+    shift
+
+    if [[ ! -r $conf_file ]]; then
+	echo "No such configuration: $conf_file"
+	return 1
+    fi
+
     if [[ -z $TMUX ]] ; then
 	# Pre tmux-1.2, Nicholas Marriott says: "new-session without
 	# -d implies attach and that stops further command
@@ -19,7 +25,7 @@ function tc() {
 	# tmux new-session "tmux new-window \\; source $conf_file"
 	#
 	# new-session does the right thing in tmux-1.2 and later:
-        tmux new-session \; source $conf_file
+        tmux new-session "$@" \; source $conf_file
     else
         tmux source $conf_file
     fi
