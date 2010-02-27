@@ -5,7 +5,7 @@
 unsetopt ksh_arrays
 d=( ~/bin
     ~/.cabal/bin
-    /var/lib/gems/1.8/bin
+    ~/.gem/ruby/1.8/bin
     /sw/sbin
     /sw/bin
     /opt/local/lib/postgresql83/bin
