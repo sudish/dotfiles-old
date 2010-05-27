@@ -1,0 +1,3 @@
+[submodule ".zsh.d/external/autojump"]
+	path = .zsh.d/external/autojump
+	url = http://github.com/joelthelion/autojump.git
