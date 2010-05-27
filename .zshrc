@@ -1,15 +1,25 @@
 # zsh init file
 
+# root dir for sundry zsh things
+ZDIR=~/.zsh.d
+
 # A lot of things are conditionalized on $uname
 uname=$(uname)
 
 # Load various startup files, prioritized by name
-for zsfile in ~/.zshinit/S[0-9][0-9]_*; do
-    source $zsfile
+for file in $ZDIR/init.d/S[0-9][0-9]_*; do
+    source $file
 done
+unset file
 
 # Additional locations for functions and completions
-fpath+=~/.zfunc
+fpath+=$ZDIR/functions
+
+# directory and host shortcuts
+for file in zdirs zhosts; do
+    [[ -r $ZDIR/$file ]]  && source $ZDIR/$file
+done
+unset file
 
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
@@ -128,10 +138,6 @@ if [[ $uname = Solaris ]] ; then
     alias ping='ping -s'
     alias tnetstat='netstat -f inet -P tcp'
 fi
-
-# shortcut definitions
-test -r ~/.zdirs  && source ~/.zdirs
-test -r ~/.zhosts && source ~/.zhosts
 
 # color_xterm needs to be told the hard way
 #ttyctl -u
