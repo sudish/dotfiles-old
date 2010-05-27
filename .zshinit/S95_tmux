@@ -2,7 +2,7 @@
 
 # Run various tmux commands from a standard location, starting a new
 # tmux session if run outside one.
-function tc() {
+function tx() {
     if [[ $# = 0 || -z $1 ]]; then
 	echo "Usage: $0 <configuration> [tmux new options]"
 	return 1
