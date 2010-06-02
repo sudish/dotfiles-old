@@ -76,6 +76,7 @@ VISUAL=vi
 PROCMAILOG=$HOME/Mail/log.procmail
 MYSQL_PS1='\u@\h/\d> '
 PGOPTIONS='-c client_min_messages=WARNING'
+RLWRAP_HOME=~/.rlwrap
 VERSION_CONTROL=existing	# GNU patch
 #LESS=-R
 if which pygmentize 2>/dev/null 1>&2 ; then
@@ -123,7 +124,7 @@ sjcc () {
 
 ##
 # aliases
-alias  grep="grep $GREP_COLOR_OPTS"
+alias grep="grep $GREP_COLOR_OPTS"
 alias fgrep="fgrep $GREP_COLOR_OPTS"
 alias egrep="egrep $GREP_COLOR_OPTS"
 alias ls="ls $LS_COLOR_OPTS -F"
@@ -133,6 +134,7 @@ alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
 alias ec='emacsclient -nc'
 alias t='tmux'
+alias rl='rlwrap -D 2 -p RED -r -s 1000'
 
 if [[ $uname = Solaris ]] ; then
     alias ping='ping -s'
