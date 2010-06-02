@@ -5,6 +5,7 @@
 unsetopt ksh_arrays
 d=( ~/bin
     ~/.cabal/bin
+    ~/.node_libraries/bin
     ~/.gem/ruby/1.8/bin
     /usr/local/sbin
     /usr/local/bin
