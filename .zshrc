@@ -173,6 +173,7 @@ zstyle ':completion:*' use-compctl false
 zstyle ':completion:*' verbose true
 zstyle :compinstall filename '~/.zcomp'
 
-autoload -Uz compinit
+autoload -Uz compinit bashcompinit
 compinit -u
+bashcompinit
 # End of lines added by compinstall
