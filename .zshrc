@@ -3,6 +3,9 @@
 # root dir for sundry zsh things
 ZDIR=~/.zsh.d
 
+# Additional locations for functions and completions
+fpath+=$ZDIR/functions
+
 # A lot of things are conditionalized on $uname
 uname=$(uname)
 
@@ -11,9 +14,6 @@ for file in $ZDIR/init.d/S[0-9][0-9]_*; do
     source $file
 done
 unset file
-
-# Additional locations for functions and completions
-fpath+=$ZDIR/functions
 
 # directory and host shortcuts
 for file in zdirs zhosts; do
