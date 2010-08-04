@@ -3,8 +3,8 @@
 # Functions to ease building Emacs from the repo
 #
 
-EMACS_CC_FLAGS=(CC=llvm-gcc-4.2 CXX=llvm-g++-4.2 \
-    CFLAGS="-pipe -Wall -fast -arch x86_64 -m64 -march=core2 -mtune=core2")
+EMACS_CC_FLAGS=(CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-pipe -Wall -fast \
+	-arch x86_64 -m64 -march=core2 -mtune=core2 -mmmx -msse4.1")
 EMACS_CONF_FLAGS=(--verbose --with-ns \
     --without-pop --without-x --with-x-toolkit=no)
 
