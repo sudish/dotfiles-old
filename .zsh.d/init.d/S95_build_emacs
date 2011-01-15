@@ -3,10 +3,11 @@
 # Functions to ease building Emacs from the repo
 #
 
+EMACS_PREFIX=/opt/sj/emacs
 EMACS_CC_FLAGS=(CC=gcc-4.2 CXX=g++-4.2 CFLAGS="-pipe -Wall -fast \
 	-arch x86_64 -m64 -march=core2 -mtune=core2 -mmmx -msse4.1")
-EMACS_CONF_FLAGS=(--verbose --with-ns \
-    --without-pop --without-x --with-x-toolkit=no)
+EMACS_CONF_FLAGS=(--verbose --with-x --with-sound --with-imagemagick \
+    --without-pop --prefix=$EMACS_PREFIX)
 
 sj_emacsupdate () {
     git tag -f sj-pull >/dev/null 2>&1 # last HEAD, aka HEAD@{1}
@@ -27,25 +28,22 @@ sj_emacsbuild () {
     cd $build_dir
 
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
-	&& nice -n 20 make -j3 \
-	&& nice -n 20 make install \
+	&& nice -n 20 make -j2 \
 	&& git tag -f sj-build
 }
 
 sj_emacsinstall () {
-    local old new bak
+    local old bak
     
-    old=/Applications/Emacs.app
-    new=nextstep/Emacs.app
-    bak=/tmp/Emacs-$(date -r $old '+%s').app
+    old=$EMACS_PREFIX
+    bak=/tmp/emacs-$(date -r $old '+%s')
     
-    if [[ -x $new ]]; then
-	mv $old $bak \
-	    && mv $new $old \
-	    && git tag -f sj-install \
-	    && cd .. \
-	    && git clean -qxfd
-    else
-	echo "$new doesn't exist"
+    if [[ -x $old ]]; then
+	mv $old $bak
     fi
+
+    nice -n 20 make install \
+	&& git tag -f sj-install \
+	&& cd .. \
+	&& git clean -qxfd
 }
