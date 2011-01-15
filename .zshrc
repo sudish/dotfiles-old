@@ -46,7 +46,7 @@ bindkey '[A' history-search-backward
 bindkey '[B' history-search-forward
 
 # zsh built-in help system (bound to ESC h by default)
-unalias run-help
+#unalias run-help
 autoload -Uz run-help
 
 # zsh options.  some of these are defaults and should be pruned
