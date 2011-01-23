@@ -1,0 +1,4 @@
+remove mod4 = Hyper_L
+! The 'Menu' key
+keycode 135 = Hyper_L
+add mod3 = Hyper_L
