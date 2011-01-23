@@ -8,3 +8,4 @@
 :bulk_threshold: 1000
 :benchmark: false
 :user_install: true
+install: --user-install

@@ -7,6 +7,7 @@ d=( ~/bin
     ~/.cabal/bin
     ~/.node_libraries/bin
     ~/.gem/ruby/1.8/bin
+    /opt/sj/ruby/rubygems/bin
     /usr/local/sbin
     /usr/local/bin
     /sw/sbin
