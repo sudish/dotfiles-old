@@ -1,0 +1,7 @@
+[Desktop Entry]
+Name=XMonad
+Comment=Lightweight tiling window manager
+Exec=/home/sj/bin/xmonad-init.sh
+TryExec=/home/sj/bin/xmonad-init.sh
+Icon=
+Type=Application

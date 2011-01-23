@@ -1,0 +1,6 @@
+Steps to make xmonad your windowmanager through gdm while retaining
+gnome-session.
+
+1.  Link the user-share-*.desktop files to those directories.
+2.  Put xmonad-init.sh in ~/bin
+3.  gconftool-2 -s /desktop/gnome/session/required_components/windowmanager sj-xmonad -t string
