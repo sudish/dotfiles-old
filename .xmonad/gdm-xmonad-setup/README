@@ -3,4 +3,10 @@ gnome-session.
 
 1.  Link the user-share-*.desktop files to those directories.
 2.  Put xmonad-init.sh in ~/bin
-3.  gconftool-2 -s /desktop/gnome/session/required_components/windowmanager sj-xmonad -t string
+
+The rest is no longer needed now that WINDOW_MANAGER is set in xmonad-init.sh.
+Leaving it here for reference on how to set the wm from gconf. It's better to
+leave this at its default value of gnome-wm and let gnome-wm use the value of
+WINDOW_MANAGER to start xmonad.
+
+gconftool-2 -s /desktop/gnome/session/required_components/windowmanager sj-xmonad -t string

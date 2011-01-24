@@ -5,7 +5,7 @@
 
 export PATH=$HOME/bin:$HOME/.cabal/bin:$PATH
 
-[[ -e $HOME/.xmodmaprc ]] && xmodmap $HOME/.xmodmaprc
+xmodmap $HOME/.xmodmaprc
 
-export WINDOWMANAGER=$HOME/.cabal/bin/xmonad
+export WINDOW_MANAGER=$HOME/.cabal/bin/xmonad
 gnome-session
