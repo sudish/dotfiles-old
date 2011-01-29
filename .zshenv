@@ -1,6 +1,9 @@
 # set up fink env
 [[ -f /sw/bin/init.sh ]] && . /sw/bin/init.sh
 
+# set up rvm
+[[ -s "$HOME/.rvm/scripts/rvm" ]] && source "$HOME/.rvm/scripts/rvm"
+
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
