@@ -1,5 +1,6 @@
 remove mod4 = Hyper_L
-! The 'Menu' key
+! The 'Windows' key
 keycode 133 = Hyper_L
+! The 'Menu' key
 keycode 135 = Super_L
 add mod3 = Hyper_L
