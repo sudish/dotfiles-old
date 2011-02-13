@@ -51,6 +51,7 @@ sjConfig = gnomeConfig
                          >> checkKeymap sjConfig sjKeymap
                          -- Hack for Java 1.6 and lower
                          >> setWMName "LG3D"
+         , focusFollowsMouse = False
          }
          `additionalKeysP` sjKeymap
 
