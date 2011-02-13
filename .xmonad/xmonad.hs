@@ -11,6 +11,7 @@ import XMonad.Actions.CycleRecentWS (cycleRecentWS)
 import XMonad.Actions.CycleWindows  (cycleRecentWindows)
 import XMonad.Actions.CycleWS       (nextWS, prevWS, toggleWS,
                                         shiftToNext, shiftToPrev)
+import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
 import XMonad.Config.Gnome          (gnomeConfig)
 import XMonad.Hooks.ManageDocks     (avoidStruts)
@@ -47,6 +48,7 @@ sjConfig = gnomeConfig
          , numlockMask = mod2Mask
          , terminal    = "gnome-terminal"
          , layoutHook  = sjLayoutHook
+         , logHook     = updatePointer (Relative 0.02 0.02)
          , startupHook = return ()
                          >> checkKeymap sjConfig sjKeymap
                          -- Hack for Java 1.6 and lower
