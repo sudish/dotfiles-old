@@ -43,10 +43,10 @@ sjKeymap  = [ ("M3-g",          gotoMenu)
             ]
 
 sjConfig = gnomeConfig
-         { modMask = sjModMask
+         { modMask     = sjModMask
          , numlockMask = mod2Mask
-         , terminal = "gnome-terminal"
-         , layoutHook = sjLayoutHook
+         , terminal    = "gnome-terminal"
+         , layoutHook  = sjLayoutHook
          , startupHook = return ()
                          >> checkKeymap sjConfig sjKeymap
                          -- Hack for Java 1.6 and lower
