@@ -9,8 +9,7 @@
 import XMonad
 import XMonad.Actions.CycleRecentWS (cycleRecentWS)
 import XMonad.Actions.CycleWindows  (cycleRecentWindows)
-import XMonad.Actions.CycleWS       (nextWS, prevWS, toggleWS,
-                                        shiftToNext, shiftToPrev)
+import XMonad.Actions.CycleWS       (nextWS, prevWS, shiftToNext, shiftToPrev)
 import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
 import XMonad.Config.Gnome          (gnomeConfig)
@@ -19,6 +18,7 @@ import XMonad.Hooks.SetWMName       (setWMName)
 import XMonad.Layout.NoBorders      (noBorders, smartBorders)
 import XMonad.Prompt                (defaultXPConfig)
 import XMonad.Prompt.XMonad         (xmonadPrompt)
+import qualified XMonad.StackSet as W (focusUp, focusDown)
 import XMonad.Util.EZConfig         (additionalKeysP, checkKeymap)
 
 -- Layouts
@@ -29,16 +29,17 @@ sjLayoutHook = avoidStruts $ noBorders Full
 sjModMask = mod3Mask
 sjKeymap  = [ ("M3-g",          gotoMenu)
             , ("M3-S-g",        bringMenu)
-              -- this next binding is on Alt-Tab, not Hyper-Tab
-            , ("M1-<Tab>",      cycleRecentWS [xK_Alt_L] xK_Tab xK_grave)
-              -- on Super-Tab
-            , ("M4-<Tab>",      cycleRecentWindows
-                                            [xK_Super_L] xK_Tab xK_grave)
+            , ("M3-<Tab>",      cycleRecentWS [xK_Hyper_L] xK_Tab xK_grave)
+              -- start cycling current workspace windows with Hyper-Shift-Tab,
+              -- but continue with Hyper-Tab and Hyper-Grave (no shift)
+            , ("M3-S-<Tab>",    cycleRecentWindows 
+                                              [xK_Hyper_L] xK_Tab xK_grave)
+            , ("M3-<Up>",       windows W.focusUp)
+            , ("M3-<Down>",     windows W.focusDown)
             , ("M3-<Right>",    nextWS)
             , ("M3-<Left>",     prevWS)
             , ("M3-S-<Right>",  shiftToNext >> nextWS)
             , ("M3-S-<Left>",   shiftToPrev >> prevWS)
-            , ("M3-z",          toggleWS)
             , ("M3-S-a",        xmonadPrompt defaultXPConfig)
             , ("M3-p",          spawn "exec `dmenu_path | dmenu`")
             ]
