@@ -1,4 +1,24 @@
-#compdef git git-add git-am git-annotate git-apply git-applymbox git-applypatch git-archimport git-archive git-bisect git-blame git-branch git-cat-file git-check-attr git-check-ref-format git-checkout git-checkout-index git-cherry git-cherry-pick git-clean git-clone git-clone-pack git-commit git-commit-tree git-convert-objects git-count-objects git-cvsexportcommit git-cvsimport git-cvsserver git-daemon git-describe git-diff git-diff-files git-diff-index git-diff-stages git-diff-tree git-fast-import git-fetch git-fetch-pack git-fmt-merge-msg git-for-each-ref git-format-patch git-fsck git-gc git-get-tar-commit-id git-grep git-hash-object git-http-fetch git-http-push git-imap-send git-index-pack git-init git-instaweb git-local-fetch git-log git-lost-found git-ls-files git-ls-remote git-ls-tree git-mailinfo git-mailsplit git-merge git-merge-base git-merge-file git-merge-index git-merge-one-file git-merge-tree git-mergetool git-mktag git-mktree git-mv git-name-rev git-pack-objects git-pack-redundant git-pack-refs git-patch-id git-peek-remote git-prune git-prune-packed git-pull git-push git-quiltimport git-read-tree git-rebase git-receive-pack git-reflog git-relink git-remote git-repack gut-runstatus git-config git-request-pull git-rerere git-reset git-rev-list git-rev-parse git-revert git-rm git-send-email git-send-pack git-sh-setup git-shell git-shortlog git-show git-show-branch git-show-index git-show-ref git-ssh-fetch git-ssh-upload git-status git-stripspace git-svn git-svnimport git-symbolic-ref git-tag git-tar-tree git-unpack-file git-unpack-objects git-update-index git-update-ref git-update-server-info git-upload-archive git-upload-pack git-var git-verify-pack git-verify-tag git-whatchanged git-write-tree
+#compdef git git-cvsserver git-receive-pack git-upload-archive git-upload-pack git-shell
+
+# Some parts of this completion's behaviour are configurable:
+#
+# Say, you got your own git sub-commands (git will run a program `git-foo'
+# when you run "git foo") and you want "git f<tab>" to complete that sub
+# commands name for you. You can make that sub-command know to the completion
+# via the user-command style:
+#
+#     % zstyle ':completion:*:*:git:*' user-commands foo:'description for foo'
+#
+# `user-commands' is a list style, so you can add any number of programs there.
+# The :description part is optional, so you could add all git-* programs from
+# your $path like this:
+#
+#     % zstyle ':completion:*:*:git:*' user-commands ${${(M)${(k)commands}:#git-*}/git-/}
+#
+# You could even create a function _git-foo() to handle specific completion
+# for that command.
+
+# TODO: There is still undocumented configurability in here.
 
 # TODO: All if (( words[(I)-option] )) should be turned into
 # if (( words[(I)-option] > 0 && words[(I)-option] < CURRENT )), as the user
@@ -170,6 +190,7 @@ _git_commands () {
     'fetch:download objects and a head from another repository'
     'gc:cleanup unnecessary files and optimize the local repository'
     'grep:print lines matching a pattern'
+    'help:display help information about git subcommands'
     'init:create empty git object database'
     'log:show commit logs'
     'merge:grand unified merge driver'
@@ -185,6 +206,7 @@ _git_commands () {
     'stage:add file contents to the staging area'
     'stash:stash away changes to the working tree'
     'status:show working-tree'\''s status'
+    'submodule:initialize or update or inspect submodules'
     'tag:create tag object signed with GPG'
     'verify-tag:check GPG signature of a tag')
 
@@ -225,6 +247,7 @@ _git_commands () {
     'mktag:create tag object'
     'mktree:build tree-object from ls-tree formatted text'
     'name-rev:find symbolic names for given revisions'
+    'notes:add/inspect commit notes'
     'pack-objects:create packed archive of objects'
     'pack-redundant:find redundant pack files'
     'pack-refs:pack heads and tags for efficient repository access'
@@ -269,7 +292,8 @@ _git_commands () {
     'cvsimport:import a CVS "repository" into a git repository'
     'svnimport:import SVN repository into git'
     'quiltimport:apply a quilt patchset'
-    'svn:bidirectional operation between a single Subversion branch and git')
+    'svn:bidirectional operation between a single Subversion branch and git'
+    'annex:manage files without tracking content')
 
   local -a ancillary_commands
   ancillary_commands=(
@@ -303,7 +327,9 @@ _git_commands () {
     'upload-pack:command invoked by clone-pack and fetch-pack')
 
   local wanted_commands
-  zstyle -s ':completion:${curcontext}:' commands wanted_commands || wanted_commands="all -internal"
+  zstyle -s ":completion:${curcontext}:" commands wanted_commands || wanted_commands="all -internal"
+  local -a user_commands
+  zstyle -a ":completion:${curcontext}:" user-commands user_commands || user_commands=()
 
   local -aU unique_wanted_commands
   unique_wanted_commands=($=wanted_commands)
@@ -338,6 +364,7 @@ _git_commands () {
         commands+=($internal_commands) ;;
     esac
   done
+  commands+=( $user_commands )
 
   _describe -t commands 'git command' commands && ret=0
 }
@@ -464,6 +491,19 @@ _git-hash-object () {
                                                     tree\:"a recursive tree of blobs"))' \
     '-w[write the object to the object database]' \
     '(--stdin):file:_files' && ret=0
+}
+
+(( $+functions[_git-help] )) ||
+_git-help () {
+  _arguments -S \
+    ':command:_git_commands' \
+    - '(all)' \
+    '(:)'{--all,-a}'[List all available commands]' \
+    - '(format)' \
+    {--man,-m}'[Display help in man page format]' \
+    {--info,-i}'[Display help in info format]' \
+    {--web,-w}'[Display help in web browser]' \
+    && ret=0
 }
 
 (( $+functions[_git-index-pack] )) ||
@@ -736,7 +776,7 @@ _git-update-index () {
     '--unmerged[if unmerged changes exists, ignore them instead of exiting]' \
     '--ignore-missing[ignore missing files when refreshing the index]' \
     '*--cacheinfo[insert information directly into the cache]: :_guard "[0-7]#" "octal file mode": :_guard "[[\:xdigit\:]]#" "object id":file:_files' \
-    '(: -)--index-info[read index information from stdin.]' \
+    '(: -)--index-info[read index information from stdin]' \
     '--chmod=-[set the execute permissions on the updated files]:permission:((-x\:executable +x\:"not executable"))' \
     '(                   --no-assume-unchanged)--assume-unchanged[set the "assume unchanged" bit for the given paths]' \
     '(--assume-unchanged                      )--no-assume-unchanged[unset the "assume unchanged" bit for the given paths]' \
@@ -996,6 +1036,37 @@ _git-name-rev () {
     '(--stdin :)--all[list all commits reachable from all refs]' \
     '(--all :)--stdin[read from stdin and append revision-name]' \
     '(--stdin --all)*:commit-ish:__git_revisions' && ret=0
+}
+
+(( $+functions[_git-notes] )) ||
+_git-notes () {
+  local expl
+  local -a notes_cmds
+
+  notes_cmds=(
+    edit:"edit note"
+    show:"show commit note"
+  )
+
+  if (( CURRENT == 2 )); then
+    _describe -t command "git-notes commands" notes_cmds && ret=0
+  else
+    case $words[2] in
+      (show)
+        _arguments \
+          '*:commit id:__git_commits' && ret=0
+        ;;
+      (edit)
+        _arguments \
+          '-F[use file'\''s contents as the commit note]:file:_path_files' \
+          '-m[use the given message as the commit note]:message' \
+          '*:commit id:__git_commits' && ret=0
+        ;;
+      (*)
+        _nothing
+        ;;
+    esac
+  fi
 }
 
 (( $+functions[_git-pack-redundant] )) ||
@@ -1542,13 +1613,6 @@ _git-branch () {
 }
 __git_zstyle_default ':completion::complete:git-branch:delete-argument-rest:*' ignore-line yes
 
-(( $+functions[__git_is_treeish] )) ||
-__git_is_treeish () {
-  local sha1
-  sha1="$(git rev-parse $1 -- 2> /dev/null)" &&
-  [[ "$(git cat-file -t "${sha1}^{tree}" 2> /dev/null)" == tree ]]
-}
-
 # TODO: __git_tree_ishs is just stupid.  It should be giving us a list of tags
 # and perhaps also allow all that just with ^{tree} and so on.  Not quite sure
 # how to do that, though.
@@ -1644,7 +1708,8 @@ _git-clone () {
 _git-commit () {
   _arguments -S \
     '--allow-empty[allow recording an empty commit]' \
-    '(-a --all)'{-a,--all}'[update all paths in the index file]' \
+    '(-a --all --interactive)'{-a,--all}'[update all paths in the index file]' \
+    '(-a --all --interactive)--interactive[interactively update paths in the index file]' \
     '--author[override the author name used in the commit]:author name' \
     '--cleanup=-[specify how the commit message should be cleaned up]:mode:((verbatim\:"don'\''t change the commit message at all"
                                                                              whitespace\:"remove leading and trailing whitespace lines"
@@ -1809,13 +1874,13 @@ _git-log () {
   _arguments -S \
     $revision_arguments \
     '--source[show which ref each commit is reached from]' \
-    '--decorate[print out ref names of any commits that are shown.]' \
+    '--decorate[print out ref names of any commits that are shown]' \
     '*:file-or-branch:->files' && ret=0
 
   case $state in
     (files)
       _arguments -S \
-        ':branch:__git_commit_ranges2' \
+        '::branch:__git_commit_ranges2' \
         '*:index file:__git_cached_files' && ret=0
       ;;
   esac
@@ -1934,22 +1999,33 @@ _git-rerere () {
 
 (( $+functions[_git-reset] )) ||
 _git-reset () {
-  local commit_arg path_arg
+  local curcontext=$curcontext state line
+  typeset -A opt_args
 
-  if [[ $words[2] == --mixed ]]; then
-    commit_arg=':commit:__git_revisions'
-    path_arg="*:file:__git_tree_files . $words[3]"
-  else
-    commit_arg='::commit:__git_revisions'
-  fi
+  _arguments -C -S -A '-*' \
+      '(-q --quiet)'{-q,--quiet}'[be quiet, only report errors]' \
+      '::commit:__git_revisions' \
+    - reset-head \
+      '(        --soft --hard --merge --keep)--mixed[reset the index but not the working tree (default)]' \
+      '(--mixed        --hard --merge --keep)--soft[do not touch the index file nor the working tree]' \
+      '(--mixed --soft        --merge --keep)--hard[match the working tree and index to the given tree]' \
+      '(--mixed --soft --hard         --keep)--merge[reset out of a conflicted merge]' \
+      '(--mixed --soft --hard --merge       )--keep[like --hard, but keep local working tree changes]' \
+    - reset-paths \
+      '(-p --patch)'{-p,--patch}'[select diff hunks to remove from the index]' \
+      '*::file:->files' && ret=0
 
-  _arguments -S -A '--*' \
-    '(        --soft --hard)--mixed[like --soft but report what has not been updated (default)]' \
-    '(--mixed        --hard)--soft[do not touch the index file nor the working tree]' \
-    '(--mixed --soft       )--hard[match the working tree and index to the given tree]' \
-    '--merge[bring local changes along to new commit]' \
-    $commit_arg \
-    $path_arg && ret=0
+  case $state in
+    (files)
+      local commit
+      if [[ -n $line[1] ]] && __git_is_committish $line[1]; then
+        commit=$line[1]
+      else
+        commit=HEAD
+      fi
+      __git_tree_files . $commit && ret=0
+      ;;
+  esac
 }
 
 (( $+functions[_git-revert] )) ||
@@ -2773,19 +2849,70 @@ __git_stages () {
   __git_guard $* "[[:digit:]]#" 'stage'
 }
 
+(( $+functions[__git_files_relative] )) ||
+__git_files_relative () {
+  local rawfiles files file f_parts prefix p_parts tmp
+
+  prefix=$(_call_program gitprefix git rev-parse --show-prefix 2>/dev/null)
+  __git_command_successful || return
+
+  # Empty prefix, no modifications
+  if (( $#prefix == 0 )); then
+    print $1
+    return
+  fi
+
+  rawfiles=(${(ps:\0:)1})
+  files=()
+
+  # Now we assume that we've given "absolute" paths list with "root"
+  # being repository top directory.  $prefix is also "absolute" path.
+  for file in $rawfiles; do
+    # Collapse "/./" and "//", strip "/." and "/" from tail (I know,
+    # this is a bit paranoid).
+    f_parts=(${(s:/:)"${${${${file//\/\///}//\/.\///}%%/.}%%/}"})
+    p_parts=(${(s:/:)"${${${${prefix//\/\///}//\/.\///}%%/.}%%/}"})
+    tmp=()
+
+    # Strip common path prefix.
+    while (( $#f_parts > 0 )) && (( $#p_parts > 0 )) && [[ $f_parts[1] == $p_parts[1] ]]; do
+      f_parts[1]=()
+      p_parts[1]=()
+    done
+
+    # If prefix still not empty, ascend up.
+    while (( $#p_parts > 0 )); do
+	tmp+=..
+	p_parts[1]=()
+    done
+
+    # Add remaining path.
+    tmp=("$tmp[@]" "$f_parts[@]")
+
+    files+=${(j:/:)tmp}
+  done
+
+  print ${(pj:\0:)files}
+}
+
 (( $+functions[__git_files] )) ||
 __git_files () {
-  local expl files ls_opts opts gitdir
+  local expl files ls_opts opts gitdir gitcdup
 
   zparseopts -D -E -a opts -- -cached -deleted -modified -others -ignored -unmerged -killed
 
   gitdir=$(_call_program gitdir git rev-parse --git-dir 2>/dev/null)
   __git_command_successful || return
 
+  gitcdup=$(_call_program gitcdup git rev-parse --show-cdup 2>/dev/null)
+  __git_command_successful || return
+
   ls_opts=("--exclude-per-directory=.gitignore")
   [[ -f "$gitdir/info/exclude" ]] && ls_opts+="--exclude-from=$gitdir/info/exclude"
 
-  files=(${(ps:\0:)"$(_call_program files git ls-files -z $ls_opts $opts 2>/dev/null)"})
+  files=$(_call_program files git ls-files -z --full-name $ls_opts $opts -- $gitcdup 2>/dev/null)
+  __git_command_successful || return
+  files=(${(ps:\0:)"$(__git_files_relative $files)"})
   __git_command_successful || return
 
   _wanted files expl 'index file' _multi_parts $@ - / files
@@ -2824,9 +2951,11 @@ __git_unmerged_files () {
 #this is for git-commit which can take files both git-added and not
 (( $+functions[__git_changed_files] )) ||
 __git_changed_files () {
-  local -a files
+  local files
 
-  files=(${(ps:\0:)"$(_call_program files git diff-index -z --name-only --no-color HEAD 2>/dev/null)"})
+  files=$(_call_program files git diff-index -z --name-only --no-color HEAD 2>/dev/null)
+  __git_command_successful || return
+  files=(${(ps:\0:)"$(__git_files_relative $files)"})
   __git_command_successful || return
 
   _wanted files expl 'index file' _multi_parts $@ - / files
@@ -2837,7 +2966,9 @@ __git_tree_files () {
   local multi_parts_opts
   local tree Path
   integer at_least_one_tree_added
-  local -a tree_files
+  local -a tree_files compadd_opts
+
+  zparseopts -D -E -a compadd_opts V: J: 1 2 n f X: M: P: S: r: R: q F:
 
   [[ "$1" == */ ]] && Path="$1" || Path="${1:h}/"
   shift
@@ -2848,11 +2979,11 @@ __git_tree_files () {
   done
 
   if (( !at_least_one_tree_added )); then
-    return
+    return 1
   fi
 
   local expl
-  _wanted files expl 'tree file' _multi_parts -f $@ -- / tree_files
+  _wanted files expl 'tree file' _multi_parts -f $compadd_opts -- / tree_files
 }
 
 # TODO: deal with things that __git_heads and __git_tags has in common (i.e.,
@@ -3017,7 +3148,7 @@ __git_heads () {
   branch_names=(${${(f)"$(_call_program headrefs git for-each-ref --format='"%(refname)"' refs/heads refs/remotes 2>/dev/null)"}#refs/(heads|remotes)/})
   __git_command_successful || return
 
-  _wanted heads expl branch-name compadd $* - $branch_names HEAD
+  _wanted heads expl branch-name compadd $* - $branch_names HEAD FETCH_HEAD ORIG_HEAD MERGE_HEAD
 }
 
 (( $+functions[__git_tags] )) ||
@@ -4312,6 +4443,23 @@ __git_setup_revision_arguments () {
 
 # ---
 
+(( $+functions[__git_is_type] )) ||
+__git_is_type () {
+  local sha1
+  sha1="$(git rev-parse $2 2> /dev/null)" &&
+  [[ "$(git cat-file -t "${sha1}^{$1}" 2> /dev/null)" == $1 ]]
+}
+
+(( $+functions[__git_is_committish] )) ||
+__git_is_committish () {
+  __git_is_type commit $1
+}
+
+(( $+functions[__git_is_treeish] )) ||
+__git_is_treeish () {
+  __git_is_type tree $1
+}
+
 (( $+functions[__git_is_indexed] )) ||
 __git_is_indexed () {
   [[ -n $(git ls-files $REPLY) ]]
@@ -4361,12 +4509,18 @@ if [[ $service == git ]]; then
         __git_aliases_and_commands
       else
         curcontext="${curcontext%:*:*}:git-$words[1]:"
-        _call_function ret _git-$words[1]
+	if (( $+functions[_git-$words[1]] )); then
+          _call_function ret _git-$words[1]
+	else
+	  _files
+	fi
+        return ret
       fi
       ;;
   esac
 else
   _call_function ret _$service
+  return ret
 fi
 }
 
