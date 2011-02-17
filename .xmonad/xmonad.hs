@@ -17,11 +17,15 @@ import XMonad.Hooks.DynamicLog      (dynamicLogWithPP, defaultPP, PP(..),
                                         shorten, wrap)
 import XMonad.Hooks.ManageDocks     (avoidStruts)
 import XMonad.Hooks.SetWMName       (setWMName)
+import XMonad.Layout.IM             (gridIM, Property(..))
 import XMonad.Layout.NoBorders      (noBorders, smartBorders)
+import XMonad.Layout.PerWorkspace   (onWorkspace)
 import XMonad.Prompt                (defaultXPConfig)
 import XMonad.Prompt.XMonad         (xmonadPrompt)
 import qualified XMonad.StackSet as W (focusUp, focusDown)
 import XMonad.Util.EZConfig         (additionalKeysP, checkKeymap)
+
+import Data.Ratio                   ((%))
 
 import Control.OldException         (catchDyn, try)
 import DBus                         (Error(..), interfaceDBus,
@@ -29,9 +33,20 @@ import DBus                         (Error(..), interfaceDBus,
 import DBus.Connection
 import DBus.Message
 
+-- All chat-related windows on this workspace
+sjChatWS = "9"
+
+-- Window management hook
+sjManageHook = composeAll
+               [ className =? "Pidgin" --> doShift sjChatWS ]
+
 -- Layouts
-sjLayoutHook = avoidStruts $ noBorders Full
-                         ||| smartBorders (Tall 1 (3/100) (1/2))
+sjLayoutDefault = noBorders Full
+                  ||| smartBorders (Tall 1 (3/100) (1/2))
+sjLayoutChat = gridIM (1%4) (Role "buddy_list")
+sjLayoutHook = avoidStruts $
+               onWorkspace sjChatWS sjLayoutChat $
+               sjLayoutDefault
 
 -- Keymaps
 sjModMask = mod3Mask
@@ -57,6 +72,8 @@ sjConfig dbus = gnomeConfig
          , numlockMask = mod2Mask
          , terminal    = "gnome-terminal"
          , layoutHook  = sjLayoutHook
+         -- Note: do NOT recurse over sjConfig in manageHook!
+         , manageHook    = sjManageHook <+> manageHook gnomeConfig
          , logHook     = updatePointer (Relative 0.02 0.02)
                          >> dynamicLogWithPP (sjPrettyPrinter dbus)
          , startupHook = return ()
@@ -80,8 +97,8 @@ sjPrettyPrinter :: Connection -> PP
 sjPrettyPrinter dbus = defaultPP
   { ppOutput  = outputThroughDBus dbus
   , ppTitle   = shorten 50 . pangoSanitize
-  , ppCurrent = pangoColor "white" . wrap "[" "]" . pangoSanitize
-  , ppVisible = pangoColor "#663366" . wrap "(" ")" . pangoSanitize
+  , ppCurrent = wrap "[" "]" . pangoSanitize
+  , ppVisible = wrap "(" ")" . pangoSanitize
   , ppHidden  = wrap " " " "
   , ppUrgent  = pangoColor "red"
   , ppSep     = " : "
