@@ -1,0 +1,6 @@
+URxvt.font:            xft:Inconsolata
+URxvt.background:      grey90
+URxvt.background:      #79507B
+URxvt.foreground:      white
+URxvt.scrollstyle:     plain
+URxvt.scrollBar_right: true
