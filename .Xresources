@@ -1,6 +1,47 @@
-URxvt.font:            xft:Inconsolata
-URxvt.background:      grey90
-URxvt.background:      #79507B
-URxvt.foreground:      white
+URxvt.font:            xft:Inconsolata:pixelsize=14
+URxvt.scrollBar:       off
 URxvt.scrollstyle:     plain
 URxvt.scrollBar_right: true
+
+! Color scheme: dark
+URxvt.foreground: #f2f2f2
+URxvt.background: #101010
+
+! Normal
+! color0    black
+! color1    red
+! color2    green
+! color3    yellow
+! color4    blue
+! color5    purple
+! color6    cyan
+! color7    white
+
+
+URxvt.color0:   #4E4E4E
+URxvt.color1:   #FF6C60
+URxvt.color2:   #A8FF60
+URxvt.color3:   #FFFFB6
+URxvt.color4:   #96CBFE
+URxvt.color5:   #FF73FD
+URxvt.color6:   #C6C5FE
+URxvt.color7:   #EEEEEE
+
+! Light
+! color8     black
+! color9     red
+! color10    green
+! color11    yellow
+! color12    blue
+! color13    purple
+! color14    cyan
+! color15    white
+
+URxvt.color8:    #7C7C7C
+URxvt.color9:    #FFB6B0
+URxvt.color10:   #CEFFAB
+URxvt.color11:   #FFFFCB
+URxvt.color12:   #FFFFCB
+URxvt.color13:   #FF9CFE
+URxvt.color14:   #DFDFFE
+URxvt.color15:   #FFFFFF
