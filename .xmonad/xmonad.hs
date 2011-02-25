@@ -35,9 +35,11 @@ import DBus.Connection
 import DBus.Message
 
 -- All chat-related windows on this workspace
+sjChatWS :: String
 sjChatWS = "9"
 
 -- Window management hook
+sjManageHook :: ManageHook
 sjManageHook = composeAll
                [ className =? "Pidgin" --> doShift sjChatWS ]
 
@@ -50,7 +52,9 @@ sjLayoutHook = avoidStruts $
                sjLayoutDefault
 
 -- Keymaps
+sjModMask :: KeyMask
 sjModMask = mod3Mask
+sjKeymap :: [([Char], X ())]
 sjKeymap  = [ ("M3-g",          gotoMenu)
             , ("M3-S-g",        bringMenu)
             , ("M3-<Tab>",      cycleRecentWS [xK_Hyper_L] xK_Tab xK_grave)
