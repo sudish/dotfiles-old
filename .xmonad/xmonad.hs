@@ -17,6 +17,7 @@ import XMonad.Config.Gnome          (gnomeConfig)
 import XMonad.Hooks.DynamicLog      (dynamicLogWithPP, defaultPP, PP(..),
                                         shorten, wrap)
 import XMonad.Hooks.ManageDocks     (avoidStruts)
+import XMonad.Hooks.ICCCMFocus      (takeTopFocus)
 import XMonad.Hooks.SetWMName       (setWMName)
 import XMonad.Layout.IM             (gridIM, Property(..))
 import XMonad.Layout.NoBorders      (noBorders, smartBorders)
@@ -78,7 +79,8 @@ sjConfig dbus = gnomeConfig
          , layoutHook  = sjLayoutHook
          -- Note: do NOT recurse over sjConfig in manageHook!
          , manageHook  = sjManageHook <+> manageHook gnomeConfig
-         , logHook     = updatePointer (Relative 0.02 0.02)
+         , logHook     = takeTopFocus
+                         >> updatePointer (Relative 0.02 0.02)
                          >> dynamicLogWithPP (sjPrettyPrinter dbus)
          , startupHook = return ()
                          >> startupHook gnomeConfig
