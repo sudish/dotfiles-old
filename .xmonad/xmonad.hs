@@ -74,7 +74,6 @@ sjKeymap  = [ ("M3-g",          gotoMenu)
 
 sjConfig dbus = gnomeConfig
          { modMask     = sjModMask
-         , numlockMask = mod2Mask
          , terminal    = "gnome-terminal"
          , layoutHook  = sjLayoutHook
          -- Note: do NOT recurse over sjConfig in manageHook!
