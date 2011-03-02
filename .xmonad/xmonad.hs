@@ -78,12 +78,13 @@ sjConfig dbus = gnomeConfig
          , terminal    = "gnome-terminal"
          , layoutHook  = sjLayoutHook
          -- Note: do NOT recurse over sjConfig in manageHook!
-         , manageHook    = sjManageHook <+> manageHook gnomeConfig
+         , manageHook  = sjManageHook <+> manageHook gnomeConfig
          , logHook     = updatePointer (Relative 0.02 0.02)
                          >> dynamicLogWithPP (sjPrettyPrinter dbus)
          , startupHook = return ()
+                         >> startupHook gnomeConfig
                          >> checkKeymap (sjConfig dbus) sjKeymap
-                         -- Hack for Java 1.6 and lower
+                         -- Hack for JVM 1.6.0 & lower
                          >> setWMName "LG3D"
          , focusFollowsMouse = False
          }
