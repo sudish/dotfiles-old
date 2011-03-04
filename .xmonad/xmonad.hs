@@ -9,7 +9,7 @@
 import XMonad
 import XMonad.Actions.CycleRecentWS (cycleRecentWS)
 import XMonad.Actions.CycleWindows  (cycleRecentWindows)
-import XMonad.Actions.CycleWS       (nextWS, prevWS, moveTo, 
+import XMonad.Actions.CycleWS       (nextWS, prevWS, moveTo,
                                         Direction1D(..), WSType(..))
 import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
 import XMonad.Actions.WindowBringer (gotoMenu, bringMenu)
@@ -20,7 +20,7 @@ import XMonad.Hooks.ManageDocks     (avoidStruts)
 import XMonad.Hooks.ICCCMFocus      (takeTopFocus)
 import XMonad.Hooks.SetWMName       (setWMName)
 import XMonad.Layout.IM             (gridIM, Property(..))
-import XMonad.Layout.NoBorders      (noBorders, smartBorders)
+import XMonad.Layout.NoBorders      (smartBorders)
 import XMonad.Layout.PerWorkspace   (onWorkspace)
 import XMonad.Layout.TwoPane        (TwoPane(..))
 import XMonad.Prompt                (defaultXPConfig)
