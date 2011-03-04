@@ -8,7 +8,8 @@
 
 import XMonad
 import XMonad.Actions.CycleRecentWS (cycleRecentWS)
-import XMonad.Actions.CycleWindows  (cycleRecentWindows)
+import XMonad.Actions.CycleWindows  (cycleRecentWindows,
+                                        rotUnfocusedUp, rotUnfocusedDown)
 import XMonad.Actions.CycleWS       (nextWS, prevWS, moveTo,
                                         Direction1D(..), WSType(..))
 import XMonad.Actions.UpdatePointer (updatePointer, PointerPosition(..))
@@ -68,6 +69,8 @@ sjKeymap  = [ ("M3-g",          gotoMenu)
                                               [xK_Hyper_L] xK_Tab xK_grave)
             , ("M3-<Up>",       windows W.focusUp)
             , ("M3-<Down>",     windows W.focusDown)
+            , ("M3-S-<Up>",     rotUnfocusedUp)
+            , ("M3-S-<Down>",   rotUnfocusedDown)
             , ("M3-<Right>",    moveTo Next NonEmptyWS)
             , ("M3-<Left>",     moveTo Prev NonEmptyWS)
             , ("M3-S-<Right>",  nextWS)
