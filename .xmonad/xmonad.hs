@@ -22,6 +22,7 @@ import XMonad.Hooks.SetWMName       (setWMName)
 import XMonad.Layout.IM             (gridIM, Property(..))
 import XMonad.Layout.NoBorders      (noBorders, smartBorders)
 import XMonad.Layout.PerWorkspace   (onWorkspace)
+import XMonad.Layout.TwoPane        (TwoPane(..))
 import XMonad.Prompt                (defaultXPConfig)
 import XMonad.Prompt.XMonad         (xmonadPrompt)
 import qualified XMonad.StackSet as W (focusUp, focusDown)
@@ -45,8 +46,10 @@ sjManageHook = composeAll
                [ className =? "Pidgin" --> doShift sjChatWS ]
 
 -- Layouts
-sjLayoutDefault = noBorders Full
-                  ||| smartBorders (Tall 1 (3/100) (1/2))
+sjLayoutDefault = smartBorders $
+                  Full                    |||
+                  (Tall 1  (3/100) (1/2)) |||
+                  (TwoPane (3/100) (1/2))
 sjLayoutChat = gridIM (1%4) (Role "buddy_list")
 sjLayoutHook = avoidStruts $
                onWorkspace sjChatWS sjLayoutChat $
