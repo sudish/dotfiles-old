@@ -9,7 +9,7 @@ sj_setup_ssh_agent() {
     
     if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
 	kcfiles=()
-	for file in {personal,github,gitvild,zeevex}_rsa ; do
+	for file in {personal,github,zeevex,github_zeevex}_rsa ; do
 	    [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
 	done
 	if [[ -n $kcfiles ]] ; then
