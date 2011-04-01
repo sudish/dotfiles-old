@@ -15,7 +15,7 @@ begin
   Wirble.init
   Wirble.colorize
 rescue LoadError => err
-  warn "Couldn't load Wirble: #{err}"
+  #warn "Couldn't load Wirble: #{err}"
 end
 
 def profile

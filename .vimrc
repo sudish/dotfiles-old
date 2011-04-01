@@ -4,4 +4,5 @@ set ignorecase smartcase scrolloff=1 sidescrolloff=1
 filetype plugin indent on
 syntax enable
 set background=dark
+set t_Co=256
 colorscheme ir_black
