@@ -24,6 +24,7 @@ sj_emacsbuild () {
     build_dir=sj-build.$$
 
     git clean -qxfd
+    sh ./autogen.sh
     mkdir $build_dir || { echo "couldn't mkdir $build_dir: $!"; return 1 }
     cd $build_dir
 
