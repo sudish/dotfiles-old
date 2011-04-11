@@ -7,7 +7,8 @@
 	l  = log --stat --decorate
 	lc = log ORIG_HEAD.. --stat --no-merges --decorate
 	lg = log --oneline --decorate
-	dc = diff --color-words
+	dc = diff --cached
+	diffc = diff --color-words
 	changes  = diff --name-status -r
 	diffstat = diff --stat -r
 [clean]
