@@ -104,6 +104,7 @@ ACK_COLOR_MATCH='bold red'
 # Target OS X compilers at current OS rev or better
 [[ $uname = Darwin && -x /usr/bin/sw_vers ]] && \
     MACOSX_DEPLOYMENT_TARGET=`/usr/bin/sw_vers -productVersion | sed -e 's/^\([0-9]*\.[0-9]*\).*/\1/'`
+HOMEBREW_USE_LLVM=1
 
 # miscellaneous functions
 l  ()       { ls $LS_COLOR_OPTS -al $* }
