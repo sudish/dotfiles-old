@@ -10,6 +10,8 @@ d=( ~/bin
     ~/.cabal/bin
     ~/.node_libraries/bin
     ~/.rvm/bin
+    ~/.virtualenv/bin
+    /usr/local/share/python
     /usr/local/sbin
     /usr/local/bin
     /sw/sbin
