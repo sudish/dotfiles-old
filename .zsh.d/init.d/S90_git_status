@@ -12,114 +12,107 @@
 # and Shawn O. Pearce's completion script for bash:
 # http://repo.or.cz/w/git.git?a=blob_plain;f=contrib/completion/git-completion.bash;hb=master
 
-# FIXME: only GIT_DIR needs to be global here, and that only for efficiency.
-# Stick the rest of these params in a returned hash.
-__ZSH_GIT_DIR=
-__ZSH_GIT_BRANCH=
-__ZSH_GIT_STATE=
-__ZSH_GIT_STATUS=
-__ZSH_GIT_STASH=
-__ZSH_GIT_SVN=
+typeset -A sj_git
+sj_git=()
 
-get_git_status() {
+sj_git_status_update() {
     local git_dir branch
 
     [[ -n $SJ_DEBUG ]] && echo "Parsing git state" >/dev/tty
 
-    __ZSH_GIT_DIR=
+    sj_git[dir]=
     git_dir=$(git rev-parse --git-dir 2>/dev/null) || return
 
-    __ZSH_GIT_STATE=
+    sj_git[state]=
     if [[ -d $git_dir/rebase-apply ]]; then
         if [[ -f $git_dir/rebase-apply/rebasing ]]; then
-            __ZSH_GIT_STATE="|REBASE"
+            sj_git[state]="|REBASE"
         elif [[ -f $git_dir/rebase-apply/applying ]]; then
-            __ZSH_GIT_STATE="|AM"
+            sj_git[state]="|AM"
         else
-            __ZSH_GIT_STATE="|AM/REBASE"
+            sj_git[state]="|AM/REBASE"
         fi
         branch="$(git symbolic-ref HEAD 2>/dev/null)"
     elif [[ -f $git_dir/rebase-merge/interactive ]]; then
-        __ZSH_GIT_STATE="|REBASE -i"
+        sj_git[state]="|REBASE -i"
         branch="$(cat "$git_dir/rebase-merge/head-name")"
     elif [[ -d $git_dir/rebase-merge ]]; then
-        __ZSH_GIT_STATE="|REBASE -m"
+        sj_git[state]="|REBASE -m"
         branch="$(cat "$git_dir/rebase-merge/head-name")"
     elif [[ -f $git_dir/MERGE_HEAD ]]; then
-        __ZSH_GIT_STATE="|MERGING"
+        sj_git[state]="|MERGING"
         branch="$(git symbolic-ref HEAD 2>/dev/null)"
     else
         if [[ -f $git_dir/BISECT_LOG ]]; then
-	    __ZSH_GIT_STATE="|BISECTING"
+	    sj_git[state]="|BISECTING"
 	fi
         branch=$(git symbolic-ref HEAD 2>/dev/null) || \
 	    branch=$(git describe --exact-match HEAD 2>/dev/null) || \
 	    branch="$(cut -c1-7 "$git_dir/HEAD")..."
     fi
 
-    __ZSH_GIT_STASH=
+    sj_git[stash]=
     if [[ -e $git_dir/refs/stash ]]; then
-	__ZSH_GIT_STASH='$'
+	sj_git[stash]='$'
     fi
 
-    __ZSH_GIT_SVN=
+    sj_git[svn]=
     if [[ -e $git_dir/svn/.metadata ]]; then
-	__ZSH_GIT_SVN='S'
+	sj_git[svn]='S'
     fi
 
-    __ZSH_GIT_STATUS=
+    sj_git[status]=
     git diff --no-ext-diff --ignore-submodules --quiet --exit-code \
-	|| __ZSH_GIT_STATUS+='*'
+	|| sj_git[status]+='*'
     if git rev-parse --quiet --verify HEAD >/dev/null; then
 	git diff-index --cached --quiet --ignore-submodules HEAD -- \
-	    || __ZSH_GIT_STATUS+='+'
+	    || sj_git[status]+='+'
     else
-	__ZSH_GIT_STATUS+='#'
+	sj_git[status]+='#'
     fi
 
     local git_full_dir
     git_full_dir=$(readlink -f ${git_dir:h})
-    # "" quotes needed here to stop auto_name_dirs ("~__ZSH_GIT_DIR", yuck)
+    # "" quotes needed here to stop auto_name_dirs.
     # though why "" stops it from happening is a mystery, albeit a nice one
-    __ZSH_GIT_DIR="${git_full_dir/$HOME/~}"
-    __ZSH_GIT_BRANCH=${branch#refs/heads/}
+    sj_git[dir]="${git_full_dir/$HOME/~}"
+    sj_git[branch]=${branch#refs/heads/}
 }
 
 sj_git_ps1() {
-    [[ -n $__ZSH_GIT_DIR ]] || return
+    [[ -n $sj_git[dir] ]] || return
 
     local col
     col="$cb[green]"
-    [[ -n $__ZSH_GIT_SVN ]] && col="$cb[cyan]"
-    #col+='%B'
+    [[ -n $sj_git[svn] ]] && col="$cb[cyan]"
 
     local res
     # the branch name
-    res="$col$__ZSH_GIT_BRANCH$cb[none]"
+    res="$col${sj_git[branch]}$cb[none]"
 
     # is the repo dirty?
-    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb[magenta]$__ZSH_GIT_STATUS$cb[none]"
+    [[ -n $sj_git[status] ]] && res+="$cb[magenta]${sj_git[status]}$cb[none]"
 
     # is there something in the git stash?
-    [[ -n $__ZSH_GIT_STASH ]] && res+="$cb[magenta]$__ZSH_GIT_STASH$cb[none]"
+    [[ -n $sj_git[stash] ]] && res+="$cb[magenta]${sj_git[stash]}$cb[none]"
 
     # are we rebasing, etc.?
-    [[ -n $__ZSH_GIT_STATE ]] && res+="$cb[red]$__ZSH_GIT_STATE$cb[none]"
+    [[ -n $sj_git[state] ]] && res+="$cb[red]${sj_git[state]}$cb[none]"
 
     echo " %Bgit%b:$res"
 }
 
 
-zsh_git_chpwd_update() {
-    get_git_status
+sj_git_chpwd_update() {
+    sj_git_status_update
 }
 
-zsh_git_precmd_update() {
+sj_git_precmd_update() {
     case $(history $(($HISTCMD - 1)) ) in   # last command entered
-        *git*) get_git_status ;;
+        *git*) sj_git_status_update ;;
     esac
 }
 
 autoload -Uz add-zsh-hook
-add-zsh-hook precmd zsh_git_precmd_update
-add-zsh-hook chpwd  zsh_git_chpwd_update
+add-zsh-hook precmd sj_git_precmd_update
+add-zsh-hook chpwd  sj_git_chpwd_update
