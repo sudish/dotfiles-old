@@ -90,7 +90,7 @@ sj_git_ps1() {
 
     local col
     col="$cb[green]"
-    [[ -n $__ZSH_GIT_SVN ]] && col="$cb[blue]"
+    [[ -n $__ZSH_GIT_SVN ]] && col="$cb[cyan]"
     #col+='%B'
 
     local res
@@ -98,20 +98,18 @@ sj_git_ps1() {
     res="$col$__ZSH_GIT_BRANCH$cb[none]"
 
     # is the repo dirty?
-    [[ -n $__ZSH_GIT_STATUS ]] && res+="$col$__ZSH_GIT_STATUS$cb[none]"
+    [[ -n $__ZSH_GIT_STATUS ]] && res+="$cb[magenta]$__ZSH_GIT_STATUS$cb[none]"
 
     # is there something in the git stash?
-    [[ -n $__ZSH_GIT_STASH ]] && res+="$cb[cyan]$__ZSH_GIT_STASH$cb[none]"
+    [[ -n $__ZSH_GIT_STASH ]] && res+="$cb[magenta]$__ZSH_GIT_STASH$cb[none]"
 
     # are we rebasing, etc.?
     [[ -n $__ZSH_GIT_STATE ]] && res+="$cb[red]$__ZSH_GIT_STATE$cb[none]"
 
-    echo "$col($cb[none]$res$col)$cb[none]"
+    echo " %Bgit%b:$res"
 }
 
 
-# hook into zsh per-command funcs
-autoload -Uz add-zsh-hook
 zsh_git_chpwd_update() {
     get_git_status
 }
@@ -122,5 +120,6 @@ zsh_git_precmd_update() {
     esac
 }
 
+autoload -Uz add-zsh-hook
 add-zsh-hook precmd zsh_git_precmd_update
 add-zsh-hook chpwd  zsh_git_chpwd_update
