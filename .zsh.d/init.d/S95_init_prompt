@@ -100,8 +100,12 @@ function sj_prompt_precmd() {
 }
 
 function sj_prompt_preexec() {
-    local cmd=$1
+    local cmd=$1 last=$?
     prompt_rsbox_eraseprompt "$cmd"
+
+    if [[ $last != 0 ]]; then
+	echo `print -P "$cb[red][$last]$cb[none]"`
+    fi
 
     # print -P "..$cmd.." will expand $cmd as part of prompt substitution
     # so compute the prompt subst bits separately
