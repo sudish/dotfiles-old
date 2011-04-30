@@ -22,9 +22,9 @@ function sj_prompt_init() {
 
     sj_ps_info=''
     # Hostname and pwd
-    sj_ps_info+="$cb[yellow]%m$cb[none]:$cb[cyan]%~$cb[none]"
+    sj_ps_info+="%B%m%b:$cb[cyan]%~$cb[none]"
     # VCS status info for pwd
-    sj_ps_info+='$(sj_git_ps1)'
+    sj_ps_info+='$(sj_vcs_ps1)'
     # rvm's current ruby@gemset
     [[ $sj_rvm_present == 1 ]] && sj_ps_info+='$(sj_rvm_prompt)'
     # Number of backgrounded jobs, if any

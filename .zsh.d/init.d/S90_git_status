@@ -1,5 +1,21 @@
 #!/bin/zsh
 #
+# Show VCS info in prompt.
+#
+# Handles git by itself and uses vcs_info for all others.
+
+autoload -Uz vcs_info add-zsh-hook
+
+# Non-git vcs_info
+zstyle ':vcs_info:*' enable bzr darcs # hg cvs svn
+zstyle ':vcs_info:*' formats " %s:$cb[green]%b$cb[yellow]%u%c$cb[none]"
+zstyle ':vcs_info:*' actionformats " %s:$cb[green]%b$cb[red]|%a$cb[yellow]%u%c$cb[none]"
+zstyle ':vcs_info:*' stagedstr '+'
+zstyle ':vcs_info:*' unstagedstr '*'
+zstyle ':vcs_info:bzr:*' use-simple true 
+
+add-zsh-hook precmd vcs_info
+
 # Computes and displays the status of a git repo in PS1/RPS1.  Information
 # displayed includes: branch, '*' for un-added changes, '+' for uncommitted
 # changes, '$' for stashed changes.  In addition, the color of the status
@@ -11,6 +27,7 @@
 # Inspired by and adapted from http://www.jukie.net/~bart/conf/zsh.d/S55_git
 # and Shawn O. Pearce's completion script for bash:
 # http://repo.or.cz/w/git.git?a=blob_plain;f=contrib/completion/git-completion.bash;hb=master
+
 
 typeset -A sj_git
 sj_git=()
@@ -79,8 +96,11 @@ sj_git_status_update() {
     sj_git[branch]=${branch#refs/heads/}
 }
 
-sj_git_ps1() {
-    [[ -n $sj_git[dir] ]] || return
+sj_vcs_ps1() {
+    if [[ -z $sj_git[dir] ]]; then
+	echo " $vcs_info_msg_0_"
+	return
+    fi
 
     local col
     col="$cb[green]"
@@ -113,6 +133,6 @@ sj_git_precmd_update() {
     esac
 }
 
-autoload -Uz add-zsh-hook
 add-zsh-hook precmd sj_git_precmd_update
 add-zsh-hook chpwd  sj_git_chpwd_update
+
