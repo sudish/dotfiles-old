@@ -24,20 +24,6 @@ unset file
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
-# prompt string
-if [[ $TERM = dumb ]]; then
-    PROMPT='%# '
-else
-    # Classic UNIX prompt on the left
-    PROMPT='%B%#%b '
-
-    # Information overload on the right
-    RPROMPT="%B%m:%~%b"
-    RPROMPT+="%(?..%B[%b$cb[red]%?$cb[none]%B]%b)" # Exit status of last job
-    RPROMPT+="%(1j:$cb[magenta][+]$cb[none]:)" # Are there backgrounded jobs?
-    RPROMPT+=' $(sj_git_ps1)'	   # VCS status info for pwd
-fi
-
 bindkey -e
 bindkey ' ' magic-space
 bindkey '' backward-delete-char
@@ -152,8 +138,11 @@ fi
 # Timezone (`EST5EDT' is the POSIX version)
 TZ=EST5EDT
 
-#autoload -U promptinit
-#promptinit
+
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':chpwd:*'      recent-dirs-default true
+zstyle ':completion:*' recent-dirs-insert true
 
 # The following lines were added by compinstall
 
