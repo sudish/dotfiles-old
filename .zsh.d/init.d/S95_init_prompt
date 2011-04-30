@@ -1,0 +1,157 @@
+#!/bin/zsh
+#
+# Setup PS1, RPROMPT, etc.
+
+autoload -Uz add-zsh-hook
+
+# Show RVM info
+if [[ $sj_rvm_present == 1 ]]; then
+    sj_rvm_prompt() {
+	echo -n " $sj_rvm_prompt"
+    }
+
+    sj_update_rvm_prompt() {
+	sj_rvm_prompt="%Brvm:%b$cb[yellow]`rvm-prompt i g`$cb[none]"
+    }
+
+    add-zsh-hook chpwd sj_update_rvm_prompt
+fi
+
+function sj_prompt_init() {
+    local sj_ps_info
+
+    sj_ps_info=''
+    # Hostname and pwd
+    sj_ps_info+="%B%m%b:$cb[cyan]%~$cb[none]"
+    # VCS status info for pwd
+    sj_ps_info+='$(sj_vcs_ps1)'
+    # rvm's current ruby@gemset
+    [[ $sj_rvm_present == 1 ]] && sj_ps_info+='$(sj_rvm_prompt)'
+    # Number of backgrounded jobs, if any
+    sj_ps_info+="%(1j:$cb[magenta] [+%j]$cb[none]:)"
+    # Exit status of last job, if non-zero
+    sj_ps_info+="%(?..$cb[red] [%?]$cb[none])"
+
+    # The multiline prompt
+    PS1="$sj_ps_info
+%B%#%b "
+
+}
+
+# From Robert's dotto code.
+# https://github.com/rsanders/dotto/raw/stable/zsh/functions/display_dimensions
+function display_dimensions() {
+  emulate -L zsh
+
+  local string="$1" width=${2:-$COLUMNS}
+  typeset -L -i 10 lines=0
+
+  local -E divisor=0.0
+  local -E split=0.0 rem=0.0
+
+  (( divisor = ${COLUMNS} + 0.0 ))
+
+  for line in "${(f)string}"; do
+      (( split = $#line / $divisor ))
+      (( rem = $#line % $divisor ))
+      (( lines = lines + $split ))
+      if [[ "$rem" -gt 0 ]]; then
+          (( lines = lines + 1 ))
+      fi
+  done
+
+  REPLY=$lines
+  printf "%d\n" "$lines"
+}
+
+# Also from Robert's dotto code. Replaced echotc with terminfo.
+# https://github.com/rsanders/dotto/raw/stable/zsh/themes/prompt_rsbox_setup
+function prompt_rsbox_eraseprompt() {
+    emulate -L zsh
+
+    local typed="$1"
+    local i upcount
+
+    local visible="# ${typed}"
+    local visiblesize=""
+
+    display_dimensions "$visible" > /dev/null && visiblesize=$REPLY
+
+    (( upcount = 1 + ${visiblesize} ))
+
+    local up=$terminfo[cuu1] el=$terminfo[el] out=""
+    if [ $upcount -lt $LINES ]; then
+        for (( i=0; i < $upcount; i++ )); do
+            out+="${up}${el}"
+        done
+        echo -n -E "${out}${el}"
+    fi
+}
+
+function sj_prompt_precmd() {
+    if [[ $sj_preexec_ran == 0 ]]; then
+	# From Robert's rsbox prompt
+        # must be an empty cmd line; just clear and redraw prompt one line down
+	prompt_rsbox_eraseprompt
+	print -P "$cb[green]%# $cb[none]"
+    fi
+
+    sj_preexec_ran=0
+}
+
+function sj_prompt_preexec() {
+    local cmd=$1 last=$?
+    prompt_rsbox_eraseprompt "$cmd"
+
+    if [[ $last != 0 ]]; then
+	echo `print -P "$cb[red][$last]$cb[none]"`
+    fi
+
+    # print -P "..$cmd.." will expand $cmd as part of prompt substitution
+    # so compute the prompt subst bits separately
+    local start=`print -P $cb[green]%#`
+    local end=`print -P $cb[none]`
+    echo "${start} ${cmd}${end}"
+
+    sj_preexec_ran=1
+}
+
+if [[ $TERM = dumb ]]; then
+    PS1='%# '
+else
+    sj_prompt_init
+
+    add-zsh-hook precmd  sj_prompt_precmd
+    add-zsh-hook preexec sj_prompt_preexec
+fi
+
+
+
+### Archived efforts
+
+
+### Show extended prompt below the main prompt.
+# Neat idea and code from:
+# http://unix.stackexchange.com/questions/1022/display-stuff-below-the-prompt-at-a-shell-prompt
+#
+# terminfo_down_sc=$terminfo[cud1]$terminfo[cuu1]$terminfo[sc]$terminfo[cud1]
+# PS1="%{$terminfo_down_sc$sj_ps_info$terminfo[rc]%}%B%#%b "
+# preexec () { print -rn -- $terminfo[el]; }
+
+
+### This uses the terminal's cursor to clear the old prompt.
+# Works fine except at the bottom of the screen where the terminal
+# itself scrolls as you type, invalidating the cursor position.
+
+# Have terminal save cursor position before new prompt is drawn.
+# Call from precmd
+# sj_save_prompt_cursor() {
+#	print -n $terminfo[sc]
+# }
+
+# Have terminal restore the cursor and clear the rest of the
+# screen, then print the about to be executed command line.
+# Call from preexec
+# sj_replace_old_prompt() {
+#	print -Pr -- "$terminfo[rc]$terminfo[ed]$cb[green]%# $1$cb[none]"
+# }

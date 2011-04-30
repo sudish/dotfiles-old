@@ -9,10 +9,25 @@ EMACS_CC_FLAGS=(CC=gcc CXX=g++ CFLAGS="-pipe -Wall -O3 \
 EMACS_CONF_FLAGS=(--verbose --with-x --with-sound --with-imagemagick \
     --without-pop --prefix=$EMACS_PREFIX)
 
+sj_vcs () {
+    local res
+    if [[ -d .git ]] ; then
+	res=git
+    elif [[ -d .bzr ]] ; then
+	res=bzr
+    elif [[ -d _darcs ]] ; then
+	res=darcs
+    fi
+
+    echo $res
+}
+
 sj_emacsupdate () {
-    git tag -f sj-pull >/dev/null 2>&1 # last HEAD, aka HEAD@{1}
-    git pull \
-	&& git rebase origin
+    local vcs
+    vcs=`sj_vcs`
+
+    $vcs tag --force sj-pull >/dev/null 2>&1 # last HEAD, aka HEAD@{1}
+    $vcs pull
 }
 
 sj_emacsconfigure () {
@@ -20,17 +35,18 @@ sj_emacsconfigure () {
 }
 
 sj_emacsbuild () {
-    local build_dir
+    local vcs build_dir
+
+    rm -rf sj-build.*
     build_dir=sj-build.$$
 
-    git clean -qxfd
     sh ./autogen.sh
     mkdir $build_dir || { echo "couldn't mkdir $build_dir: $!"; return 1 }
     cd $build_dir
 
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
 	&& nice -n 20 make -j2 \
-	&& git tag -f sj-build
+	&& `sj_vcs` tag --force sj-build
 }
 
 sj_emacsinstall () {
@@ -44,7 +60,7 @@ sj_emacsinstall () {
     fi
 
     nice -n 20 make install \
-	&& git tag -f sj-install \
 	&& cd .. \
-	&& git clean -qxfd
+	&& rm -rf sj-build.* \
+	&& `sj_vcs` tag --force sj-install
 }
