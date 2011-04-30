@@ -151,8 +151,11 @@ fi
 # Timezone (`EST5EDT' is the POSIX version)
 TZ=EST5EDT
 
-#autoload -U promptinit
-#promptinit
+
+autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
+add-zsh-hook chpwd chpwd_recent_dirs
+zstyle ':chpwd:*'      recent-dirs-default true
+zstyle ':completion:*' recent-dirs-insert true
 
 # The following lines were added by compinstall
 
