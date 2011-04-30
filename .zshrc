@@ -24,20 +24,6 @@ unset file
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
-# prompt string
-if [[ $TERM = dumb ]]; then
-    PROMPT='%# '
-else
-    # Classic UNIX prompt on the left
-    PROMPT='%B%#%b '
-
-    # Information overload on the right
-    RPROMPT="%B%m:%~%b"
-    RPROMPT+="%(?..%B[%b$cb[red]%?$cb[none]%B]%b)" # Exit status of last job
-    RPROMPT+="%(1j:$cb[magenta][+]$cb[none]:)" # Are there backgrounded jobs?
-    RPROMPT+=' $(sj_git_ps1)'	   # VCS status info for pwd
-fi
-
 bindkey -e
 bindkey ' ' magic-space
 bindkey '' backward-delete-char
