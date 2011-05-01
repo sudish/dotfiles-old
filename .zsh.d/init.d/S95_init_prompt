@@ -109,8 +109,8 @@ function sj_prompt_preexec() {
 
     # print -P "..$cmd.." will expand $cmd as part of prompt substitution
     # so compute the prompt subst bits separately
-    local start=`print -P $cb[green]%#`
-    local end=`print -P $cb[none]`
+    local start=`print -P "$cb[green]%#"`
+    local end=`print -P "$cb[none]"`
     echo "${start} ${cmd}${end}"
 
     sj_preexec_ran=1
