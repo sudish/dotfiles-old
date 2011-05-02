@@ -142,7 +142,8 @@ TZ=EST5EDT
 autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
 add-zsh-hook chpwd chpwd_recent_dirs
 zstyle ':chpwd:*'      recent-dirs-default true
-zstyle ':completion:*' recent-dirs-insert true
+#zstyle ':completion:*' recent-dirs-insert true
+zstyle ':completion:*:*:cdr:*:*' menu selection
 
 # The following lines were added by compinstall
 
