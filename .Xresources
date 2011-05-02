@@ -2,6 +2,9 @@ URxvt.font:            xft:Inconsolata:pixelsize=14
 URxvt.scrollBar:       off
 URxvt.scrollstyle:     plain
 URxvt.scrollBar_right: true
+! This disables using high-intensity colors for the bold/blink attrs.
+! It will still use a bold font though, which is what we want.
+URxvt.intensityStyles: false
 
 ! Color scheme: dark
 !URxvt.foreground: #f2f2f2
