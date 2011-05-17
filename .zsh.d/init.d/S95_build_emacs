@@ -44,7 +44,7 @@ sj_emacsbuild () {
     cd $build_dir
 
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
-	&& nice -n 20 make -j3 \
+	&& nice -n 20 make -j8 \
 	&& nice -n 20 make install \
 	&& `sj_vcs` tag --force sj-build
 }
