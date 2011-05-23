@@ -9,6 +9,8 @@ fpath+=$ZDIR/functions
 # A lot of things are conditionalized on $uname
 uname=$(uname)
 
+autoload -Uz is-at-least add-zsh-hook
+
 # Load various startup files, prioritized by name
 for file in $ZDIR/init.d/S[0-9][0-9]_*; do
     source $file
@@ -137,12 +139,14 @@ fi
 # Timezone (`EST5EDT' is the POSIX version)
 TZ=EST5EDT
 
-
-autoload -Uz chpwd_recent_dirs cdr add-zsh-hook
-add-zsh-hook chpwd chpwd_recent_dirs
-zstyle ':chpwd:*'      recent-dirs-default true
-#zstyle ':completion:*' recent-dirs-insert true
-zstyle ':completion:*:*:cdr:*:*' menu selection
+# cdr: persistent working directory history
+if is-at-least 4.3.11; then
+    autoload -Uz chpwd_recent_dirs cdr
+    add-zsh-hook chpwd chpwd_recent_dirs
+    zstyle ':chpwd:*' recent-dirs-default true
+    #zstyle ':completion:*' recent-dirs-insert true
+    zstyle ':completion:*:*:cdr:*:*' menu selection
+fi
 
 # The following lines were added by compinstall
 
