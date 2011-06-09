@@ -43,14 +43,17 @@ setopt \
     auto_menu auto_name_dirs auto_param_keys auto_param_slash auto_pushd \
     auto_remove_slash check_jobs complete_aliases complete_in_word \
     correct extended_glob extended_history hash_cmds hash_list_all \
-    hist_allow_clobber hist_find_no_dups hist_ignore_all_dups \
-    hist_ignore_dups hist_no_store hist_reduce_blanks hist_save_no_dups \
+    hist_allow_clobber hist_fcntl_lock hist_find_no_dups \
+    hist_ignore_all_dups hist_ignore_dups hist_lex_words hist_no_store \
+    hist_reduce_blanks hist_save_no_dups \
     inc_append_history kshoptionprint list_beep list_packed \
     list_types long_list_jobs magic_equal_subst mark_dirs no_clobber \
     no_no_match prompt_subst pushd_ignore_dups pushd_minus pushd_silent \
     pushd_to_home sun_keyboard_hack transient_rprompt 2>/dev/null
 unsetopt bg_nice bsd_echo chase_links correct_all list_ambiguous \
     mail_warning multi_func_def xxx 2>/dev/null
+[[ $uname = Darwin ]] && setopt combining_chars
+
 DIRSTACKSIZE=20
 HISTSIZE=10000
 SAVEHIST=10000
@@ -148,6 +151,9 @@ if is-at-least 4.3.11; then
     #zstyle ':completion:*' recent-dirs-insert true
     zstyle ':completion:*:*:cdr:*:*' menu selection
 fi
+
+# Ignore completion files when correcting spelling
+CORRECT_IGNORE='_*'
 
 # The following lines were added by compinstall
 
