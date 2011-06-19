@@ -1,5 +1,7 @@
 # zsh init file
 
+set -a
+
 # root dir for sundry zsh things
 ZDIR=~/.zsh.d
 
@@ -10,6 +12,11 @@ fpath+=$ZDIR/functions
 uname=$(uname)
 
 autoload -Uz is-at-least add-zsh-hook
+
+# Load a system-specific startup file, if present
+sys_init=$ZDIR/init.d/sysinit-$uname
+[[ -r $sys_init ]] && source $sys_init
+unset sys_init
 
 # Load various startup files, prioritized by name
 for file in $ZDIR/init.d/S[0-9][0-9]_*; do
@@ -52,7 +59,6 @@ setopt \
     pushd_to_home sun_keyboard_hack transient_rprompt 2>/dev/null
 unsetopt bg_nice bsd_echo chase_links correct_all list_ambiguous \
     mail_warning multi_func_def xxx 2>/dev/null
-[[ $uname = Darwin ]] && setopt combining_chars
 
 DIRSTACKSIZE=20
 HISTSIZE=10000
@@ -77,25 +83,12 @@ fi
 # enable color ls o/p
 LS_COLOR_OPTS='--color=tty'
 ls $LS_COLOR_OPTS >&| /dev/null || unset LS_COLOR_OPTS
-[[ $uname = Darwin ]] && CLICOLOR=y # Enable color in OS X ls
 
 # enable color grep/ack o/p
 GREP_COLOR_OPTS='--color=auto'
 grep $GREP_COLOR_OPTS localhost /etc/hosts >&| /dev/null || \
     unset GREP_COLOR_OPTS
 ACK_COLOR_MATCH='bold red'
-
-# X11 for OS X doesn't set the fully qualified DISPLAY name
-#[[ $uname = Darwin && -n $DISPLAY ]] && export DISPLAY=:0.0
-
-# Java under OS X
-[[ $uname = Darwin ]] && \
-    JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
-
-# Target OS X compilers at current OS rev or better
-[[ $uname = Darwin && -x /usr/bin/sw_vers ]] && \
-    MACOSX_DEPLOYMENT_TARGET=`/usr/bin/sw_vers -productVersion | sed -e 's/^\([0-9]*\.[0-9]*\).*/\1/'`
-HOMEBREW_USE_LLVM=1
 
 # miscellaneous functions
 l  ()       { ls $LS_COLOR_OPTS -al $* }
