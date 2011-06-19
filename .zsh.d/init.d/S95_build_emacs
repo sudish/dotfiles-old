@@ -11,11 +11,11 @@ EMACS_CONF_FLAGS=(--verbose --with-x --with-sound --with-imagemagick \
 
 sj_vcs () {
     local res
-    if [[ -d .git ]] ; then
+    if [[ -d .git || -d ../.git ]] ; then
 	res=git
-    elif [[ -d .bzr ]] ; then
+    elif [[ -d .bzr || -d ../.bzr ]] ; then
 	res=bzr
-    elif [[ -d _darcs ]] ; then
+    elif [[ -d _darcs || -d ../_darcs  ]] ; then
 	res=darcs
     fi
 
@@ -36,6 +36,7 @@ sj_emacsconfigure () {
 
 sj_emacsbuild () {
     local vcs build_dir
+    vcs=`sj_vcs`
 
     rm -rf sj-build.*
     build_dir=sj-build.$$
@@ -46,21 +47,23 @@ sj_emacsbuild () {
 
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
 	&& nice -n 20 make -j2 \
-	&& `sj_vcs` tag --force sj-build
+	&& $vcs tag --force sj-build
 }
 
 sj_emacsinstall () {
-    local old bak
-    
-    old=$EMACS_PREFIX
-    bak=/tmp/emacs-$(date -r $old '+%s')
-    
-    if [[ -x $old ]]; then
-	mv $old $bak
+    local current last bak vcs
+    vcs=`sj_vcs`
+
+    if [[ -e $last ]]; then
+      bak=/tmp/emacs-$(date -r $last '+%s')
+      mv $last $bak
     fi
+
+    current=$EMACS_PREFIX
+    [[ -e $current ]] && mv $current $last
 
     nice -n 20 make install \
 	&& cd .. \
 	&& rm -rf sj-build.* \
-	&& `sj_vcs` tag --force sj-install
+	&& $vcs tag --force sj-install
 }

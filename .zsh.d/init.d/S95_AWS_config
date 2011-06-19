@@ -3,13 +3,13 @@
 # configuration for Amazon Web Services
 #
 
-local creds_dir=$HOME/.ssh
+local creds_dir=$HOME/.ssh/certs/zeevex
 
-export EC2_PRIVATE_KEY=$creds_dir/zx-aws-sudish-cert-key-pkcs8.pem
-export EC2_CERT=$creds_dir/zx-aws-sudish-cert.pem
+export EC2_PRIVATE_KEY=$creds_dir/aws-sudish-cert-key-pkcs8.pem
+export EC2_CERT=$creds_dir/aws-sudish-cert.pem
 
 # defining the AWS_CREDENTIAL_FILE causes rds tools to blow up
-#export AWS_CREDENTIAL_FILE=$creds_dir/zx-aws-sudish-iam-credentials-master
+#export AWS_CREDENTIAL_FILE=$creds_dir/aws-sudish-iam-credentials-master
 
 export EC2_HOME="/usr/local/Cellar/ec2-api-tools/1.4.2.2/jars"
 export AWS_RDS_HOME="/usr/local/Cellar/rds-command-line-tools/1.3.003/jars"
