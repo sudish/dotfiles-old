@@ -10,11 +10,11 @@ EMACS_CONF_FLAGS=(--verbose --with-ns \
 
 sj_vcs () {
     local res
-    if [[ -d .git ]] ; then
+    if [[ -d .git || -d ../.git ]] ; then
 	res=git
-    elif [[ -d .bzr ]] ; then
+    elif [[ -d .bzr || -d ../.bzr ]] ; then
 	res=bzr
-    elif [[ -d _darcs ]] ; then
+    elif [[ -d _darcs || -d ../_darcs  ]] ; then
 	res=darcs
     fi
 
@@ -35,6 +35,7 @@ sj_emacsconfigure () {
 
 sj_emacsbuild () {
     local vcs build_dir
+    vcs=`sj_vcs`
 
     rm -rf sj-build.*
     build_dir=sj-build.$$
@@ -46,21 +47,24 @@ sj_emacsbuild () {
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
 	&& nice -n 20 make -j3 \
 	&& nice -n 20 make install \
-	&& `sj_vcs` tag --force sj-build
+	&& $vcs tag --force sj-build
 }
 
 sj_emacsinstall () {
-    local old new bak
+    local current last new bak vcs
+    vcs=`sj_vcs`
 
-    old=/Applications/Emacs.app
+    current=/Applications/Emacs.app
+    last=/Applications/Emacs-last.app
     new=nextstep/Emacs.app
-    bak=/tmp/Emacs-$(date -r $old '+%s').app
+    bak=/tmp/Emacs-$(date -r $last '+%s').app
 
     if [[ -x $new ]]; then
-	mv $old $bak \
-	    && mv $new $old \
+	mv $last $bak \
+	    && mv $current $last \
+	    && mv $new $current \
 	    && cd .. \
-	    && `sj_vcs` tag --force sj-install \
+	    && $vcs tag --force sj-install \
 	    && rm -rf sj-build.*
     else
 	echo "$new doesn't exist"
