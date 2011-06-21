@@ -4,7 +4,7 @@
 #
 
 EMACS_CC_FLAGS=(CC=clang CXX=clang++ CFLAGS="-O4 -flto\
-    -arch x86_64 -m64 -march=core2 -mtune=core2 -mmmx -msse4.2 -mssse3")
+    -arch x86_64 -m64 -march=core2 -mtune=core2 -mmmx -msse3 -mssse3")
 EMACS_CONF_FLAGS=(--verbose --with-ns \
     --without-pop --without-x --with-x-toolkit=no)
 
@@ -45,7 +45,7 @@ sj_emacsbuild () {
     cd $build_dir
 
     env "$EMACS_CC_FLAGS[@]" `sj_configure` "$EMACS_CONF_FLAGS[@]" \
-	&& nice -n 20 make -j8 \
+	&& nice -n 20 make -j3 \
 	&& nice -n 20 make install \
 	&& $vcs tag --force sj-build
 }
