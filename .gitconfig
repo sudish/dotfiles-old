@@ -2,7 +2,7 @@
 	st = status
 	ci = commit
 	co = checkout
-	up = remote update --prune
+        #up = remote update --prune
 	de = describe --all
 	l  = log --stat --decorate
 	lc = log ORIG_HEAD.. --stat --no-merges --decorate
@@ -11,6 +11,8 @@
 	diffc = diff --color-words
 	changes  = diff --name-status -r
 	diffstat = diff --stat -r
+[branch]
+	autosetuprebase = always
 [clean]
 	requireForce = true
 [color]
