@@ -18,24 +18,24 @@ if [[ $sj_rvm_present == 1 ]]; then
 fi
 
 function sj_prompt_init() {
-    local sj_ps_info
-
+    # Initialize sj_ps_info which contains the extended prompt info
+    # that's printed from sj_prompt_precmd to get a two-line prompt
     sj_ps_info=''
+
     # Hostname and pwd
     sj_ps_info+="%B%m%b:$cb[cyan]%~$cb[none]"
+
     # VCS status info for pwd
     sj_ps_info+='$(sj_vcs_ps1)'
+
     # rvm's current ruby@gemset
     [[ $sj_rvm_present == 1 ]] && sj_ps_info+='$(sj_rvm_prompt)'
+
     # Number of backgrounded jobs, if any
     sj_ps_info+="%(1j:$cb[magenta] [+%j]$cb[none]:)"
+
     # Exit status of last job, if non-zero
     sj_ps_info+="%(?..$cb[red] [%?]$cb[none])"
-
-    # The multiline prompt
-    PS1="$sj_ps_info
-%B%#%b "
-
 }
 
 # From Robert's dotto code.
@@ -64,7 +64,7 @@ function display_dimensions() {
   printf "%d\n" "$lines"
 }
 
-# Also from Robert's dotto code. Replaced echotc with terminfo.
+# From Robert's dotto code, with echotc replaced by terminfo.
 # https://github.com/rsanders/dotto/raw/stable/zsh/themes/prompt_rsbox_setup
 function prompt_rsbox_eraseprompt() {
     emulate -L zsh
@@ -93,10 +93,12 @@ function sj_prompt_precmd() {
 	# From Robert's rsbox prompt
         # must be an empty cmd line; just clear and redraw prompt one line down
 	prompt_rsbox_eraseprompt
-	print -P "$cb[green]%# $cb[none]"
+	print -P "$cb[green]${PS1}$cb[none]"
     fi
-
     sj_preexec_ran=0
+
+    # print the actual multi-line prompt
+    print -P "$sj_ps_info"
 }
 
 function sj_prompt_preexec() {
@@ -119,8 +121,12 @@ function sj_prompt_preexec() {
 if [[ $TERM = dumb ]]; then
     PS1='%# '
 else
-    sj_prompt_init
+    # Keep PS1 as a simple one-liner, as zsh will redraw it on SIGWINCH
+    # (for e.g., when I create/delete tmux panes).
+    # Multi-line prompt info is printed out in sj_prompt_precmd().
+    PS1="%B%#%b "
 
+    sj_prompt_init
     add-zsh-hook precmd  sj_prompt_precmd
     add-zsh-hook preexec sj_prompt_preexec
 fi
