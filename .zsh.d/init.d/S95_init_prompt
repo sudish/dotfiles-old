@@ -116,6 +116,16 @@ function sj_prompt_preexec() {
     sj_preexec_ran=1
 }
 
+# zsh redraws what it assumes is a one-line prompt on SIGWINCH,
+# leaving bits of the old prompt on screen.
+#
+# trap the signal and handle the redraw ourselves
+function TRAPWINCH() {
+    true # reset $?
+    sj_prompt_preexec
+    return 0
+}
+
 if [[ $TERM = dumb ]]; then
     PS1='%# '
 else
