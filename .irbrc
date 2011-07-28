@@ -1,7 +1,5 @@
-# -*-ruby-*-
+# -*- ruby -*-
 #
-# Started from Phil Hagelberg's .irbrc at
-# git://github.com/technomancy/dotfiles.git
 
 require 'rubygems'
 require 'pp'
