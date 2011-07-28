@@ -11,6 +11,7 @@
 	diffc = diff --color-words
 	changes  = diff --name-status -r
 	diffstat = diff --stat -r
+	rv = remote -v
 [branch]
 	autosetuprebase = always
 [clean]

@@ -1,7 +1,5 @@
-# -*-ruby-*-
+# -*- ruby -*-
 #
-# Started from Phil Hagelberg's .irbrc at
-# git://github.com/technomancy/dotfiles.git
 
 require 'rubygems'
 require 'pp'
@@ -43,10 +41,10 @@ end
 SjIrb.load_packages
 
 # Inspecting really long strings causes inf-ruby to get really, really slow.
-class String
-  def inspect
-    puts self
-  end
-end
+# class String
+#   def inspect
+#     puts self
+#   end
+# end
 
 IRB.conf[:AUTO_INDENT]=true

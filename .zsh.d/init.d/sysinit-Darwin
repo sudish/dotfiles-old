@@ -20,9 +20,3 @@ JAVA_HOME=/System/Library/Frameworks/JavaVM.framework/Home
 
 # Use llvm-gcc to compile homebrew stuff, also enables LTO via -O4
 HOMEBREW_USE_LLVM=1
-
-# libLTO.dylib as shipped with XCode 4 is broken, so use the libs that
-# come with homebrew's llvm if present
-homebrew_llvm_libs=/usr/local/Cellar/llvm/2.9/lib
-[[ -d $homebrew_llvm_libs ]] && DYLD_LIBRARY_PATH=$homebrew_llvm_libs
-unset homebrew_llvm_libs
