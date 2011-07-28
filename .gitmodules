@@ -1,6 +1,0 @@
-[submodule ".zsh.d/external/autojump"]
-	path = .zsh.d/external/autojump
-	url = http://github.com/joelthelion/autojump.git
-[submodule ".zsh.d/external/git-flow-completion"]
-	path = .zsh.d/external/git-flow-completion
-	url = git://github.com/bobthecow/git-flow-completion
