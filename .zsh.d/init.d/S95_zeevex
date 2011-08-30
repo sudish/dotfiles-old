@@ -1,0 +1,4 @@
+# Zeevex-specific init
+
+# GAME Wallet soap sim
+CI_SOAP_SIM_PORT=7900
