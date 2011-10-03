@@ -3,7 +3,7 @@
 
 # set up rvm
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-    source "$HOME/.rvm/scripts/rvm"
+    source "$HOME/.rvm/scripts/rvm" >/dev/null 2&>1
     sj_rvm_present=1
 fi
 
