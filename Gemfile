@@ -3,9 +3,10 @@
 source :gemcutter
 
 gem 'rake', '0.9.2'
+gem 'htty'
 gem 'git-up'
 gem 'powify'
-gem 'pry', '0.9.7.3'
+gem 'pry', '0.9.7.4'
 gem 'pry-doc'
 
 # lock versions of gems shared with other projects
