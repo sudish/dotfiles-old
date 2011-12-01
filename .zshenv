@@ -11,7 +11,7 @@ fi
 unsetopt ksh_arrays
 d=( ~/bin
     ~/.cabal/bin
-    ~/.node_libraries/bin
+    ~/.nodejs/bin
     ~/.rvm/bin
     ~/.virtualenv/bin
     /usr/local/share/python
