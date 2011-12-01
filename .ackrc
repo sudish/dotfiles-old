@@ -1,3 +1,2 @@
---pager=less
+--pager=less -R
 --type-set=yaml=.yml
-
