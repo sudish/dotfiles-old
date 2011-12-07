@@ -3,7 +3,7 @@
 
 # set up rvm
 if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-    source "$HOME/.rvm/scripts/rvm" >/dev/null 2&>1
+    source "$HOME/.rvm/scripts/rvm" >/dev/null 2>&1
     sj_rvm_present=1
 fi
 
@@ -11,7 +11,7 @@ fi
 unsetopt ksh_arrays
 d=( ~/bin
     ~/.cabal/bin
-    ~/.node_libraries/bin
+    ~/.nodejs/bin
     ~/.rvm/bin
     ~/.virtualenv/bin
     /usr/local/share/python
