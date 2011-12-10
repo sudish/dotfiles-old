@@ -11,7 +11,10 @@ if [[ $sj_rvm_present == 1 ]]; then
     }
 
     sj_update_rvm_prompt() {
-	sj_rvm_prompt="%Brvm:%b$cb[yellow]`rvm-prompt i g`$cb[none]"
+	local sj_rvm_info
+	sj_rvm_info=`rvm-prompt i g`
+	# sj_rvm_info=`rvm info < /dev/null | sed -ne '2s/\([^-@]*\).*@\([^:]*\):/\1@\2/p'`
+	sj_rvm_prompt="%Brvm:%b$cb[yellow]$sj_rvm_info$cb[none]"
     }
 
     add-zsh-hook chpwd sj_update_rvm_prompt
