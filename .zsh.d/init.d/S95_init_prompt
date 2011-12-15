@@ -20,6 +20,21 @@ if [[ $sj_rvm_present == 1 ]]; then
     add-zsh-hook chpwd sj_update_rvm_prompt
 fi
 
+# Show rbenv info
+if [[ $sj_rbenv_present == 1 ]]; then
+    sj_rbenv_prompt() {
+	echo -n " $sj_rbenv_prompt"
+    }
+
+    sj_update_rbenv_prompt() {
+	local sj_rbenv_info
+	sj_rbenv_info=`rbenv version | cut -f 1 -d \ `@[`rbenv gemset active 2>&/dev/null`]
+	sj_rbenv_prompt="%Brbenv:%b$cb[yellow]$sj_rbenv_info$cb[none]"
+    }
+
+    add-zsh-hook chpwd sj_update_rbenv_prompt
+fi
+
 function sj_prompt_init() {
     local sj_ps_info
 
@@ -30,6 +45,8 @@ function sj_prompt_init() {
     sj_ps_info+='$(sj_vcs_ps1)'
     # rvm's current ruby@gemset
     [[ $sj_rvm_present == 1 ]] && sj_ps_info+='$(sj_rvm_prompt)'
+    # rbenv's current ruby@gemset
+    [[ $sj_rbenv_present == 1 ]] && sj_ps_info+='$(sj_rbenv_prompt)'
     # Number of backgrounded jobs, if any
     sj_ps_info+="%(1j:$cb[magenta] [+%j]$cb[none]:)"
     # Exit status of last job, if non-zero
