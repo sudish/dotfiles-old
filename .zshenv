@@ -2,17 +2,18 @@
 [[ -f /sw/bin/init.sh ]] && . /sw/bin/init.sh
 
 # set up rvm
-if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
-    source "$HOME/.rvm/scripts/rvm" >/dev/null 2>&1
-    sj_rvm_present=1
-fi
+#if [[ -s "$HOME/.rvm/scripts/rvm" ]]; then
+#    source "$HOME/.rvm/scripts/rvm" >/dev/null 2>&1
+#    sj_rvm_present=1
+#fi
 
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
     ~/.cabal/bin
     ~/.nodejs/bin
-    ~/.rvm/bin
+    ~/.rbenv/bin
+    #~/.rvm/bin
     ~/.virtualenv/bin
     /usr/local/share/python
     /usr/local/sbin
@@ -41,4 +42,10 @@ if [[ `uname` = Darwin ]]; then
     if `which manpath >/dev/null 2>&1`; then
         MANPATH=`manpath`
     fi
+fi
+
+# init rbenv
+if whence rbenv >/dev/null 2>&1; then
+    eval "$(rbenv init -)"
+    sj_rbenv_present=1
 fi
