@@ -5,6 +5,7 @@ source :gemcutter
 gem 'rake', '0.9.2'
 gem 'htty'
 gem 'git-up'
+gem 'heroku'
 gem 'powify'
 gem 'pry', '0.9.7.4'
 gem 'pry-doc'
