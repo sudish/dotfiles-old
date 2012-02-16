@@ -9,6 +9,7 @@ gem 'heroku'
 gem 'powify'
 gem 'pry', '0.9.7.4'
 gem 'pry-doc'
+gem 'rcodetools'
 
 # lock versions of gems shared with other projects
 gem 'json', '1.6.1'
