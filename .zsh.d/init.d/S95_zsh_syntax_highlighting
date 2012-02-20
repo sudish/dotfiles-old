@@ -1,4 +1,4 @@
 # syntax highlighting for zsh
 # https://github.com/zsh-users/zsh-syntax-highlighting
 
-source ../external/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+source $ZDIR/external/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
