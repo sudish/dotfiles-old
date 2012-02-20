@@ -1,0 +1,4 @@
+# zsh anything.el widget
+# https://github.com/zsh-users/zaw
+
+source ../external/zaw/zaw.zsh
