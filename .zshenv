@@ -9,8 +9,9 @@
 
 # set up homebrew-specific paths only if under OS X
 if [[ `uname` = Darwin ]]; then
-    if [[ -x /usr/local/bin/brew ]]; then
-        BREWPATH=$(brew --prefix coreutils)/libexec/gnubin
+    brew=/usr/local/bin/brew
+    if [[ -x $brew ]]; then
+        BREWPATH=$($brew --prefix coreutils)/libexec/gnubin
     fi
 fi
 
