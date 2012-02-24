@@ -7,6 +7,14 @@
 #    sj_rvm_present=1
 #fi
 
+# set up homebrew-specific paths only if under OS X
+if [[ `uname` = Darwin ]]; then
+    brew=/usr/local/bin/brew
+    if [[ -x $brew ]]; then
+        BREWPATH=$($brew --prefix coreutils)/libexec/gnubin
+    fi
+fi
+
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
@@ -16,6 +24,7 @@ d=( ~/bin
     #~/.rvm/bin
     ~/.virtualenv/bin
     /usr/local/share/python
+    ${(s.:.)${BREWPATH}}
     /usr/local/sbin
     /usr/local/bin
     /sw/sbin
@@ -35,7 +44,7 @@ for dir in "$d[@]"; do      # delete nonexistent dirs
     [[ -d $dir && $dir != '.' ]] && s=($s $dir)
 done
 PATH=${(j.:.)${s}}
-unset d s dir
+unset d s dir BREWPATH
 
 # Set MANPATH from man's config, since fink, for e.g., mucks with it
 if [[ `uname` = Darwin ]]; then
