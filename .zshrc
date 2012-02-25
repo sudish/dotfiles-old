@@ -33,17 +33,6 @@ unset file
 # These lead to sundry madness under Linux, just say No! for now.
 [[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
 
-bindkey -e
-bindkey ' ' magic-space
-bindkey '' backward-delete-char
-bindkey '' backward-delete-char
-bindkey '[A' history-search-backward
-bindkey '[B' history-search-forward
-
-# zsh built-in help system (bound to ESC h by default)
-#unalias run-help
-autoload -Uz run-help
-
 # zsh options.  some of these are defaults and should be pruned
 setopt \
     allexport always_last_prompt always_to_end append_history auto_list \
