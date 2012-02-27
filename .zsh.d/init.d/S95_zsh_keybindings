@@ -1,0 +1,42 @@
+# zsh keybindings
+#
+# also initializes zle widgets as needed
+
+bindkey -e
+bindkey ' ' magic-space
+bindkey '' backward-delete-char
+bindkey '' backward-delete-char
+
+# zsh built-in help system (bound to ESC h)
+autoload -Uz run-help
+
+# search history using entered prefix
+bindkey '\e[A' history-beginning-search-backward
+bindkey '\e[B' history-beginning-search-forward
+
+# same as above, but leave cursor at end of lines
+# repeated presses remember and use original prefix
+autoload -U history-search-end
+zle -N history-beginning-search-backward-end history-search-end
+zle -N history-beginning-search-forward-end  history-search-end
+# bind to control up- and down-arrow for now
+bindkey '\e[1;5A' history-beginning-search-backward-end
+bindkey '\e[1;5B' history-beginning-search-forward-end
+
+# Insert $!, repeat for earlier history
+autoload -U smart-insert-last-word
+zle -N smart-insert-last-word
+bindkey '\e=' smart-insert-last-word
+
+# Insert last word, repeat for earlier
+autoload -U copy-earlier-word
+zle -N copy-earlier-word
+bindkey '\em' copy-earlier-word
+
+# history-based predictive typing
+# too much by default, must be explicitly toggled
+autoload -U predict-on
+zle -N predict-on
+zle -N predict-off
+bindkey '^X^Z' predict-on
+bindkey '^Z' predict-off
