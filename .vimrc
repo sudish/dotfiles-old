@@ -7,7 +7,7 @@ if has("syntax")
   syntax enable
 endif
 
-set background=light
+"set background=light
 set t_Co=256
 "let g:solarized_termcolors=16
 colorscheme solarized
