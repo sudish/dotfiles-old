@@ -21,9 +21,9 @@ function add_msg {
     echo
 
     if [ "${1}" == "global" ]; then
-        echo -e "\tsource /etc/profile.d/autojump.${2}"
+        echo -e "\t[[ -f /etc/profile.d/autojump.${2} ]] && source /etc/profile.d/autojump.${2}"
     elif [ "${1}" == "local" ]; then
-        echo -e "\tsource ~/.autojump/etc/profile.d/autojump.${2}"
+        echo -e "\t[[ -f ~/.autojump/etc/profile.d/autojump.${2} ]] && source ~/.autojump/etc/profile.d/autojump.${2}"
     fi
 
     echo
@@ -34,13 +34,26 @@ function add_msg {
 }
 
 function help_msg {
-    echo "sudo ./install.sh [--local] [--prefix /usr/local] [--zsh]"
+    echo
+    echo "./install.sh [--global or --local] [--bash or --zsh] [--prefix /usr/] "
+    echo
+    echo "If run without any arguments, the installer will:"
+    echo
+    echo -e "\t- as root install globally into /usr/"
+    echo -e "\t- as non-root install locally to ~/.autojump/"
+    echo -e "\t- version will be based on \$SHELL environmental variable"
+    echo
 }
 
 # Default install directory.
-prefix=/usr
-shell="bash"
-local=
+shell=`echo ${SHELL} | awk -F/ '{ print $NF }'`
+if [[ ${UID} -eq 0 ]]; then
+    local=
+    prefix=/usr
+else
+    local=true
+    prefix=~/.autojump
+fi
 
 user=${SUDO_USER:-${USER}}
 OS=`uname`
@@ -55,6 +68,14 @@ bashrc_file=${user_home}/.bashrc
 # Command line parsing
 while true; do
     case "$1" in
+        -b|--bash)
+            shell="bash"
+            shift
+            ;;
+        -g|--global)
+            local=
+            shift
+            ;;
         -h|--help|-\?)
             help_msg;
             exit 0
@@ -68,7 +89,7 @@ while true; do
             if [ $# -gt 1 ]; then
                 prefix=$2; shift 2
             else
-                echo "--prefix or -p require an argument" 1>&2
+                echo "--prefix or -p requires an argument" 1>&2
                 exit 1
             fi
             ;;
@@ -91,6 +112,20 @@ while true; do
     esac
 done
 
+# check for valid local install options
+if [[ ${UID} != 0 ]] && [ ! ${local} ]; then
+    echo
+    echo "Please rerun as root or use the --local option."
+    echo
+    exit 1
+fi
+
+# check shell if supported
+if [[ ${shell} != "bash" ]] && [[ ${shell} != "zsh" ]]; then
+    echo "Unsupported shell (${shell}). Use --bash or --zsh to explicitly define shell."
+    exit 1
+fi
+
 # check Python version
 python_version=`python -c 'import sys; print(sys.version_info[:])'`
 if [[ ${python_version:1:1} -eq 2 && ${python_version:4:1} -lt 6 ]]; then
@@ -106,16 +141,8 @@ if [[ ${python_version:1:1} -eq 2 && ${python_version:4:1} -lt 6 ]]; then
     exit 1
 fi
 
-# check for valid options
-if [[ ${UID} != 0 ]] && [ ! ${local} ]; then
-    echo
-    echo "Please rerun as root or use the --local option."
-    echo
-    exit 1
-fi
-
 echo
-echo "Installing files to ${prefix} ..."
+echo "Installing ${shell} version of autojump to ${prefix} ..."
 echo
 
 # add git revision to autojump
