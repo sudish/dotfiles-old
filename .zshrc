@@ -106,7 +106,7 @@ alias jobs='\jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
 alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Frameworks/LaunchServices.framework/Versions/A/Support/lsregister -kill -r -domain local -domain system -domain user'
-alias ec='emacsclient -nc'
+alias ec='emacsclient -n'
 alias t='tmux'
 alias rl='rlwrap -D 2 -p RED -r -s 1000'
 
