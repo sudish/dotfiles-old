@@ -43,9 +43,9 @@
 [pack]
 	threads = 0
 [push]
-	default = current
+	default = upstream
 [ui]
-  color = true
+	color = true
 [user]
 	name = Sudish Joseph
 	email = sudish@gmail.com
