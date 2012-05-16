@@ -27,6 +27,7 @@
 [core]
 	fsyncobjectfiles = true
 	preloadindex = true
+	excludesfile = ~/.gitignore_global
 [diff]
 	renames = copy
 [gc]
