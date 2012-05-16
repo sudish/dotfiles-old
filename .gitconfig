@@ -27,6 +27,7 @@
 [core]
 	fsyncobjectfiles = true
 	preloadindex = true
+	excludesfile = ~/.gitignore_global
 [diff]
 	renames = copy
 [gc]
@@ -43,9 +44,9 @@
 [pack]
 	threads = 0
 [push]
-	default = current
+	default = upstream
 [ui]
-  color = true
+	color = true
 [user]
 	name = Sudish Joseph
 	email = sudish@gmail.com
