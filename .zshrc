@@ -7,6 +7,8 @@ ZDIR=~/.zsh.d
 
 # Additional locations for functions and completions
 fpath+=$ZDIR/functions
+fpath+=$ZDIR/external/zsh-completions
+fpath+=/usr/local/share/zsh/site-functions
 
 # A lot of things are conditionalized on $uname
 uname=$(uname)
