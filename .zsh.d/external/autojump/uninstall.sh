@@ -1,19 +1,4 @@
 #!/usr/bin/env bash
-#Copyright Joel Schaerer 2008, 2009
-#This file is part of autojump
-
-#autojump is free software: you can redistribute it and/or modify
-#it under the terms of the GNU General Public License as published by
-#the Free Software Foundation, either version 3 of the License, or
-#(at your option) any later version.
-#
-#autojump is distributed in the hope that it will be useful,
-#but WITHOUT ANY WARRANTY; without even the implied warranty of
-#MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-#GNU General Public License for more details.
-#
-#You should have received a copy of the GNU General Public License
-#along with autojump.  If not, see <http://www.gnu.org/licenses/>.
 
 function help_msg {
     echo "sudo ./uninstall.sh [--prefix /usr/local]"
@@ -24,9 +9,9 @@ function remove_msg {
     echo "Please remove the line from .${2}rc :"
     echo
     if [ "${1}" == "global" ]; then
-        echo -e "\tsource /etc/profile.d/autojump.${2}"
+        echo -e "\t[[ -s /etc/profile.d/autojump.${2} ]] && source /etc/profile.d/autojump.${2}"
     elif [ "${1}" == "local" ]; then
-        echo -e "\tsource ~/.autojump/etc/profile.d/autojump.${2}"
+        echo -e "\t[[ -s ~/.autojump/etc/profile.d/autojump.${2} ]] && source ~/.autojump/etc/profile.d/autojump.${2}"
     fi
     echo
 }
