@@ -5,14 +5,18 @@
 
 local creds_dir=$HOME/.ssh/certs/zeevex
 
-export EC2_PRIVATE_KEY=$creds_dir/aws-sudish-cert-key-pkcs8.pem
-export EC2_CERT=$creds_dir/aws-sudish-cert.pem
+if [[ -d $creds_dir ]]; then
+  export EC2_PRIVATE_KEY=$creds_dir/aws-sudish-cert-key-pkcs8.pem
+  export EC2_CERT=$creds_dir/aws-sudish-cert.pem
 
-# defining the AWS_CREDENTIAL_FILE causes rds tools to blow up
-#export AWS_CREDENTIAL_FILE=$creds_dir/aws-sudish-iam-credentials-master
+  # defining the AWS_CREDENTIAL_FILE causes rds tools to blow up
+  #export AWS_CREDENTIAL_FILE=$creds_dir/aws-sudish-iam-credentials-master
+fi
 
-export EC2_HOME="$(brew --prefix ec2-api-tools)/jars"
-export AWS_RDS_HOME="$(brew --prefix rds-command-line-tools)/jars"
-export EC2_AMITOOL_HOME="$(brew --prefix ec2-ami-tools)/jars"
-export AWS_IAM_HOME="$(brew --prefix aws-iam-tools)/jars"
-export AWS_CLOUDFORMATION_HOME="$(brew --prefix aws-cfn-tools)/jars"
+if type brew >/dev/null; then
+  export EC2_HOME="$(brew --prefix ec2-api-tools)/jars"
+  export AWS_RDS_HOME="$(brew --prefix rds-command-line-tools)/jars"
+  export EC2_AMITOOL_HOME="$(brew --prefix ec2-ami-tools)/jars"
+  export AWS_IAM_HOME="$(brew --prefix aws-iam-tools)/jars"
+  export AWS_CLOUDFORMATION_HOME="$(brew --prefix aws-cfn-tools)/jars"
+fi
