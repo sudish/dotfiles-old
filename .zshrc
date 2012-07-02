@@ -111,6 +111,12 @@ alias lsrebuild='/System/Library/Frameworks/CoreServices.framework/Versions/A/Fr
 alias ec='emacsclient -n'
 alias t='tmux'
 alias rl='rlwrap -D 2 -p RED -r -s 1000'
+alias be='bundle exec'
+
+cdg() {
+    local gitroot
+    gitroot=`git rev-parse --show-toplevel 2>/dev/null` && cd $gitroot
+}
 
 if [[ $uname = Solaris ]] ; then
     alias ping='ping -s'
