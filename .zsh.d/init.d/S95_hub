@@ -1,4 +1,4 @@
 # git wrapper for github
 # https://github.com/defunkt/hub
 
-eval "$(hub alias -s)"
+type hub >/dev/null && eval "$(hub alias -s)"
