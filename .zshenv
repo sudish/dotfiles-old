@@ -21,6 +21,7 @@ fi
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
+    $ZDIR/external/autojump/bin
     ~/.cabal/bin
     ~/.nodejs/bin
     ~/.rbenv/bin
