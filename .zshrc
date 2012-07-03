@@ -2,9 +2,6 @@
 
 set -a
 
-# root dir for sundry zsh things
-ZDIR=~/.zsh.d
-
 # Additional locations for functions and completions
 fpath+=$ZDIR/functions
 fpath+=$ZDIR/external/zsh-completions
