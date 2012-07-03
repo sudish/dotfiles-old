@@ -1,3 +1,6 @@
+# root dir for sundry zsh things
+ZDIR=~/.zsh.d
+
 # set up fink env
 [[ -f /sw/bin/init.sh ]] && . /sw/bin/init.sh
 
