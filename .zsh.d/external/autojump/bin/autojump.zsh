@@ -1,5 +1,5 @@
 # determine the data directory according to the XDG Base Directory Specification
-if [[ -n ${XDG_DATA_HOME} ]] && [[ ${XDG_DATA_HOME} =~ ${USER} ]]; then
+if [[ -n ${XDG_DATA_HOME} ]] && [[ ${XDG_DATA_HOME} == *${USER}* ]]; then
     export AUTOJUMP_DATA_DIR="${XDG_DATA_HOME}/autojump"
 else
     export AUTOJUMP_DATA_DIR=${HOME}/.local/share/autojump
@@ -18,8 +18,8 @@ if [[ -d ${HOME}/.autojump ]]; then
     fpath=(${HOME}/.autojump/functions/ ${fpath})
 fi
 # set fpath if necessary for homebrew installation
-if [[ -d "`brew --prefix 2>/dev/null`/share/zsh/functions" ]]; then
-    fpath=(`brew --prefix`/share/zsh/functions ${fpath})
+if [[ -d "`brew --prefix 2>/dev/null`/share/zsh/site-functions" ]]; then
+    fpath=(`brew --prefix`/share/zsh/site-functions ${fpath})
 fi
 
 function autojump_preexec() {
@@ -34,11 +34,14 @@ function autojump_preexec() {
 typeset -ga preexec_functions
 preexec_functions+=autojump_preexec
 
-alias jumpstat="autojump --stat"
-
 function j {
-    local new_path="$(autojump $@)"
+    # Cannot use =~ due to MacPorts zsh v4.2, see issue #125.
+    if [[ ${@} == -* ]]; then
+        autojump ${@}
+        return
+    fi
 
+    local new_path="$(autojump $@)"
     if [ -d "${new_path}" ]; then
         echo -e "\\033[31m${new_path}\\033[0m"
         cd "${new_path}"

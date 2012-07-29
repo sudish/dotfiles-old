@@ -1,3 +1,6 @@
+# root dir for sundry zsh things
+ZDIR=~/.zsh.d
+
 # set up fink env
 [[ -f /sw/bin/init.sh ]] && . /sw/bin/init.sh
 
@@ -18,6 +21,7 @@ fi
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
+    $ZDIR/external/autojump/bin
     ~/.cabal/bin
     ~/.nodejs/bin
     ~/.rbenv/bin

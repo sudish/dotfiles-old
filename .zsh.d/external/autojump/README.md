@@ -12,16 +12,16 @@ Jump to a previously visited directory 'foobar':
 
 Show all database entries and their respective key weights:
 
-    jumpstat
+    j --stat
 
 DESCRIPTION
 -----------
 
 autojump is a faster way to navigate your filesystem. It works by
 maintaining a database of the directories you use the most from the
-command line. The jumpstat command shows you the current contents of the
-database. Directories must be visited first before they can be jumped
-to.
+command line. The `j --stat` command shows you the current contents of
+the database. Directories must be visited first before they can be
+jumped to.
 
 INSTALLATION
 ------------
@@ -131,7 +131,7 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     --purge             deletes database entries that no longer exist on system
 
-    --stat              show database entries and their key weights
+    -s, --stat              show database entries and their key weights
 
     --version           show version information and exit
 
@@ -144,6 +144,13 @@ INTERNAL OPTIONS
 
 ADDITIONAL CONFIGURATION
 ------------------------
+
+-   Enable ZSH Tab Completion
+
+    ZSH tab completion requires the `compinit` module to be loaded.
+    Please add the following line to your \~/.zshrc:
+
+        autoload -U compinit; compinit
 
 -   Always Ignore Case
 
@@ -176,6 +183,24 @@ ADDITIONAL CONFIGURATION
 ADVANCED USAGE
 --------------
 
+-   Using Multiple Arguments
+
+    Let's assume the following database:
+
+        30   /home/user/mail/inbox
+        10   /home/user/work/inbox
+
+    `j in` would jump into /home/user/mail/inbox as the higher weighted
+    entry. However you can pass multiple arguments to autojump to prefer
+    a different entry. In the above example, `j w in` would then jump
+    you into /home/user/work/inbox.
+
+-   ZSH Tab Completion
+
+    Tab completion requires two tabs before autojump will display the
+    completion menu. However if `setopt nolistambiguous` is enabled,
+    then only one tab is required.
+
 -   Change Directory Weight
 
     To manually change a directory's key weight, you can edit the file
@@ -189,9 +214,9 @@ ADVANCED USAGE
 KNOWN ISSUES
 ------------
 
--   zsh (bug \#86)
-
-    Tab completion does not work.
+-   The jump function `j` does not support directories that begin with
+    `-`. If you want to jump a directory called `--music`, try using
+    `j music` instead of `j --music`.
 
 -   jumpapplet (bug \#59)
 
