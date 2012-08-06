@@ -4,7 +4,7 @@ set -a
 
 # Additional locations for functions and completions
 fpath+=$ZDIR/functions
-fpath+=$ZDIR/external/zsh-completions
+fpath+=$ZDIR/external/zsh-completions/src
 fpath+=/usr/local/share/zsh/site-functions
 
 # A lot of things are conditionalized on $uname
