@@ -14,9 +14,6 @@ if [[ -d $creds_dir ]]; then
 fi
 
 if type brew >/dev/null; then
-  export EC2_HOME="$(brew --prefix ec2-api-tools)/jars"
-  export AWS_RDS_HOME="$(brew --prefix rds-command-line-tools)/jars"
-  export EC2_AMITOOL_HOME="$(brew --prefix ec2-ami-tools)/jars"
-  export AWS_IAM_HOME="$(brew --prefix aws-iam-tools)/jars"
-  export AWS_CLOUDFORMATION_HOME="$(brew --prefix aws-cfn-tools)/jars"
+  export EC2_HOME=/usr/local/Library/LinkedKegs/ec2-api-tools/jars
+  export AWS_RDS_HOME=/usr/local/Library/LinkedKegs/rds-command-line-tools/jars
 fi
