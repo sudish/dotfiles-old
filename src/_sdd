@@ -1,8 +1,5 @@
-#compdef ssh-copy-id
+#compdef sdd
 # ------------------------------------------------------------------------------
-# Copyright (c) 2011 Github zsh-users - http://github.com/zsh-users
-# All rights reserved.
-#
 # Redistribution and use in source and binary forms, with or without
 # modification, are permitted provided that the following conditions are met:
 #     * Redistributions of source code must retain the above copyright
@@ -28,23 +25,37 @@
 # Description
 # -----------
 #
-#  Completion script for ssh-copy-id.
+#  Completion script for sdd (http://freshmeat.net/projects/sdd/).
 #
 # ------------------------------------------------------------------------------
 # Authors
 # -------
 #
-#  * Julien Nicoulaud <julien.nicoulaud@gmail.com>
+#  * Massimiliano Torromeo <massimiliano.torromeo@gmail.com>
 #
 # ------------------------------------------------------------------------------
 
-
-# FIXME This completes "user@host" and not "[user@]host" ("user@" is optional),
-#       should be merged in _ssh.
-
-_arguments -A "-*" \
-  '-i+[use identity file]:SSH identity file:_files' \
-  '1: :_user_at_host'
+_values -w 'option' \
+  'if[specify input file]:input file:_tilde_files' \
+  'of[specify output file]:output file:_tilde_files' \
+  '(bs)ibs[input block size]:block size (bytes)' \
+  '(bs)obs[output block size]:block size (bytes)' \
+  '(ibs obs)bs[block size]:block size (bytes)' \
+  'cbs[conversion buffer size]:buffer size (bytes)' \
+  'skip[input/output initially skipped]:bytes' \
+  'seek[input/output initially skipped]:bytes' \
+  'count[number of input blocks to copy]:blocks' \
+  '-notrunc[do not truncate existing output file]' \
+  '-pg[print a dot on each write to indicate progress]' \
+  '-noerror[do not stop on error]' \
+  '-noerrwrite[do not write blocks not read correctly]' \
+  "-noseek[don't seek]" \
+  'try[error retry count]:number' \
+  '-debug[print debugging messages]' \
+  '-fill[fill each record with zeros up to obs]' \
+  '-swab' '-block' '-unblock' '-lcase' '-ucase' '-ascii' '-ebcdic' '-ibm' \
+  '-help[show help]' \
+  '-version[show version]'
 
 # Local Variables:
 # mode: Shell-Script
