@@ -9,16 +9,14 @@ gem 'git_tracker'
 gem 'heroku'
 gem 'foreman'
 gem 'powify'
-gem 'pry' #, '0.9.7.4'
+gem 'pry'
 gem 'pry-doc'
 gem 'rcodetools'
-gem 'vagrant',  '~> 0.9.7'
 
-# lock versions of gems shared with other projects
-#gem 'json' #, '1.5.1'
-#gem 'rdoc' #, '3.11'
-#gem 'sexp_processor' #, '3.0.7'
-#gem 'ruby_parser' #, '2.3.1'
-
-gem 'rb-fsevent' #, '0.4.3.1'
+# os x
+gem 'rb-fsevent'
 gem 'growl'
+
+# old version of vagrant else we use a really old version of ffi
+# that doesn't compile with 1.9.3
+#gem 'vagrant',  '~> 0.9.7'
