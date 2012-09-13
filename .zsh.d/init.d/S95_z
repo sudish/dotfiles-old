@@ -2,9 +2,3 @@
 # https://github.com/rupa/z
 
 source $ZDIR/external/z/z.sh
-
-function sj_z_precmd () {
-  _z --add "$(pwd -P)"
-}
-
-add-zsh-hook precmd sj_z_precmd
