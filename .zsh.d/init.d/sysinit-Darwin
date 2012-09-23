@@ -19,7 +19,8 @@ CLICOLOR=y
    MACOSX_DEPLOYMENT_TARGET=`/usr/bin/sw_vers -productVersion | sed -e 's/^\([0-9]*\.[0-9]*\).*/\1/'`
 
 # Use llvm-gcc to compile homebrew stuff, also enables LTO via -O4
-HOMEBREW_USE_LLVM=1
+#HOMEBREW_USE_CLANG=1
+HOMEBREW_CC=clang
 
 ## defaults
 
