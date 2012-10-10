@@ -9,8 +9,9 @@ sj_setup_ssh_agent() {
     
     if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
 	kcfiles=()
-	for file in {personal,github,vm,zeevex,github_zeevex}_rsa ; do
-	    [[ -r ~/.ssh/$file ]] && kcfiles+="$file"
+	for file in `cat ~/.ssh/agent-keyfiles`; do
+            keyfile=${file}_rsa
+	    [[ -r ~/.ssh/$keyfile ]] && kcfiles+="$keyfile"
 	done
 	if [[ -n $kcfiles ]] ; then
 	    keychain --agents ssh --host "$keyhost" -q "$kcfiles[@]"
