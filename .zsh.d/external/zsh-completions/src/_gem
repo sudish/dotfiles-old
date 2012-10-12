@@ -14,9 +14,6 @@
 #  * Alex Vollmer (https://github.com/alexvollmer)
 #
 # ------------------------------------------------------------------------------
-# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
-# vim: ft=zsh sw=2 ts=2 et
-# ------------------------------------------------------------------------------
 
 
 _gem() {
@@ -53,6 +50,7 @@ _gem() {
       "mirror[Mirror a gem repository]" \
       "outdated[Display all gems that need updates]" \
       "pristine[Restores installed gems to pristine condition from files located in the gem cache]" \
+      "push[Push a gem up to RubyGems.org]" \
       "query[Query gem information in local or remote repositories]" \
       "rdoc[Generates RDoc for pre-installed gems]" \
       "search[Display all gems whose name contains STRING]" \
@@ -96,6 +94,7 @@ __gem_help_arguments() {
     "mirror"
     "outdated"
     "pristine"
+    "push"
     "query"
     "rdoc"
     "search"
@@ -304,6 +303,14 @@ _gem_pristine() {
     $gem_general_flags && ret=0
 }
 
+_gem_push() {
+  _arguments \
+    "*:URI: _alternative 'files:file:_files -g *.gem'" \
+    "(-k --key)"{-k,--key}"[Use the given API key from ~/.gem/credentials]" \
+    "--host[Push to another gemcutter-compatible host]" \
+    $gem_general_flags && ret=0
+}
+
 _gem_query() {
   _arguments \
     "(-i --no-installed)"{-i,--no-installed}"[Check for installed gem]" \
@@ -454,3 +461,11 @@ _gem_which() {
     "(-g --no-gems-first)"{-g,--no-gems-first}"[search gems before non-gems]" \
     $gem_general_flags && ret=0
 }
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et

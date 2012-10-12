@@ -1,2 +1,2 @@
 # init dircolors if present
-[[ -f $ZDIR/dircolors ]] && eval `dircolors $ZDIR/dircolors`
+[[ -f $ZDIR/dircolors ]] && eval `dircolors $ZDIR/dircolors 2>/dev/null`

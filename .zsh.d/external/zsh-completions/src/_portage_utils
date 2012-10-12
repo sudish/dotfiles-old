@@ -35,7 +35,7 @@
 # Authors
 # -------
 #
-#  * Vadim A. Misbakh-Soloviev <mva@mva.name>
+#  * Vadim A. Misbakh-Soloviov <mva@mva.name>
 #  * Bapt <bapt@tuxfamily.org>
 #  * kaworu <kaworu@kaworu.ch>
 #  * David Durrleman <dualmoo@gmail.com>
@@ -43,18 +43,18 @@
 #  * Mamoru Komachi <usata@usata.org>
 #
 # ------------------------------------------------------------------------------
-# -*- mode: zsh; sh-indentation: 2; indent-tabs-mode: nil; sh-basic-offset: 2; -*-
-# vim: ft=zsh sw=2 ts=2 et
-# ------------------------------------------------------------------------------
 #<app-portage/portage-utils-0.19>
 #
 
 local common_args PORTDIR var
 var=PORTDIR
+[[ -z ${(P)var} && -r /etc/portage/make.conf ]] &&
+local $var="`. /etc/portage/make.conf 2>/dev/null; echo ${(P)var}`"
 [[ -z ${(P)var} && -r /etc/make.conf ]] &&
 local $var="`. /etc/make.conf 2>/dev/null; echo ${(P)var}`"
-[[ -z ${(P)var} && -r /etc/make.globals ]] &&
-local $var="`. /etc/make.globals 2>/dev/null; echo ${(P)var}`"
+[[ -z ${(P)var} && -r /usr/share/portage/config/make.globals ]] &&
+local $var="`. /usr/share/portage/config/make.globals 2>/dev/null; echo ${(P)var}`"
+
 common_args=(
 	{'(--verbose)-v','(-v)--verbose'}'[Make a lot of noise]' \
 	{'(--quiet)-q','(-q)--quiet'}'[Tighter output; suppress warnings]' \
@@ -187,3 +187,11 @@ qxpak)
 
 ;;
 esac
+
+# Local Variables:
+# mode: Shell-Script
+# sh-indentation: 2
+# indent-tabs-mode: nil
+# sh-basic-offset: 2
+# End:
+# vim: ft=zsh sw=2 ts=2 et
