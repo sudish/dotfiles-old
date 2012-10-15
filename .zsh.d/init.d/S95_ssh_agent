@@ -9,7 +9,7 @@ sj_setup_ssh_agent() {
     
     if [[ `whoami` == 'sj' || `whoami` == 'sudish' ]]; then
 	kcfiles=()
-	for file in `cat ~/.ssh/agent-keyfiles`; do
+	for file in `cat ~/.ssh/agent-keyfiles 2>/dev/null`; do
             keyfile=${file}_rsa
 	    [[ -r ~/.ssh/$keyfile ]] && kcfiles+="$keyfile"
 	done

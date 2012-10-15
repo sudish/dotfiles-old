@@ -1,4 +1,4 @@
 # Tracks your most used directories, based on 'frecency'.
 # https://github.com/rupa/z
 
-source $ZDIR/external/z/z.sh
+is-at-least 4.3.10 && source $ZDIR/external/z/z.sh
