@@ -8,7 +8,7 @@ fpath+=$ZDIR/external/zsh-completions/src
 fpath+=/usr/local/share/zsh/site-functions
 
 # A lot of things are conditionalized on $uname
-uname=$(uname)
+uname=$(uname -o)
 
 autoload -Uz is-at-least add-zsh-hook
 
