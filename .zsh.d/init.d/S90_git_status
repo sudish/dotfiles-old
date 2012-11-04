@@ -4,17 +4,21 @@
 #
 # Handles git by itself and uses vcs_info for all others.
 
-autoload -Uz vcs_info add-zsh-hook
+autoload -Uz add-zsh-hook
 
-# Non-git vcs_info
-zstyle ':vcs_info:*' enable bzr darcs # hg cvs svn
-zstyle ':vcs_info:*' formats " %s:$cb[green]%b$cb[yellow]%u%c$cb[none]"
-zstyle ':vcs_info:*' actionformats " %s:$cb[green]%b$cb[red]|%a$cb[yellow]%u%c$cb[none]"
-zstyle ':vcs_info:*' stagedstr '+'
-zstyle ':vcs_info:*' unstagedstr '*'
-zstyle ':vcs_info:bzr:*' use-simple true 
+if is-at-least 4.3.10; then
+    autoload -Uz vcs_info
 
-add-zsh-hook precmd vcs_info
+    # Non-git vcs_info
+    zstyle ':vcs_info:*' enable bzr darcs # hg cvs svn
+    zstyle ':vcs_info:*' formats " %s:$cb[green]%b$cb[yellow]%u%c$cb[none]"
+    zstyle ':vcs_info:*' actionformats " %s:$cb[green]%b$cb[red]|%a$cb[yellow]%u%c$cb[none]"
+    zstyle ':vcs_info:*' stagedstr '+'
+    zstyle ':vcs_info:*' unstagedstr '*'
+    zstyle ':vcs_info:bzr:*' use-simple true 
+
+    add-zsh-hook precmd vcs_info
+fi
 
 # Computes and displays the status of a git repo in PS1/RPS1.  Information
 # displayed includes: branch, '*' for un-added changes, '+' for uncommitted
@@ -135,4 +139,3 @@ sj_git_precmd_update() {
 
 add-zsh-hook precmd sj_git_precmd_update
 add-zsh-hook chpwd  sj_git_chpwd_update
-
