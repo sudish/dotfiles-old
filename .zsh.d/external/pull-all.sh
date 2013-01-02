@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# must run from root of repo
+gitroot=`git rev-parse --show-toplevel 2>/dev/null`
+cd $gitroot || (echo "Can't chdir to git root: $gitroot"; exit 1)
+
 ext_dir=.zsh.d/external
 branch=master
 
