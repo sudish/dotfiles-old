@@ -6,7 +6,7 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     --purge             deletes database entries that no longer exist on system
 
-    -s, --stat              show database entries and their key weights
+    -s, --stat          show database entries and their key weights
 
     --version           show version information and exit
 
@@ -52,13 +52,23 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
         export AUTOJUMP_KEEP_SYMLINKS=1
 
+- Autocomplete Additional Commands (Bash only)
+
+    Autojump can be used to autocomplete other commands (e.g. cp or vim). To use
+    this feature, add the following environmental variable in your ~/.bashrc:
+
+        export AUTOJUMP_AUTOCOMPLETE_CMDS='cp vim'
+
+    Changes require reloading autojump to take into effect.
+
 ## ADVANCED USAGE
 
 - Using Multiple Arguments
 
     Let's assume the following database:
 
-        30   /home/user/mail/inbox 10   /home/user/work/inbox
+        30   /home/user/mail/inbox
+        10   /home/user/work/inbox
 
     `j in` would jump into /home/user/mail/inbox as the higher weighted entry.
     However you can pass multiple arguments to autojump to prefer a different
@@ -91,7 +101,7 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     Do this:
 
-       export PROMPT_COMMAND="${PROMPT_COMMAND}; history -a"
+        export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND ;} history -a"
 
 - The jump function `j` does not support directories that begin with `-`. If you
   want to jump a directory called `--music`, try using `j music` instead of `j
