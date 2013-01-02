@@ -18,6 +18,8 @@ if [[ `uname` = Darwin ]]; then
     fi
 fi
 
+[[ -r /etc/environment ]] && source /etc/environment
+
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
@@ -58,6 +60,7 @@ if [[ `uname` = Darwin ]]; then
 fi
 
 # init rbenv
+[[ -d /opt/rbenv ]] && RBENV_ROOT=/opt/rbenv
 if whence rbenv >/dev/null 2>&1; then
     eval "$(rbenv init -)"
     sj_rbenv_present=1
