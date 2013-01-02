@@ -18,6 +18,8 @@ if [[ `uname` = Darwin ]]; then
     fi
 fi
 
+[[ -r /etc/environment ]] && source /etc/environment
+
 # Set a reasonable path, remove dirs that don't exist on this machine
 unsetopt ksh_arrays
 d=( ~/bin
