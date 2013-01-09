@@ -6,9 +6,14 @@ autojump - a faster way to navigate your filesystem
 SYNOPSIS
 --------
 
-Jump to a previously visited directory 'foobar':
+Jump to a previously visited directory that contains 'foo':
 
     j foo
+
+Jump to a previously visited subdirectory of the current working
+directory:
+
+    jc bar
 
 Show all database entries and their respective key weights:
 
@@ -28,16 +33,14 @@ INSTALLATION
 
 ### REQUIREMENTS
 
--   Python v2.7, 3.0, or 2.6 with argparse
--   Bash v4.0 for tab completion
+-   Python v2.6+
+-   Bash v4.0 for tab completion (or zsh)
 
 If you are unable to update Python to a supported version, older
 versions of autojump can be
 [downloaded](https://github.com/joelthelion/autojump/downloads) and
 installed manually.
 
--   Python v2.6 is supported by [release
-    v19](https://github.com/downloads/joelthelion/autojump/autojump_v19.tar.gz).
 -   Python v2.4 is supported by [release
     v12](https://github.com/downloads/joelthelion/autojump/autojump_v12.tar.gz).
 
@@ -83,7 +86,7 @@ Grab a copy of autojump:
 Run the installation script:
 
     cd autojump
-    ./install.sh [ --local ] [ --zsh ]
+    ./install.sh [ --local ]
 
 and follow on screen instructions.
 
@@ -131,7 +134,7 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     --purge             deletes database entries that no longer exist on system
 
-    -s, --stat              show database entries and their key weights
+    -s, --stat          show database entries and their key weights
 
     --version           show version information and exit
 
@@ -180,6 +183,16 @@ ADDITIONAL CONFIGURATION
 
         export AUTOJUMP_KEEP_SYMLINKS=1
 
+-   Autocomplete Additional Commands (Bash only)
+
+    Autojump can be used to autocomplete other commands (e.g. cp or
+    vim). To use this feature, add the following environmental variable
+    in your \~/.bashrc:
+
+        export AUTOJUMP_AUTOCOMPLETE_CMDS='cp vim'
+
+    Changes require reloading autojump to take into effect.
+
 ADVANCED USAGE
 --------------
 
@@ -214,9 +227,20 @@ ADVANCED USAGE
 KNOWN ISSUES
 ------------
 
+-   For bash users, autojump keeps track of directories as a pre-command
+    hook by modifying $PROMPT\_COMMAND. If you overwrite
+    $PROMPT\_COMMAND in \~/.bashrc you can cause problems. Don't do
+    this:
+
+        export PROMPT_COMMAND="history -a"
+
+    Do this:
+
+        export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND ;} history -a"
+
 -   The jump function `j` does not support directories that begin with
     `-`. If you want to jump a directory called `--music`, try using
-    `j music` instead of `j --music`.
+    `j music` instead of `j   --music`.
 
 -   jumpapplet (bug \#59)
 

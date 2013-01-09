@@ -24,17 +24,17 @@ from __future__ import division, print_function
 import sys
 import os
 try:
-  import argparse
+    import argparse
 except ImportError:
-  sys.path.append(os.path.dirname(os.path.realpath(__file__)))
-  import autojump_argparse as argparse
-  sys.path.pop()
+    sys.path.append(os.path.dirname(os.path.realpath(__file__)))
+    import autojump_argparse as argparse
+    sys.path.pop()
 from operator import itemgetter
 import re
 import shutil
 from tempfile import NamedTemporaryFile
 
-VERSION = 'release-v21-rc.2'
+VERSION = 'release-v21.2.3'
 MAX_KEYWEIGHT = 1000
 MAX_STORED_PATHS = 1000
 COMPLETION_SEPARATOR = '__'
@@ -114,11 +114,18 @@ class Database:
         """
         if os.path.exists(self.filename):
             try:
-                with open(self.filename, 'r') as f:
-                    for line in f.readlines():
-                        weight, path = line[:-1].split("\t", 1)
-                        path = decode(path, 'utf-8')
-                        self.data[path] = float(weight)
+                if sys.version_info >= (3, 0):
+                    with open(self.filename, 'r', encoding = 'utf-8') as f:
+                        for line in f.readlines():
+                            weight, path = line[:-1].split("\t", 1)
+                            path = decode(path, 'utf-8')
+                            self.data[path] = float(weight)
+                else:
+                    with open(self.filename, 'r') as f:
+                        for line in f.readlines():
+                            weight, path = line[:-1].split("\t", 1)
+                            path = decode(path, 'utf-8')
+                            self.data[path] = float(weight)
             except (IOError, EOFError):
                 self.load_backup(error_recovery)
         else:
@@ -224,7 +231,7 @@ def options():
             help='delete all database entries that no longer exist on system')
     parser.add_argument('-s', '--stat', action="store_true", default=False,
             help='show database entries and their key weights')
-    parser.add_argument('--version', action="version", version="%(prog)s " + VERSION,
+    parser.add_argument('-v', '--version', action="version", version="%(prog)s " + VERSION,
             help='show version information and exit')
 
     ARGS = parser.parse_args()
@@ -329,10 +336,7 @@ def find_matches(db, patterns, max_matches=1, ignore_case=False, fuzzy=False):
     Find max_matches paths that match the pattern, and add them to the result_list.
     """
     try:
-        if KEEP_SYMLINKS:
-            current_dir = decode(os.curdir)
-        else:
-            current_dir = decode(os.path.realpath(os.curdir))
+        current_dir = decode(os.path.realpath(os.curdir))
     except OSError:
         current_dir = None
 
@@ -351,11 +355,21 @@ def find_matches(db, patterns, max_matches=1, ignore_case=False, fuzzy=False):
                 end = d[0].split('/')[-1]
 
             # collisions: ignore lower weight paths
-            if end not in end_dirs and (os.path.exists(d[0]) or TESTING):
+            if end not in end_dirs:
                 end_dirs[end] = d[0]
 
         # find the first match (heighest weight)
-        found = get_close_matches(patterns[-1], end_dirs, 1, .6)
+        while True:
+            found = get_close_matches(patterns[-1], end_dirs, n=1, cutoff=.6)
+            if not found:
+                break
+            # avoid jumping to current directory
+            if (os.path.exists(found[0]) or TESTING) and \
+                current_dir != os.path.realpath(found[0]):
+                break
+            # continue with the last found directory removed
+            del end_dirs[found[0]]
+
         if found:
             found = found[0]
             results.append(end_dirs[found])
@@ -364,10 +378,6 @@ def find_matches(db, patterns, max_matches=1, ignore_case=False, fuzzy=False):
             return []
 
     for path, _ in dirs:
-        # avoid jumping to current directory
-        if current_dir == path :
-            continue
-
         found, tmp = True, path
         for n, p in enumerate(patterns):
             # for single/last pattern, only check end of path
@@ -378,6 +388,11 @@ def find_matches(db, patterns, max_matches=1, ignore_case=False, fuzzy=False):
             if not found: break
 
         if found and (os.path.exists(path) or TESTING):
+            # avoid jumping to current directory
+            # (call out to realpath this late to not stat all dirs)
+            if current_dir == os.path.realpath(path):
+                continue
+
             if path not in results:
                 results.append(path)
             if len(results) >= max_matches:
@@ -420,15 +435,16 @@ def shell_utility():
 
     results = []
     if not ALWAYS_IGNORE_CASE:
-        results = find_matches(db, patterns, max_matches, False)
+        results = find_matches(db, patterns, max_matches, ignore_case=False)
 
     # if no results, try ignoring case
     if ARGS.complete or not results:
-        results = find_matches(db, patterns, max_matches, True)
+        results = find_matches(db, patterns, max_matches, ignore_case=True)
 
     # if no results, try approximate matching
     if not results:
-        results = find_matches(db, patterns, max_matches, True, True)
+        results = find_matches(db, patterns, max_matches, ignore_case=True,
+                fuzzy=True)
 
     quotes = ""
     if ARGS.complete and ARGS.bash: quotes = "'"
@@ -451,4 +467,5 @@ def shell_utility():
     return True
 
 if __name__ == "__main__":
-    if not shell_utility(): sys.exit(1)
+    if not shell_utility():
+        sys.exit(1)

@@ -13,6 +13,7 @@ gem 'powify'
 gem 'pry'
 gem 'pry-doc'
 gem 'rcodetools'
+gem 'tunnels'
 
 # os x
 gem 'rb-fsevent'

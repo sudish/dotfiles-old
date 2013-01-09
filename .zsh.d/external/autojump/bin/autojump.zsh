@@ -17,10 +17,11 @@ if [[ -d ${HOME}/.autojump ]]; then
     path=(${HOME}/.autojump/bin ${path})
     fpath=(${HOME}/.autojump/functions/ ${fpath})
 fi
+
 # set fpath if necessary for homebrew installation
-if [[ -d "`brew --prefix 2>/dev/null`/share/zsh/site-functions" ]]; then
-    fpath=(`brew --prefix`/share/zsh/site-functions ${fpath})
-fi
+command -v brew &>/dev/null \
+    && [[ -d "`brew --prefix`/share/zsh/site-functions" ]] \
+    && fpath=(`brew --prefix`/share/zsh/site-functions ${fpath})
 
 function autojump_preexec() {
     if [[ "${AUTOJUMP_KEEP_SYMLINKS}" == "1" ]]; then
@@ -41,7 +42,7 @@ function j {
         return
     fi
 
-    local new_path="$(autojump $@)"
+    local new_path="$(autojump ${@})"
     if [ -d "${new_path}" ]; then
         echo -e "\\033[31m${new_path}\\033[0m"
         cd "${new_path}"
@@ -49,5 +50,13 @@ function j {
         echo "autojump: directory '${@}' not found"
         echo "Try \`autojump --help\` for more information."
         false
+    fi
+}
+
+function jc {
+    if [[ ${@} == -* ]]; then
+        j ${@}
+    else
+        j $(pwd) ${@}
     fi
 }
