@@ -65,8 +65,11 @@ autojump_add_to_database() {
 }
 
 case $PROMPT_COMMAND in
-    *autojump*)    ;;
-    *)   export PROMPT_COMMAND="${PROMPT_COMMAND:+$(echo "${PROMPT_COMMAND}" | awk '{gsub(/; *$/,"")}1') ; }autojump_add_to_database";;
+    *autojump*)
+        ;;
+    *)
+        export PROMPT_COMMAND="${PROMPT_COMMAND:+$(echo "${PROMPT_COMMAND}" | awk '{gsub(/; *$/,"")}1') ; }autojump_add_to_database"
+        ;;
 esac
 
 function j {
@@ -90,6 +93,37 @@ function jc {
     if [[ ${@} == -* ]]; then
         j ${@}
     else
-        j $(pwd) ${@}
+        j $(pwd)/ ${@}
+    fi
+}
+
+function jo {
+    if [ -z $(autojump $@) ]; then
+        echo "autojump: directory '${@}' not found"
+        echo "Try \`autojump --help\` for more information."
+        false
+    else
+        case ${OSTYPE} in
+            linux-gnu)
+                xdg-open "$(autojump $@)"
+                ;;
+            darwin*)
+                open "$(autojump $@)"
+                ;;
+            cygwin)
+                cmd /C start "" $(cygpath -w -a $(pwd))
+                ;;
+            *)
+                echo "Unknown operating system." 1>&2
+                ;;
+        esac
+    fi
+}
+
+function jco {
+    if [[ ${@} == -* ]]; then
+        j ${@}
+    else
+        jo $(pwd) ${@}
     fi
 }

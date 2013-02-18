@@ -138,12 +138,46 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     --version           show version information and exit
 
-INTERNAL OPTIONS
-----------------
+ADVANCED USAGE
+--------------
 
-    -b, --bash          enclose directory with quotes to prevent errors
+-   Using Multiple Arguments
 
-    --complete          used for tab completion
+    Let's assume the following database:
+
+        30   /home/user/mail/inbox
+        10   /home/user/work/inbox
+
+    `j in` would jump into /home/user/mail/inbox as the higher weighted
+    entry. However you can pass multiple arguments to autojump to prefer
+    a different entry. In the above example, `j w in` would then jump
+    you into /home/user/work/inbox.
+
+-   Jump to a Child Directory.
+
+    Sometimes it's convenient to jump to a child directory
+    (sub-directory of current directory) rather than typing out the full
+    name.
+
+        jc images
+
+-   Open File Manager To Directories (instead of jumping)
+
+    Instead of jumping to a directory, you can open a file explorer
+    window (Mac Finder, Windows Explorer, GNOME Nautilus, etc) to the
+    directory instead.
+
+        jo music
+
+    Opening a file manager to a child directory is also supported.
+
+        jco images
+
+-   ZSH Tab Completion
+
+    Tab completion requires two tabs before autojump will display the
+    completion menu. However if `setopt nolistambiguous` is enabled,
+    then only one tab is required.
 
 ADDITIONAL CONFIGURATION
 ------------------------
@@ -151,9 +185,16 @@ ADDITIONAL CONFIGURATION
 -   Enable ZSH Tab Completion
 
     ZSH tab completion requires the `compinit` module to be loaded.
-    Please add the following line to your \~/.zshrc:
+    Please add the following line to your \~/.zshrc *after* loading
+    autojump:
 
-        autoload -U compinit; compinit
+        autoload -U compinit && compinit
+
+    For security compinit checks completion system if files will be
+    owned by root or the current user. This check can be ignored by
+    using the -u flag:
+
+        autoload -U compinit && compinit -u
 
 -   Always Ignore Case
 
@@ -193,27 +234,6 @@ ADDITIONAL CONFIGURATION
 
     Changes require reloading autojump to take into effect.
 
-ADVANCED USAGE
---------------
-
--   Using Multiple Arguments
-
-    Let's assume the following database:
-
-        30   /home/user/mail/inbox
-        10   /home/user/work/inbox
-
-    `j in` would jump into /home/user/mail/inbox as the higher weighted
-    entry. However you can pass multiple arguments to autojump to prefer
-    a different entry. In the above example, `j w in` would then jump
-    you into /home/user/work/inbox.
-
--   ZSH Tab Completion
-
-    Tab completion requires two tabs before autojump will display the
-    completion menu. However if `setopt nolistambiguous` is enabled,
-    then only one tab is required.
-
 -   Change Directory Weight
 
     To manually change a directory's key weight, you can edit the file
@@ -242,10 +262,6 @@ KNOWN ISSUES
     `-`. If you want to jump a directory called `--music`, try using
     `j music` instead of `j   --music`.
 
--   jumpapplet (bug \#59)
-
-    Does not work in Gnome 3 shell or LDXE.
-
 FILES
 -----
 
@@ -259,14 +275,6 @@ REPORTING BUGS
 For any usage related issues or feature requests please visit:
 
 *https://github.com/joelthelion/autojump/issues*
-
-MAILING LIST
-------------
-
-For release announcements and development related discussion please
-visit:
-
-*https://groups.google.com/forum/?fromgroups\#!forum/autojump*
 
 THANKS
 ------
