@@ -53,6 +53,14 @@ class TestAutojump(unittest.TestCase):
         self.db.add('/2', 10)
         self.assertEqual(self.db.get_weight('/2'), 14.142135623730951)
 
+    def test_db_decrease(self):
+        self.db.add('/1', 10)
+        self.db.decrease('/1', 50)
+        self.assertEquals(self.db.get_weight('/1'), 0)
+        self.db.add('/2', 100)
+        self.db.decrease('/2', 50)
+        self.assertEquals(self.db.get_weight('/2'), 50)
+
     def test_db_get_weight(self):
         self.assertEqual(self.db.get_weight('/'), 0)
 

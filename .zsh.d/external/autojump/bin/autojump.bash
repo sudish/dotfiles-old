@@ -27,7 +27,10 @@ _autojump_files()
 EOF
     fi
 }
-complete -o default -o bashdefault -F _autojump_files cp mv meld diff kdiff3 vim emacs
+
+if [[ -n ${AUTOJUMP_AUTOCOMPLETE_CMDS} ]]; then
+    complete -o default -o bashdefault -F _autojump_files ${AUTOJUMP_AUTOCOMPLETE_CMDS}
+fi
 
 #determine the data directory according to the XDG Base Directory Specification
 if [[ -n ${XDG_DATA_HOME} ]] && [[ ${XDG_DATA_HOME} =~ ${USER} ]]; then
@@ -49,17 +52,24 @@ if [ -d ~/.autojump/ ]; then
 fi
 
 export AUTOJUMP_HOME=${HOME}
-if [ "${AUTOJUMP_KEEP_SYMLINKS}" == "1" ]
-then
+if [ "${AUTOJUMP_KEEP_SYMLINKS}" == "1" ]; then
     _PWD_ARGS=""
 else
     _PWD_ARGS="-P"
 fi
-AUTOJUMP='{ [[ "$AUTOJUMP_HOME" == "$HOME" ]] && (autojump -a "$(pwd ${_PWD_ARGS})"&)>/dev/null 2>>"${AUTOJUMP_DATA_DIR}/.autojump_errors";} 2>/dev/null'
+
+autojump_add_to_database() {
+    if [[ "${AUTOJUMP_HOME}" == "${HOME}" ]]; then
+        autojump -a "$(pwd ${_PWD_ARGS})" 1>/dev/null 2>>"${AUTOJUMP_DATA_DIR}/.autojump_errors"
+    fi
+}
 
 case $PROMPT_COMMAND in
-    *autojump*)    ;;
-    *)   export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND ; }$AUTOJUMP";;
+    *autojump*)
+        ;;
+    *)
+        export PROMPT_COMMAND="${PROMPT_COMMAND:+$(echo "${PROMPT_COMMAND}" | awk '{gsub(/; *$/,"")}1') ; }autojump_add_to_database"
+        ;;
 esac
 
 function j {
@@ -68,7 +78,7 @@ function j {
         return
     fi
 
-    new_path="$(autojump $@)"
+    new_path="$(autojump ${@})"
     if [ -d "${new_path}" ]; then
         echo -e "\\033[31m${new_path}\\033[0m"
         cd "${new_path}"
@@ -76,5 +86,44 @@ function j {
         echo "autojump: directory '${@}' not found"
         echo "Try \`autojump --help\` for more information."
         false
+    fi
+}
+
+function jc {
+    if [[ ${@} == -* ]]; then
+        j ${@}
+    else
+        j $(pwd)/ ${@}
+    fi
+}
+
+function jo {
+    if [ -z $(autojump $@) ]; then
+        echo "autojump: directory '${@}' not found"
+        echo "Try \`autojump --help\` for more information."
+        false
+    else
+        case ${OSTYPE} in
+            linux-gnu)
+                xdg-open "$(autojump $@)"
+                ;;
+            darwin*)
+                open "$(autojump $@)"
+                ;;
+            cygwin)
+                cmd /C start "" $(cygpath -w -a $(pwd))
+                ;;
+            *)
+                echo "Unknown operating system." 1>&2
+                ;;
+        esac
+    fi
+}
+
+function jco {
+    if [[ ${@} == -* ]]; then
+        j ${@}
+    else
+        jo $(pwd) ${@}
     fi
 }

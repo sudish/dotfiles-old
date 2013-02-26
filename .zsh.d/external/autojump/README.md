@@ -6,9 +6,14 @@ autojump - a faster way to navigate your filesystem
 SYNOPSIS
 --------
 
-Jump to a previously visited directory 'foobar':
+Jump to a previously visited directory that contains 'foo':
 
     j foo
+
+Jump to a previously visited subdirectory of the current working
+directory:
+
+    jc bar
 
 Show all database entries and their respective key weights:
 
@@ -81,7 +86,7 @@ Grab a copy of autojump:
 Run the installation script:
 
     cd autojump
-    ./install.sh [ --local ] [ --zsh ]
+    ./install.sh [ --local ]
 
 and follow on screen instructions.
 
@@ -129,16 +134,50 @@ Options must be passed to 'autojump' and not the 'j' wrapper function.
 
     --purge             deletes database entries that no longer exist on system
 
-    -s, --stat              show database entries and their key weights
+    -s, --stat          show database entries and their key weights
 
     --version           show version information and exit
 
-INTERNAL OPTIONS
-----------------
+ADVANCED USAGE
+--------------
 
-    -b, --bash          enclose directory with quotes to prevent errors
+-   Using Multiple Arguments
 
-    --complete          used for tab completion
+    Let's assume the following database:
+
+        30   /home/user/mail/inbox
+        10   /home/user/work/inbox
+
+    `j in` would jump into /home/user/mail/inbox as the higher weighted
+    entry. However you can pass multiple arguments to autojump to prefer
+    a different entry. In the above example, `j w in` would then jump
+    you into /home/user/work/inbox.
+
+-   Jump to a Child Directory.
+
+    Sometimes it's convenient to jump to a child directory
+    (sub-directory of current directory) rather than typing out the full
+    name.
+
+        jc images
+
+-   Open File Manager To Directories (instead of jumping)
+
+    Instead of jumping to a directory, you can open a file explorer
+    window (Mac Finder, Windows Explorer, GNOME Nautilus, etc) to the
+    directory instead.
+
+        jo music
+
+    Opening a file manager to a child directory is also supported.
+
+        jco images
+
+-   ZSH Tab Completion
+
+    Tab completion requires two tabs before autojump will display the
+    completion menu. However if `setopt nolistambiguous` is enabled,
+    then only one tab is required.
 
 ADDITIONAL CONFIGURATION
 ------------------------
@@ -146,9 +185,16 @@ ADDITIONAL CONFIGURATION
 -   Enable ZSH Tab Completion
 
     ZSH tab completion requires the `compinit` module to be loaded.
-    Please add the following line to your \~/.zshrc:
+    Please add the following line to your \~/.zshrc *after* loading
+    autojump:
 
-        autoload -U compinit; compinit
+        autoload -U compinit && compinit
+
+    For security compinit checks completion system if files will be
+    owned by root or the current user. This check can be ignored by
+    using the -u flag:
+
+        autoload -U compinit && compinit -u
 
 -   Always Ignore Case
 
@@ -178,25 +224,15 @@ ADDITIONAL CONFIGURATION
 
         export AUTOJUMP_KEEP_SYMLINKS=1
 
-ADVANCED USAGE
---------------
+-   Autocomplete Additional Commands (Bash only)
 
--   Using Multiple Arguments
+    Autojump can be used to autocomplete other commands (e.g. cp or
+    vim). To use this feature, add the following environmental variable
+    in your \~/.bashrc:
 
-    Let's assume the following database:
+        export AUTOJUMP_AUTOCOMPLETE_CMDS='cp vim'
 
-        30   /home/user/mail/inbox 10   /home/user/work/inbox
-
-    `j in` would jump into /home/user/mail/inbox as the higher weighted
-    entry. However you can pass multiple arguments to autojump to prefer
-    a different entry. In the above example, `j w in` would then jump
-    you into /home/user/work/inbox.
-
--   ZSH Tab Completion
-
-    Tab completion requires two tabs before autojump will display the
-    completion menu. However if `setopt nolistambiguous` is enabled,
-    then only one tab is required.
+    Changes require reloading autojump to take into effect.
 
 -   Change Directory Weight
 
@@ -220,15 +256,11 @@ KNOWN ISSUES
 
     Do this:
 
-    export PROMPT\_COMMAND="${PROMPT\_COMMAND}; history -a"
+        export PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND ;} history -a"
 
 -   The jump function `j` does not support directories that begin with
     `-`. If you want to jump a directory called `--music`, try using
     `j music` instead of `j   --music`.
-
--   jumpapplet (bug \#59)
-
-    Does not work in Gnome 3 shell or LDXE.
 
 FILES
 -----
@@ -243,14 +275,6 @@ REPORTING BUGS
 For any usage related issues or feature requests please visit:
 
 *https://github.com/joelthelion/autojump/issues*
-
-MAILING LIST
-------------
-
-For release announcements and development related discussion please
-visit:
-
-*https://groups.google.com/forum/?fromgroups\#!forum/autojump*
 
 THANKS
 ------

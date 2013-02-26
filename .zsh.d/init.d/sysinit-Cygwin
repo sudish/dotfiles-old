@@ -4,4 +4,4 @@
 #
 
 # Don't warn on windows symlinks
-export nodosfilewarning=1
+export CYGWIN="${CYGWIN} nodosfilewarning"
