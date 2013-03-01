@@ -20,9 +20,10 @@ fi
 
 [[ -r /etc/environment ]] && source /etc/environment
 
-# Set a reasonable path, remove dirs that don't exist on this machine
+# Set a reasonable path
 unsetopt ksh_arrays
-d=( ~/bin
+path=(
+    ~/bin
     $ZDIR/external/autojump/bin
     ~/.cabal/bin
     ~/.nodejs/bin
@@ -43,14 +44,11 @@ d=( ~/bin
     /usr/bin
     /sbin
     /bin
-   ${(s.:.)${PATH}} )       # zsh pukes if i do this in a typeset
-typeset -U d                # delete duplicates
-s=()
-for dir in "$d[@]"; do      # delete nonexistent dirs
-    [[ -d $dir && $dir != '.' ]] && s=($s $dir)
-done
-PATH=${(j.:.)${s}}
-unset d s dir BREWPATH
+    "$path[@]"
+)
+typeset -U path			# delete duplicates
+path=($^path(N-/))		# remove nonexistent dirs
+unset BREWPATH
 
 # Set MANPATH from man's config, since fink, for e.g., mucks with it
 if [[ `uname` = Darwin ]]; then
