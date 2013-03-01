@@ -2,11 +2,6 @@
 
 set -a
 
-# Additional locations for functions and completions
-fpath+=$ZDIR/functions
-fpath+=$ZDIR/external/zsh-completions/src
-fpath+=/usr/local/share/zsh/site-functions
-
 # A lot of things are conditionalized on $uname
 uname=$(uname -o)
 
@@ -22,6 +17,18 @@ for file in $ZDIR/init.d/S[0-9][0-9]_*; do
     source $file
 done
 unset file
+
+# Set up our fpath for functions and completions
+# autojump adds brew's site-funcs dir too early in the fpath, nuke it
+fpath=("${(@)fpath:#/usr/local/share/zsh/site-functions}")
+fpath=(
+    $ZDIR/functions
+    $ZDIR/external/zsh-completions/src
+    "$fpath[@]"
+    /usr/local/share/zsh/site-functions
+)
+typeset -U fpath		# delete duplicates
+fpath=($^fpath(N-/))		# remove nonexistent dirs
 
 # directory and host shortcuts
 for file in zdirs zhosts; do
