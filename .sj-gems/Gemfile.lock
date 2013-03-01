@@ -5,7 +5,7 @@ GEM
     coderay (1.0.9)
     colored (1.2)
     diff-lcs (1.2.1)
-    eventmachine (1.0.0)
+    eventmachine (1.0.1)
     excon (0.16.10)
     foreman (0.61.0)
       thor (>= 0.13.6)
@@ -24,7 +24,7 @@ GEM
       netrc (~> 0.7.7)
       rest-client (~> 1.6.1)
       rubyzip
-    heroku-api (0.3.7)
+    heroku-api (0.3.8)
       excon (~> 0.16.10)
     htty (1.4.1)
       mime-types (~> 1)
@@ -61,7 +61,7 @@ GEM
     thor (0.17.0)
     tunnels (1.2.2)
       eventmachine
-    yard (0.8.5)
+    yard (0.8.5.2)
 
 PLATFORMS
   ruby
