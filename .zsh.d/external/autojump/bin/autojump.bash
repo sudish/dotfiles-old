@@ -68,7 +68,7 @@ case $PROMPT_COMMAND in
     *autojump*)
         ;;
     *)
-        export PROMPT_COMMAND="${PROMPT_COMMAND:+$(echo "${PROMPT_COMMAND}" | awk '{gsub(/; *$/,"")}1') ; }autojump_add_to_database"
+        PROMPT_COMMAND="${PROMPT_COMMAND:+$(echo "${PROMPT_COMMAND}" | awk '{gsub(/; *$/,"")}1') ; }autojump_add_to_database"
         ;;
 esac
 
@@ -111,7 +111,7 @@ function jo {
                 open "$(autojump $@)"
                 ;;
             cygwin)
-                cmd /C start "" $(cygpath -w -a $(pwd))
+                cygstart "" $(cygpath -w -a $(pwd))
                 ;;
             *)
                 echo "Unknown operating system." 1>&2

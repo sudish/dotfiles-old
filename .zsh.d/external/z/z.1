@@ -4,7 +4,7 @@ NAME
 z \- jump around
 .SH
 SYNOPSIS
-z [\-h] [\-l] [\-r] [\-t] [regex1 regex2 ... regexn]
+z [\-chlrt] [regex1 regex2 ... regexn]
 .SH
 AVAILABILITY
 bash, zsh
@@ -16,6 +16,9 @@ After a short learning phase, \fBz\fR will take you to the most 'frecent'
 directory that matches ALL of the regexes given on the command line.
 .SH
 OPTIONS
+.TP
+\fB\-c\fR
+restrict matches to subdirectories of the current directory.
 .TP
 \fB\-h\fR
 show a brief help message
@@ -126,7 +129,7 @@ location. If it is not defined, the location defaults to \fB$HOME/.z\fR.
 .P
 The environment variable \fB$_Z_NO_RESOLVE_SYMLINKS\fR can be set to prevent
 resolving of symlinks. If it is not set, symbolic links will be resolved when
-added to the datafile..
+added to the datafile.
 .P
 In bash, \fBz\fR prepends a command to the \fBPROMPT_COMMAND\fR environment
 variable to maintain its database. In zsh, \fBz\fR appends a function
@@ -141,7 +144,8 @@ Directories must be full paths without trailing slashes.
 .SH
 FILES
 Data is stored in \fB$HOME/.z\fR. This can be overridden by setting the
-\fB$_Z_DATA\fR environment variable.
+\fB$_Z_DATA\fR environment variable. When initialized, \fBz\fR will raise an
+error if this path is a directory, and not function correctly.
 .P
 A man page (\fBz.1\fR) is provided.
 .SH

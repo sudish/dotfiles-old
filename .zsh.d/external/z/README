@@ -6,7 +6,7 @@ NAME
        z - jump around
 
 SYNOPSIS
-       z [-h] [-l] [-r] [-t] [regex1 regex2 ... regexn]
+       z [-chlrt] [regex1 regex2 ... regexn]
 
 AVAILABILITY
        bash, zsh
@@ -18,6 +18,8 @@ DESCRIPTION
        directory that matches ALL of the regexes given on the command line.
 
 OPTIONS
+       -c     restrict matches to subdirectories of the current directory.
+
        -h     show a brief help message
 
        -l     list only
@@ -103,7 +105,7 @@ ENVIRONMENT
 
        The environment variable $_Z_NO_RESOLVE_SYMLINKS can be set to  prevent
        resolving  of  symlinks.  If  it  is  not  set,  symbolic links will be
-       resolved when added to the datafile..
+       resolved when added to the datafile.
 
        In bash, z prepends a command to the PROMPT_COMMAND  environment  vari-
        able  to  maintain its database. In zsh, z appends a function _z_precmd
@@ -118,7 +120,8 @@ ENVIRONMENT
 
 FILES
        Data  is  stored  in  $HOME/.z.  This  can be overridden by setting the
-       $_Z_DATA environment variable.
+       $_Z_DATA environment variable. When initialized, z will raise an  error
+       if this path is a directory, and not function correctly.
 
        A man page (z.1) is provided.
 
