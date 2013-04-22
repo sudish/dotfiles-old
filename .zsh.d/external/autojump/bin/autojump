@@ -34,7 +34,7 @@ import re
 import shutil
 from tempfile import NamedTemporaryFile
 
-VERSION = 'release-v21.5.2'
+VERSION = 'release-v21.5.5'
 MAX_KEYWEIGHT = 1000
 MAX_STORED_PATHS = 1000
 COMPLETION_SEPARATOR = '__'
@@ -89,6 +89,7 @@ class Database:
         """
         Increase weight of existing paths or initialize new ones to 10.
         """
+        path = path.rstrip(os.sep)
         if path not in self.data:
             self.data[path] = increment
         else:
@@ -172,7 +173,7 @@ class Database:
         Deletes all entries that no longer exist on system.
         """
         removed = []
-        for path in self.data.keys():
+        for path in list(self.data.keys()):
             if not os.path.exists(path):
                 removed.append(path)
                 del self.data[path]
@@ -192,7 +193,7 @@ class Database:
             for path, weight in sorted(self.data.items(),
                     key=itemgetter(1),
                     reverse=True):
-                temp.write((unico("%s\t%s\n")%(weight, path)).encode("utf-8"))
+                temp.write((unico("%s\t%s\n" % (weight, path)).encode("utf-8")))
 
             # catching disk errors and skipping save when file handle can't
             # be closed.
