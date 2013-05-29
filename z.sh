@@ -22,11 +22,6 @@
 #   * z -l foo  # list matches instead of cd
 #   * z -c foo  # restrict matches to subdirs of $PWD
 
-case $- in
- *i*) ;;
-   *) echo 'ERROR: z.sh is meant to be sourced, not directly executed.'
-esac
-
 [ -d "${_Z_DATA:-$HOME/.z}" ] && {
     echo "ERROR: z.sh's datafile (${_Z_DATA:-$HOME/.z}) is a directory."
 }
@@ -80,7 +75,7 @@ _z() {
   if [ $? -ne 0 -a -f "$datafile" ]; then
    env rm -f "$tempfile"
   else
-   env mv -f "$tempfile" "$datafile"
+   env mv -f "$tempfile" "$datafile" || env rm -f "$tmpfile"
   fi
 
  # tab completion
@@ -108,7 +103,8 @@ _z() {
    --) while [ "$1" ]; do shift; local fnd="$fnd $1";done;;
    -*) local opt=${1:1}; while [ "$opt" ]; do case ${opt:0:1} in
         c) local fnd="^$PWD $fnd";;
-        h) echo "${_Z_CMD:-z} [-chlrt] args" >&2; return;;
+        h) echo "${_Z_CMD:-z} [-chlrtx] args" >&2; return;;
+        x) sed -i "\:^${PWD}|.*:d" "$datafile";;
         l) local list=1;;
         r) local typ="rank";;
         t) local typ="recent";;
