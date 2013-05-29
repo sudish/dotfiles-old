@@ -1,7 +1,7 @@
-.TH autojump 1 "10 April 2012" "release-v20"
+.TH autojump 1 "10 April 2012" "release\-v20"
 .SS NAME
 .PP
-autojump - a faster way to navigate your filesystem
+autojump \- a faster way to navigate your filesystem
 .SS SYNOPSIS
 .PP
 Jump to a previously visited directory that contains \[aq]foo\[aq]:
@@ -12,8 +12,7 @@ j\ foo
 \f[]
 .fi
 .PP
-Jump to a previously visited subdirectory of the current working
-directory:
+Jump to a previously visited subdirectory of the current directory:
 .IP
 .nf
 \f[C]
@@ -21,11 +20,11 @@ jc\ bar
 \f[]
 .fi
 .PP
-Show all database entries and their respective key weights:
+Show database entries and their respective key weights:
 .IP
 .nf
 \f[C]
-j\ --stat
+j\ \-\-stat
 \f[]
 .fi
 .SS DESCRIPTION
@@ -33,8 +32,6 @@ j\ --stat
 autojump is a faster way to navigate your filesystem.
 It works by maintaining a database of the directories you use the most
 from the command line.
-The \f[C]j\ --stat\f[] command shows you the current contents of the
-database.
 Directories must be visited first before they can be jumped to.
 .SS OPTIONS
 .PP
@@ -43,13 +40,15 @@ wrapper function.
 .IP
 .nf
 \f[C]
--a,\ --add\ DIR\ \ \ \ \ \ \ manually\ add\ path\ to\ database
+\-i,\ \-\-increase\ \ \ \ \ \ manually\ increase\ current\ directory\ weight
 
---purge\ \ \ \ \ \ \ \ \ \ \ \ \ deletes\ database\ entries\ that\ no\ longer\ exist\ on\ system
+\-d,\ \-\-decrease\ \ \ \ \ \ manually\ decrease\ current\ directory\ weight
 
--s,\ --stat\ \ \ \ \ \ \ \ \ \ show\ database\ entries\ and\ their\ key\ weights
+\-\-purge\ \ \ \ \ \ \ \ \ \ \ \ \ deletes\ database\ entries\ that\ no\ longer\ exist\ on\ system
 
---version\ \ \ \ \ \ \ \ \ \ \ show\ version\ information\ and\ exit
+\-s,\ \-\-stat\ \ \ \ \ \ \ \ \ \ show\ general\ stats\ and\ top\ 100\ database\ entries
+
+\-\-version\ \ \ \ \ \ \ \ \ \ \ show\ version\ information\ and\ exit
 \f[]
 .fi
 .SS ADVANCED USAGE
@@ -74,11 +73,11 @@ In the above example, \f[C]j\ w\ in\f[] would then jump you into
 /home/user/work/inbox.
 .RE
 .IP \[bu] 2
-Jump to a Child Directory.
+Jump To A Child Directory.
 .RS 2
 .PP
 Sometimes it\[aq]s convenient to jump to a child directory
-(sub-directory of current directory) rather than typing out the full
+(sub\-directory of current directory) rather than typing out the full
 name.
 .IP
 .nf
@@ -109,15 +108,6 @@ jco\ images
 \f[]
 .fi
 .RE
-.IP \[bu] 2
-ZSH Tab Completion
-.RS 2
-.PP
-Tab completion requires two tabs before autojump will display the
-completion menu.
-However if \f[C]setopt\ nolistambiguous\f[] is enabled, then only one
-tab is required.
-.RE
 .SS ADDITIONAL CONFIGURATION
 .IP \[bu] 2
 Enable ZSH Tab Completion
@@ -129,19 +119,24 @@ autojump:
 .IP
 .nf
 \f[C]
-autoload\ -U\ compinit\ &&\ compinit
+autoload\ \-U\ compinit\ &&\ compinit
 \f[]
 .fi
 .PP
 For security compinit checks completion system if files will be owned by
 root or the current user.
-This check can be ignored by using the -u flag:
+This check can be ignored by using the \-u flag:
 .IP
 .nf
 \f[C]
-autoload\ -U\ compinit\ &&\ compinit\ -u
+autoload\ \-U\ compinit\ &&\ compinit\ \-u
 \f[]
 .fi
+.PP
+Tab completion requires two tabs before autojump will display the
+completion menu.
+However if \f[C]setopt\ nolistambiguous\f[] is enabled, then only one
+tab is required.
 .RE
 .IP \[bu] 2
 Always Ignore Case
@@ -156,21 +151,6 @@ variable in your ~/.bashrc:
 .nf
 \f[C]
 export\ AUTOJUMP_IGNORE_CASE=1
-\f[]
-.fi
-.RE
-.IP \[bu] 2
-Prevent Database Entries\[aq] Decay
-.RS 2
-.PP
-Default behavior is to decay unused database entries slowly over time.
-Eventually when database limits are hit and maintenance is run, autojump
-will purge older less used entries.
-To prevent decay, add the following variable in your ~/.bashrc:
-.IP
-.nf
-\f[C]
-export\ AUTOJUMP_KEEP_ALL_ENTRIES=1
 \f[]
 .fi
 .RE
@@ -208,34 +188,18 @@ export\ AUTOJUMP_AUTOCOMPLETE_CMDS=\[aq]cp\ vim\[aq]
 .PP
 Changes require reloading autojump to take into effect.
 .RE
-.IP \[bu] 2
-Change Directory Weight
-.RS 2
-.PP
-To manually change a directory\[aq]s key weight, you can edit the file
-\f[I]$XDG_DATA_HOME/autojump/autojump.txt\f[].
-Each entry has two columns.
-The first is the key weight and the second is the path:
-.IP
-.nf
-\f[C]
-29.3383211216\ \ \ /home/user/downloads
-\f[]
-.fi
-.PP
-All negative key weights are purged automatically.
-.RE
 .SS KNOWN ISSUES
 .IP \[bu] 2
-For bash users, autojump keeps track of directories as a pre-command
-hook by modifying $PROMPT_COMMAND.
-If you overwrite $PROMPT_COMMAND in ~/.bashrc you can cause problems.
+For bash users, autojump keeps track of directories as a pre\-command
+hook by modifying
+\f[I]P\f[]\f[I]R\f[]\f[I]O\f[]\f[I]M\f[]\f[I]P\f[]\f[I]T\f[]~\f[I]C\f[]~\f[I]O\f[]\f[I]M\f[]\f[I]M\f[]\f[I]A\f[]\f[I]N\f[]\f[I]D\f[]. \f[I]I\f[]\f[I]f\f[]\f[I]y\f[]\f[I]o\f[]\f[I]u\f[]\f[I]o\f[]\f[I]v\f[]\f[I]e\f[]\f[I]r\f[]\f[I]w\f[]\f[I]r\f[]\f[I]i\f[]\f[I]t\f[]\f[I]e\f[]PROMPT_COMMAND
+in ~/.bashrc you can cause problems.
 Don\[aq]t do this:
 .RS 2
 .IP
 .nf
 \f[C]
-export\ PROMPT_COMMAND="history\ -a"
+export\ PROMPT_COMMAND="history\ \-a"
 \f[]
 .fi
 .PP
@@ -243,21 +207,21 @@ Do this:
 .IP
 .nf
 \f[C]
-export\ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND\ ;}\ history\ -a"
+export\ PROMPT_COMMAND="${PROMPT_COMMAND:+$PROMPT_COMMAND\ ;}\ history\ \-a"
 \f[]
 .fi
 .RE
 .IP \[bu] 2
 The jump function \f[C]j\f[] does not support directories that begin
-with \f[C]-\f[].
-If you want to jump a directory called \f[C]--music\f[], try using
-\f[C]j\ music\f[] instead of \f[C]j\ \ \ --music\f[].
+with \f[C]\-\f[].
+If you want to jump a directory called \f[C]\-\-music\f[], try using
+\f[C]j\ music\f[] instead of \f[C]j\ \ \ \-\-music\f[].
 .SS FILES
 .PP
-If installed locally, autojump is self-contained in
+If installed locally, autojump is self\-contained in
 \f[I]~/.autojump/\f[].
 .PP
-The database is stored in \f[I]$XDG_DATA_HOME/autojump/autojump.txt\f[].
+The database is stored in \f[I]$XDG\f[]DATA_HOME/autojump/autojump.txt_.
 .SS REPORTING BUGS
 .PP
 For any usage related issues or feature requests please visit:
@@ -265,7 +229,7 @@ For any usage related issues or feature requests please visit:
 \f[I]https://github.com/joelthelion/autojump/issues\f[]
 .SS THANKS
 .PP
-Special thanks goes out to: Pierre Gueth, Simon Marache-Francisco,
+Special thanks goes out to: Pierre Gueth, Simon Marache\-Francisco,
 Daniel Jackoway, and many others.
 .SS AUTHORS
 .PP
