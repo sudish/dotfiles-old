@@ -1,13 +1,13 @@
 GEM
   remote: https://rubygems.org/
   specs:
-    addressable (2.3.4)
+    addressable (2.3.5)
     coderay (1.0.9)
     colored (1.2)
     diff-lcs (1.2.4)
-    dotenv (0.7.0)
+    dotenv (0.8.0)
     eventmachine (1.0.3)
-    excon (0.22.1)
+    excon (0.25.1)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -20,14 +20,14 @@ GEM
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
     growl (1.0.3)
-    heroku (2.39.3)
+    heroku (2.39.4)
       heroku-api (~> 0.3.7)
       launchy (>= 0.3.2)
       netrc (~> 0.7.7)
       rest-client (~> 1.6.1)
       rubyzip
-    heroku-api (0.3.11)
-      excon (~> 0.22.1)
+    heroku-api (0.3.13)
+      excon (~> 0.25.0)
     htty (1.4.1)
       mime-types (~> 1)
     json (1.8.0)
@@ -39,7 +39,7 @@ GEM
       net-ssh-gateway (>= 1.0.1)
     method_source (0.8.1)
     mime-types (1.23)
-    net-ssh (2.6.7)
+    net-ssh (2.6.8)
     net-ssh-gateway (1.2.0)
       net-ssh (>= 2.6.5)
     netrc (0.7.7)
@@ -53,7 +53,7 @@ GEM
     pry-doc (0.4.6)
       pry (>= 0.9)
       yard (>= 0.8)
-    rake (10.0.4)
+    rake (10.1.0)
     rb-fsevent (0.9.3)
     rcodetools (0.8.5.0)
     rest-client (1.6.7)
@@ -63,7 +63,7 @@ GEM
     thor (0.18.1)
     tunnels (1.2.2)
       eventmachine
-    yard (0.8.6.1)
+    yard (0.8.6.2)
 
 PLATFORMS
   ruby
