@@ -37,13 +37,18 @@ currently these sources are available:
   - ack
   - applications
   - bookmark
+  - git-branches
+  - git-recent-all-branches
+  - git-recent-branches
   - git-files
   - git-files-legacy
-  - git-branches
+  - git-status
   - history
   - open-file
   - perldoc
+  - process
   - screens
+  - ssh-hosts
   - tmux
 
 (Note: git-files-legacy is an alternative for git-files.
@@ -67,12 +72,18 @@ you can get all available shortcut widgets' name using ``zaw-print-src``::
   ack              zaw-ack
   applications     zaw-applications
   bookmark         zaw-bookmark
+  git-branches     zaw-git-branches
+  git-recent-all-branches     zaw-git-recent-all-branches
+  git-recent-branches     zaw-git-recent-branches
   git-files        zaw-git-files
   git-files-legacy zaw-git-files-legacy
+  git-status       zaw-git-status
   history          zaw-history
   open-file        zaw-open-file
   perldoc          zaw-perldoc
+  process          zaw-process
   screens          zaw-screens
+  ssh-hosts        zaw-ssh-hosts
   tmux             zaw-tmux
 
 
@@ -107,6 +118,7 @@ and these zstyles to customize styles::
   ':filter-select:highlight' selected
   ':filter-select:highlight' matched
   ':filter-select:highlight' title
+  ':filter-select:highlight' error
   ':filter-select' max-lines
   ':filter-select' rotate-list
   ':filter-select' case-insensitive
