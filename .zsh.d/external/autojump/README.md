@@ -10,12 +10,11 @@ Jump to a previously visited directory that contains 'foo':
 
     j foo
 
-Jump to a previously visited subdirectory of the current working
-directory:
+Jump to a previously visited subdirectory of the current directory:
 
     jc bar
 
-Show all database entries and their respective key weights:
+Show database entries and their respective key weights:
 
     j --stat
 
@@ -24,8 +23,7 @@ DESCRIPTION
 
 autojump is a faster way to navigate your filesystem. It works by
 maintaining a database of the directories you use the most from the
-command line. The `j --stat` command shows you the current contents of
-the database. Directories must be visited first before they can be
+command line. Directories must be visited first before they can be
 jumped to.
 
 INSTALLATION
@@ -37,12 +35,9 @@ INSTALLATION
 -   Bash v4.0 for tab completion (or zsh)
 
 If you are unable to update Python to a supported version, older
-versions of autojump can be
-[downloaded](https://github.com/joelthelion/autojump/downloads) and
-installed manually.
+versions of autojump can be [downloaded][dl] and installed manually.
 
--   Python v2.4 is supported by [release
-    v12](https://github.com/downloads/joelthelion/autojump/autojump_v12.tar.gz).
+-   Python v2.4 is supported by [release v12][v12].
 
 ### AUTOMATIC INSTALLATION
 
@@ -74,8 +69,7 @@ MacPorts also available:
 
 **Other**
 
-Please check the [Wiki](https://github.com/joelthelion/autojump/wiki)
-for an up to date listing of installation methods.
+Please check the [Wiki][wiki] for an up to date listing of installation methods.
 
 ### MANUAL INSTALLATION
 
@@ -121,7 +115,8 @@ with the command:
 
     make docs
 
-Unit tests are available in `./tests/`. Run unit tests with the command:
+Tests are available in `./tests/` and require Python 3.3 or Python 2.7 with
+[mock][mock]. Run unit tests with the command:
 
     make test
 
@@ -130,20 +125,50 @@ OPTIONS
 
 Options must be passed to 'autojump' and not the 'j' wrapper function.
 
-    -a, --add DIR       manually add path to database
+    -i, --increase      manually increase current directory weight
+
+    -d, --decrease      manually decrease current directory weight
 
     --purge             deletes database entries that no longer exist on system
 
-    -s, --stat          show database entries and their key weights
+    -s, --stat          show general stats and top 100 database entries
 
     --version           show version information and exit
 
-INTERNAL OPTIONS
-----------------
+ADVANCED USAGE
+--------------
 
-    -b, --bash          enclose directory with quotes to prevent errors
+-   Using Multiple Arguments
 
-    --complete          used for tab completion
+    Let's assume the following database:
+
+        30   /home/user/mail/inbox
+        10   /home/user/work/inbox
+
+    `j in` would jump into /home/user/mail/inbox as the higher weighted
+    entry. However you can pass multiple arguments to autojump to prefer
+    a different entry. In the above example, `j w in` would then jump
+    you into /home/user/work/inbox.
+
+-   Jump To A Child Directory.
+
+    Sometimes it's convenient to jump to a child directory
+    (sub-directory of current directory) rather than typing out the full
+    name.
+
+        jc images
+
+-   Open File Manager To Directories (instead of jumping)
+
+    Instead of jumping to a directory, you can open a file explorer
+    window (Mac Finder, Windows Explorer, GNOME Nautilus, etc) to the
+    directory instead.
+
+        jo music
+
+    Opening a file manager to a child directory is also supported.
+
+        jco images
 
 ADDITIONAL CONFIGURATION
 ------------------------
@@ -151,9 +176,20 @@ ADDITIONAL CONFIGURATION
 -   Enable ZSH Tab Completion
 
     ZSH tab completion requires the `compinit` module to be loaded.
-    Please add the following line to your \~/.zshrc:
+    Please add the following line to your \~/.zshrc *after* loading
+    autojump:
 
-        autoload -U compinit; compinit
+        autoload -U compinit && compinit
+
+    For security compinit checks completion system if files will be
+    owned by root or the current user. This check can be ignored by
+    using the -u flag:
+
+        autoload -U compinit && compinit -u
+
+    Tab completion requires two tabs before autojump will display the
+    completion menu. However if `setopt nolistambiguous` is enabled,
+    then only one tab is required.
 
 -   Always Ignore Case
 
@@ -163,15 +199,6 @@ ADDITIONAL CONFIGURATION
     the following environmental variable in your \~/.bashrc:
 
         export AUTOJUMP_IGNORE_CASE=1
-
--   Prevent Database Entries' Decay
-
-    Default behavior is to decay unused database entries slowly over
-    time. Eventually when database limits are hit and maintenance is
-    run, autojump will purge older less used entries. To prevent decay,
-    add the following variable in your \~/.bashrc:
-
-        export AUTOJUMP_KEEP_ALL_ENTRIES=1
 
 -   Prefer Symbolic Links
 
@@ -193,44 +220,12 @@ ADDITIONAL CONFIGURATION
 
     Changes require reloading autojump to take into effect.
 
-ADVANCED USAGE
---------------
-
--   Using Multiple Arguments
-
-    Let's assume the following database:
-
-        30   /home/user/mail/inbox
-        10   /home/user/work/inbox
-
-    `j in` would jump into /home/user/mail/inbox as the higher weighted
-    entry. However you can pass multiple arguments to autojump to prefer
-    a different entry. In the above example, `j w in` would then jump
-    you into /home/user/work/inbox.
-
--   ZSH Tab Completion
-
-    Tab completion requires two tabs before autojump will display the
-    completion menu. However if `setopt nolistambiguous` is enabled,
-    then only one tab is required.
-
--   Change Directory Weight
-
-    To manually change a directory's key weight, you can edit the file
-    *$XDG\_DATA\_HOME/autojump/autojump.txt*. Each entry has two
-    columns. The first is the key weight and the second is the path:
-
-        29.3383211216   /home/user/downloads
-
-    All negative key weights are purged automatically.
-
 KNOWN ISSUES
 ------------
 
 -   For bash users, autojump keeps track of directories as a pre-command
-    hook by modifying $PROMPT\_COMMAND. If you overwrite
-    $PROMPT\_COMMAND in \~/.bashrc you can cause problems. Don't do
-    this:
+    hook by modifying $PROMPT_COMMAND. If you overwrite $PROMPT\_COMMAND
+    in \~/.bashrc you can cause problems. Don't do this:
 
         export PROMPT_COMMAND="history -a"
 
@@ -242,16 +237,12 @@ KNOWN ISSUES
     `-`. If you want to jump a directory called `--music`, try using
     `j music` instead of `j   --music`.
 
--   jumpapplet (bug \#59)
-
-    Does not work in Gnome 3 shell or LDXE.
-
 FILES
 -----
 
 If installed locally, autojump is self-contained in *\~/.autojump/*.
 
-The database is stored in *$XDG\_DATA\_HOME/autojump/autojump.txt*.
+The database is stored in *\$XDG*DATA\_HOME/autojump/autojump.txt\_.
 
 REPORTING BUGS
 --------------
@@ -259,14 +250,6 @@ REPORTING BUGS
 For any usage related issues or feature requests please visit:
 
 *https://github.com/joelthelion/autojump/issues*
-
-MAILING LIST
-------------
-
-For release announcements and development related discussion please
-visit:
-
-*https://groups.google.com/forum/?fromgroups\#!forum/autojump*
 
 THANKS
 ------
@@ -283,7 +266,12 @@ maintained by William Ting.
 COPYRIGHT
 ---------
 
-Copyright © 2012 Free Software Foundation, Inc. License GPLv3+: GNU GPL
+Copyright © 2013 Free Software Foundation, Inc. License GPLv3+: GNU GPL
 version 3 or later <http://gnu.org/licenses/gpl.html>. This is free
 software: you are free to change and redistribute it. There is NO
 WARRANTY, to the extent permitted by law.
+
+[dl]: https://github.com/joelthelion/autojump/downloads
+[mock]: https://pypi.python.org/pypi/mock
+[v12]: https://github.com/downloads/joelthelion/autojump/autojump_v12.tar.gz
+[wiki]: https://github.com/joelthelion/autojump/wiki

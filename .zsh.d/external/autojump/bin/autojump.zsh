@@ -7,9 +7,6 @@ fi
 
 if [[ ! -e ${AUTOJUMP_DATA_DIR} ]]; then
     mkdir -p "${AUTOJUMP_DATA_DIR}"
-    mv ${HOME}/.autojump_py "${AUTOJUMP_DATA_DIR}/autojump_py" 2>>/dev/null #migration
-    mv ${HOME}/.autojump_py.bak "${AUTOJUMP_DATA_DIR}/autojump_py.bak" 2>>/dev/null
-    mv ${HOME}/.autojump_errors "${AUTOJUMP_DATA_DIR}/autojump_errors" 2>>/dev/null
 fi
 
 # set paths if necessary for local installations
@@ -23,17 +20,17 @@ command -v brew &>/dev/null \
     && [[ -d "`brew --prefix`/share/zsh/site-functions" ]] \
     && fpath=(`brew --prefix`/share/zsh/site-functions ${fpath})
 
-function autojump_preexec() {
+function autojump_chpwd() {
     if [[ "${AUTOJUMP_KEEP_SYMLINKS}" == "1" ]]; then
         _PWD_ARGS=""
     else
         _PWD_ARGS="-P"
     fi
-    { (autojump -a "$(pwd ${_PWD_ARGS})"&)>/dev/null 2>>|${AUTOJUMP_DATA_DIR}/.autojump_errors ; } 2>/dev/null
+    { (autojump -a "$(pwd ${_PWD_ARGS})"&)>/dev/null 2>>|${AUTOJUMP_DATA_DIR}/autojump_errors ; } 2>/dev/null
 }
 
-typeset -ga preexec_functions
-preexec_functions+=autojump_preexec
+typeset -ga chpwd_functions
+chpwd_functions+=autojump_chpwd
 
 function j {
     # Cannot use =~ due to MacPorts zsh v4.2, see issue #125.
@@ -57,6 +54,37 @@ function jc {
     if [[ ${@} == -* ]]; then
         j ${@}
     else
-        j $(pwd) ${@}
+        j $(pwd)/ ${@}
+    fi
+}
+
+function jo {
+    if [ -z $(autojump $@) ]; then
+        echo "autojump: directory '${@}' not found"
+        echo "Try \`autojump --help\` for more information."
+        false
+    else
+        case ${OSTYPE} in
+            linux-gnu)
+                xdg-open "$(autojump $@)"
+                ;;
+            darwin*)
+                open "$(autojump $@)"
+                ;;
+            cygwin)
+                cygstart "" $(cygpath -w -a $(pwd))
+                ;;
+            *)
+                echo "Unknown operating system." 1>&2
+                ;;
+        esac
+    fi
+}
+
+function jco {
+    if [[ ${@} == -* ]]; then
+        j ${@}
+    else
+        jo $(pwd) ${@}
     fi
 }

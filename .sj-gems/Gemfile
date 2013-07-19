@@ -1,6 +1,6 @@
 # -*- ruby -*-
 
-source :gemcutter
+source 'https://rubygems.org'
 
 gem 'rake'
 gem 'htty'

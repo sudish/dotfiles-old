@@ -147,7 +147,8 @@ if [[ -n ${prefix} ]]; then
 fi
 
 # check shell support
-if [[ ${shell} != "bash" ]] && [[ ${shell} != "zsh" ]]; then
+if [[ ${shell} != "bash" ]] && [[ ${shell} != "zsh" ]] \
+    && [[ ${shell} != "fish" ]]; then
     echo "Unsupported shell (${shell}). Only Bash and Zsh shells are supported."
     exit 1
 fi
@@ -209,7 +210,6 @@ mkdir -p ${destdir}${prefix}share/autojump/ || exit 1
 mkdir -p ${destdir}${prefix}bin/ || exit 1
 mkdir -p ${destdir}${prefix}share/man/man1/ || exit 1
 cp -v ./bin/icon.png ${destdir}${prefix}share/autojump/ || exit 1
-cp -v ./bin/jumpapplet ${destdir}${prefix}bin/ || exit 1
 cp -v ./bin/autojump ${destdir}${prefix}bin/ || exit 1
 cp -v ./bin/autojump_argparse.py ${destdir}${prefix}bin/ || exit 1
 cp -v ./docs/autojump.1 ${destdir}${prefix}share/man/man1/ || exit 1
@@ -217,12 +217,15 @@ mkdir -p ${destdir}etc/profile.d/ || exit 1
 cp -v ./bin/autojump.sh ${destdir}etc/profile.d/ || exit 1
 cp -v ./bin/autojump.bash ${destdir}etc/profile.d/ || exit 1
 cp -v ./bin/autojump.zsh ${destdir}etc/profile.d/ || exit 1
+cp -v ./bin/autojump.fish ${destdir}etc/profile.d/ || exit 1
 mkdir -p ${destdir}${zshsharedir} || exit 1
+# TODO: remove unused _j function (2013.02.01_1348, ting)
 install -v -m 0755 ./bin/_j ${destdir}${zshsharedir} || exit 1
 
 # MODIFY AUTOJUMP.SH FOR CUSTOM INSTALLS
 if [[ -z ${local} ]] && [[ -z ${global} ]]; then
-    sed -i "s:custom_install:${destdir}etc/profile.d:g" ${destdir}etc/profile.d/autojump.sh
+    sed -i "s:#custom#\t::g" ${destdir}etc/profile.d/autojump.sh
+    sed -i "s:destdir_install\t:${destdir}etc/profile.d:g" ${destdir}etc/profile.d/autojump.sh
 fi
 
 # DISPLAY ADD MESSAGE
@@ -231,9 +234,9 @@ if [[ `uname` == "Darwin" ]] && [[ ${shell} == "bash" ]]; then
     rc_file="~/.bash_profile"
 fi
 
-aj_shell_file="${destdir}etc/profile.d/autojump.sh"
+aj_shell_file="${destdir}etc/profile.d/autojump.${shell}"
 if [[ ${local} ]]; then
-    aj_shell_file="~/.autojump/etc/profile.d/autojump.sh"
+    aj_shell_file="~/.autojump/etc/profile.d/autojump.${shell}"
 fi
 
 echo

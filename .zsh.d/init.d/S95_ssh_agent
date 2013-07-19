@@ -24,3 +24,5 @@ sj_setup_ssh_agent() {
 }
 
 sj_setup_ssh_agent
+
+ssh-add ~/.ssh/certs/zeevex/sudish-chef.pem
