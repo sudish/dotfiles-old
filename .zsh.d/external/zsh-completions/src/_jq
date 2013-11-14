@@ -1,4 +1,4 @@
-#compdef optirun
+#compdef jq
 # ------------------------------------------------------------------------------
 # Copyright (c) 2011 Github zsh-users - http://github.com/zsh-users
 # All rights reserved.
@@ -28,43 +28,45 @@
 # Description
 # -----------
 #
-#  Completion script for the optirun command from bumblebee
-#  (https://github.com/Bumblebee-Project/Bumblebee).
+#  Completion script for jq (http://stedolan.github.io/jq/)
 #
 # ------------------------------------------------------------------------------
 # Authors
 # -------
 #
-#  * Christophe-Marie Duquesne <chm.duquesne@gmail.com>
+#  * Hideaki Miyake (https://github.com/mollifier)
 #
 # ------------------------------------------------------------------------------
 
-local curcontext="$curcontext" state line
-typeset -A opt_args
-
-local -a arguments
-
-arguments=(
-    '--version[output version information]'
-    '(-h --help)'{-h,--help}'[show help]'
-    '(-c --vgl-compress)'{-c,--vgl-compress}'[image transport method]:method:(proxy jpeg rgb xb yuv)'
-    '--failsafe[run a program even if the nvidia card is unavailable]:boolean:(true false)'
-    '--no-failsafe[do not run a program if the nvidia card is unavailable]'
-    '--vgl-options[options to be passed to vglrun (example: +tr)]'
-    '(-q --quiet --silent)'{-q,--quiet,--silent}'[supress all logging messages]'
-    '(-v --verbose)'{-v,--verbose}'[increase the verbosity level of log messages]'
-    '--debug[set the verbosity level to the maximum]'
-    '(-b --bridge)'{-b,--bridge}'[specify bridge library to use: VirtualGL, Primus or auto]:method:(auto primus virtualgl none)'
-    '(-d --display)'{-d,--display}'[the X display number to use]'
-    '(-C --config)'{-C,--config}'[retrieve settings for Bumblebee from FILE]:file:_files'
-    '(-l --ldpath)'{-l,--ldpath}'[PATH the libraries like libGL.so are searched in]:file:_files'
-    '--primus-ldpath[a colon-separated list of paths which are searched for the primus libGL.so.1]:file:_files'
-    '(-s --socket)'{-s,--socket}'[use FILE for communication with the daemon]:file:_files'
-    '--no-xorg[do not start secondary X server (implies -b none)]'
-    '*::arguments: _normal'
+declare -a opts args
+args=(
+  '(-h --help)'{-h,--help}'[display help information]'
+  '(-V --version)'{-V,--version}'[display version information]'
+  '(-s --slurp)'{-s,--slurp}'[run the filter just once]'
+  '(-R --raw-input)'{-R,--raw-input}'[parse the input as not JSON but string]'
+  '(-n --null-input)'{-n,--null-input}'[run the filter using null as the input]'
+  '(-c --compact-output)'{-c,--compact-output}'[compact output]' \
+  '(-C --color-output)'{-C,--color-output}'[colorize the output even if writing to a pipe or a file]'
+  '(-M --monochrome-output)'{-M,--monochrome-output}'[not colorize the output]'
+  '(-a --ascii-output)'{-a,--ascii-output}'[output with pure ASCII character]'
+  '(-r --raw-output)'{-r,--raw-output}'[not format string result as a JSON string with quotes]'
+  '--arg[passes a value to the jq program, e.g. --arg foo bar]:jq variable: '
+  '1: :_guard "^-*" pattern'
+  '*:files:->file'
 )
+local curcontext=$curcontext state line ret=1
+declare -A opt_args
 
-_arguments $arguments
+_arguments -C $opts \
+  $args && ret=0
+
+case $state in
+  file)
+    _files && ret=0
+    ;;
+esac
+
+return $ret
 
 # Local Variables:
 # mode: Shell-Script
@@ -73,3 +75,4 @@ _arguments $arguments
 # sh-basic-offset: 2
 # End:
 # vim: ft=zsh sw=2 ts=2 et
+
