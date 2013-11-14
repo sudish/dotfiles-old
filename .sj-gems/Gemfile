@@ -18,7 +18,3 @@ gem 'tunnels'
 # os x
 gem 'rb-fsevent'
 gem 'growl'
-
-# old version of vagrant else we use a really old version of ffi
-# that doesn't compile with 1.9.3
-#gem 'vagrant',  '~> 0.9.7'
