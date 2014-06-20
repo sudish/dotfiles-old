@@ -4,14 +4,14 @@ TAGNAME = release-v$(VERSION)
 .PHONY: docs install uninstall lint tar test
 
 install:
-	install.sh
+	install.py
 
 uninstall:
-	uninstall.sh
+	uninstall.py
 
 docs:
 	pandoc -s -w man docs/manpage_header.md docs/header.md docs/body.md -o docs/autojump.1
-	pandoc -s -w markdown docs/header.md docs/install.md docs/development.md docs/body.md -o README.md
+	pandoc -s -w markdown docs/header.md docs/install.md docs/body.md -o README.md
 
 lint:
 	@flake8 ./ --config=setup.cfg
@@ -39,4 +39,5 @@ tar:
 	sha1sum autojump_v$(VERSION).tar.gz
 
 test:
-	testify -v tests
+	@find . -type f -iname "*.pyc" -delete
+	testify -v tests -x disabled

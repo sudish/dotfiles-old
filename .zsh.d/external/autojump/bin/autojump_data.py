@@ -7,6 +7,7 @@ from collections import namedtuple
 import os
 import shutil
 import sys
+from tempfile import NamedTemporaryFile
 from time import time
 
 if sys.version_info[0] == 3:
@@ -17,6 +18,7 @@ else:
     from itertools import imap
 
 from autojump_utils import create_dir
+from autojump_utils import unico
 from autojump_utils import is_osx
 from autojump_utils import is_python3
 from autojump_utils import move_file
@@ -57,28 +59,28 @@ def load(config):
     if is_osx() and os.path.exists(xdg_aj_home):
         migrate_osx_xdg_data(config)
 
-    if os.path.exists(config['data_path']):
-        # example: u'10.0\t/home/user\n' -> ['10.0', u'/home/user']
-        parse = lambda line: line.strip().split('\t')
+    if not os.path.exists(config['data_path']):
+        return {}
 
-        correct_length = lambda x: len(x) == 2
+    # example: u'10.0\t/home/user\n' -> ['10.0', u'/home/user']
+    parse = lambda line: line.strip().split('\t')
 
-        # example: ['10.0', u'/home/user'] -> (u'/home/user', 10.0)
-        tupleize = lambda x: (x[1], float(x[0]))
+    correct_length = lambda x: len(x) == 2
 
-        try:
-            with open(
-                    config['data_path'],
-                    'r', encoding='utf-8',
-                    errors='replace') as f:
-                return dict(
-                        imap(
-                            tupleize,
-                            ifilter(correct_length, imap(parse, f))))
-        except (IOError, EOFError):
-            return load_backup(config)
+    # example: ['10.0', u'/home/user'] -> (u'/home/user', 10.0)
+    tupleize = lambda x: (x[1], float(x[0]))
 
-    return {}
+    try:
+        with open(
+                config['data_path'],
+                'r', encoding='utf-8',
+                errors='replace') as f:
+            return dict(
+                    imap(
+                        tupleize,
+                        ifilter(correct_length, imap(parse, f))))
+    except (IOError, EOFError):
+        return load_backup(config)
 
 
 def load_backup(config):
@@ -97,8 +99,8 @@ def migrate_osx_xdg_data(config):
 
     xdg_data_home = os.path.join(os.path.expanduser('~'), '.local', 'share')
     xdg_aj_home = os.path.join(xdg_data_home, 'autojump')
-    data_path = os.path.join(xdg_aj_home, 'autojump.txt'),
-    backup_path = os.path.join(xdg_aj_home, 'autojump.txt.bak'),
+    data_path = os.path.join(xdg_aj_home, 'autojump.txt')
+    backup_path = os.path.join(xdg_aj_home, 'autojump.txt.bak')
 
     if os.path.exists(data_path):
         move_file(data_path, config['data_path'])
@@ -118,17 +120,11 @@ def save(config, data):
     # atomically save by writing to temporary file and moving to destination
     try:
         # write to temp file
-        with open(
-                config['tmp_path'],
-                'w',
-                encoding='utf-8',
-                errors='replace') as f:
+        temp = NamedTemporaryFile(delete=False)
+
+        with open(temp.name, 'w', encoding='utf-8', errors='replace') as f:
             for path, weight in data.items():
-                if is_python3():
-                    f.write(("%s\t%s\n" % (weight, path)))
-                else:
-                    f.write(unicode(
-                        "%s\t%s\n" % (weight, path)).encode('utf-8'))
+                f.write(unico("%s\t%s\n" % (weight, path)))
 
             f.flush()
             os.fsync(f)
@@ -137,10 +133,9 @@ def save(config, data):
         sys.exit(1)
 
     # move temp_file -> autojump.txt
-    move_file(config['tmp_path'], config['data_path'])
+    move_file(temp.name, config['data_path'])
 
     # create backup file if it doesn't exist or is older than BACKUP_THRESHOLD
     if not os.path.exists(config['backup_path']) or \
-            (time() - os.path.getmtime(config['backup_path'])
-                > BACKUP_THRESHOLD):
+            (time() - os.path.getmtime(config['backup_path']) > BACKUP_THRESHOLD): #noqa
         shutil.copy(config['data_path'], config['backup_path'])
