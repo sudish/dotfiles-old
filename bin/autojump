@@ -21,7 +21,6 @@
 
 from __future__ import print_function
 
-from argparse import ArgumentParser
 from difflib import SequenceMatcher
 from itertools import chain
 from math import sqrt
@@ -39,23 +38,26 @@ else:
     from itertools import ifilter
     from itertools import imap
 
+from autojump_argparse import ArgumentParser
+
 from autojump_data import dictify
 from autojump_data import entriefy
 from autojump_data import Entry
 from autojump_data import load
 from autojump_data import save
-from autojump_utils import decode
-from autojump_utils import encode_local
 from autojump_utils import first
 from autojump_utils import get_tab_entry_info
 from autojump_utils import get_pwd
 from autojump_utils import has_uppercase
 from autojump_utils import is_osx
+from autojump_utils import is_windows
 from autojump_utils import last
 from autojump_utils import print_entry
+from autojump_utils import print_local
 from autojump_utils import print_tab_menu
 from autojump_utils import sanitize
 from autojump_utils import take
+from autojump_utils import unico
 
 VERSION = '22.0.0-alpha'
 FUZZY_MATCH_THRESHOLD = 0.6
@@ -71,6 +73,10 @@ def set_defaults():
                         os.path.expanduser('~'),
                         'Library',
                         'autojump')
+    elif is_windows():
+        data_home = os.path.join(
+                        os.getenv('APPDATA'),
+                        'autojump')
     else:
         data_home = os.getenv(
                 'XDG_DATA_HOME',
@@ -82,7 +88,6 @@ def set_defaults():
 
     config['data_path'] = os.path.join(data_home, 'autojump.txt')
     config['backup_path'] = os.path.join(data_home, 'autojump.txt.bak')
-    config['tmp_path'] = os.path.join(data_home, 'data.tmp')
 
     return config
 
@@ -130,7 +135,7 @@ def add_path(data, path, weight=10):
     with resulting duplicate entries in the database than a single canonical
     path.
     """
-    path = decode(path).rstrip(os.sep)
+    path = unico(path).rstrip(os.sep)
     if path == os.path.expanduser('~'):
         return data, Entry(path, 0)
 
@@ -141,7 +146,7 @@ def add_path(data, path, weight=10):
 
 def decrease_path(data, path, weight=15):
     """Decrease or zero out a path."""
-    path = decode(path).rstrip(os.sep)
+    path = unico(path).rstrip(os.sep)
     data[path] = max(0, data.get(path, 0) - weight)
     return data, Entry(path, data[path])
 
@@ -154,31 +159,37 @@ def detect_smartcase(needles):
     return not any(imap(has_uppercase, needles))
 
 
-def find_matches(entries, needles):
+def find_matches(entries, needles, check_entries=True):
     """Return an iterator to matching entries."""
+    # TODO(wting|2014-02-24): replace assertion with unit test
+    assert isinstance(needles, list), "Needles must be a list."
+    ignore_case = detect_smartcase(needles)
+
     try:
-        not_cwd = lambda entry: entry.path != os.getcwdu()
+        pwd = os.getcwdu()
     except OSError:
-        # tautology if current working directory no longer exists
-        not_cwd = lambda x: True
+        pwd = None
+
+    # using closure to prevent constantly hitting hdd
+    def is_cwd(entry):
+        return entry.path == pwd
+
+    if check_entries:
+        path_exists = lambda entry: os.path.exists(entry.path)
+    else:
+        path_exists = lambda _: True
 
     data = sorted(
-            ifilter(not_cwd, entries),
+            entries,
             key=attrgetter('weight'),
             reverse=True)
 
-    ignore_case = detect_smartcase(needles)
-
-    exists = lambda entry: os.path.exists(entry.path)
     return ifilter(
-            exists,
+            lambda entry: not is_cwd(entry) and path_exists(entry),
             chain(
                 match_consecutive(needles, data, ignore_case),
                 match_fuzzy(needles, data, ignore_case),
-                match_anywhere(needles, data, ignore_case),
-                # default return value so calling shell functions have an
-                # argument to `cd` to
-                [Entry('.', 0)]))
+                match_anywhere(needles, data, ignore_case)))
 
 
 def handle_tab_completion(needle, entries):
@@ -188,23 +199,29 @@ def handle_tab_completion(needle, entries):
     tab_needle, tab_index, tab_path = get_tab_entry_info(needle, TAB_SEPARATOR)
 
     if tab_path:
-        print(encode_local(tab_path))
+        print_local(tab_path)
     elif tab_index:
         get_ith_path = lambda i, iterable: last(take(i, iterable)).path
-        print(encode_local(
-            get_ith_path(tab_index, find_matches(entries, tab_needle))))
+        print_local(get_ith_path(
+            tab_index,
+            find_matches(entries, [tab_needle], check_entries=False)))
     elif tab_needle:
         # found partial tab completion entry
         print_tab_menu(
                 tab_needle,
-                take(TAB_ENTRIES_COUNT, find_matches(entries, tab_needle)),
+                take(TAB_ENTRIES_COUNT, find_matches(
+                    entries,
+                    [tab_needle],
+                    check_entries=False)),
                 TAB_SEPARATOR)
     else:
         print_tab_menu(
                 needle,
-                take(TAB_ENTRIES_COUNT, find_matches(entries, needle)),
+                take(TAB_ENTRIES_COUNT, find_matches(
+                    entries,
+                    [needle],
+                    check_entries=False)),
                 TAB_SEPARATOR)
-
 
 
 def match_anywhere(needles, haystack, ignore_case=False):
@@ -259,13 +276,17 @@ def match_consecutive(needles, haystack, ignore_case=False):
             (path="/moo/foo/baz", weight=10),
             (path="/foo/baz", weight=10)]
     """
-    regex_no_sep = '[^' + os.sep + ']*'
-    regex_one_sep = regex_no_sep + os.sep + regex_no_sep
+    if is_windows():
+        # The normal \\ separator needs to be escaped again for use in regex.
+        sep = '\\\\'
+    else:
+        sep = os.sep
+    regex_no_sep = '[^' + sep + ']*'
     regex_no_sep_end = regex_no_sep + '$'
+    regex_one_sep = regex_no_sep + sep + regex_no_sep
     # can't use compiled regex because of flags
     regex_needle = regex_one_sep.join(needles) + regex_no_sep_end
     regex_flags = re.IGNORECASE | re.UNICODE if ignore_case else re.UNICODE
-
     found = lambda entry: re.search(
             regex_needle,
             entry.path,
@@ -326,7 +347,8 @@ def print_stats(data, data_path):
     print("%d:\t number of entries" % len(data))
 
     try:
-        print("%.2f:\t current directory weight" % data.get(os.getcwdu(), 0))
+        print_local(
+                "%.2f:\t current directory weight" % data.get(os.getcwdu(), 0))
     except OSError:
         # current directory no longer exists
         pass
@@ -334,7 +356,7 @@ def print_stats(data, data_path):
     print("\ndata:\t %s" % data_path)
 
 
-def main(args):
+def main(args):  # noqa
     config = set_defaults()
 
     # all arguments are mutually exclusive
@@ -360,9 +382,8 @@ def main(args):
     elif args.stat:
         print_stats(load(config), config['data_path'])
     elif not args.directory:
-        # default return value so calling shell functions have an argument
-        # to `cd` to
-        print(encode_local('.'))
+        # always return a path to calling shell functions
+        print_local('.')
     else:
         entries = entriefy(load(config))
         needles = sanitize(args.directory)
@@ -370,13 +391,18 @@ def main(args):
             get_tab_entry_info(first(needles), TAB_SEPARATOR)
 
         if tab_path:
-            print(encode_local(tab_path))
+            print_local(tab_path)
         elif tab_index:
             get_ith_path = lambda i, iterable: last(take(i, iterable)).path
-            print(encode_local(
-                get_ith_path(tab_index, find_matches(entries, tab_needle))))
+            print_local(
+                    get_ith_path(
+                        tab_index,
+                        find_matches(entries, tab_needle)))
         else:
-            print(encode_local(first(find_matches(entries, needles)).path))
+            print_local(first(chain(
+                    imap(attrgetter('path'), find_matches(entries, needles)),
+                    # always return a path to calling shell functions
+                    ['.'])))
 
     return 0
 
