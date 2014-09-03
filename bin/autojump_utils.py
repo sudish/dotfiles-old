@@ -30,6 +30,8 @@ def create_dir(path):
 
 def encode_local(string):
     """Converts string into user's preferred encoding."""
+    if is_python3():
+        return string
     return string.encode(sys.getfilesystemencoding() or 'utf-8')
 
 
@@ -54,8 +56,8 @@ def get_tab_entry_info(entry, separator):
     match_needle = re.search(r'(.*?)' + separator, entry)
     match_index = re.search(separator + r'([0-9]{1})', entry)
     match_path = re.search(
-            separator + r'[0-9]{1}' + separator + r'(.*)',
-            entry)
+        separator + r'[0-9]{1}' + separator + r'(.*)',
+        entry)
 
     if match_needle:
         needle = match_needle.group(1)
@@ -170,8 +172,12 @@ def sanitize(directories):
 def second(xs):
     it = iter(xs)
     try:
-        it.next()
-        return it.next()
+        if is_python2():
+            it.next()
+            return it.next()
+        elif is_python3():
+            next(it)
+            return next(it)
     except StopIteration:
         return None
 

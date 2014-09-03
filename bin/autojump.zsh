@@ -1,12 +1,14 @@
 # set user installation paths
-if [[ -d ~/.autojump ]]; then
+if [[ -d ~/.autojump/bin ]]; then
     path=(~/.autojump/bin ${path})
-    fpath=(~/.autojump/functions/ ${fpath})
+fi
+if [[ -d ~/.autojump/functions ]]; then
+    fpath=(~/.autojump/functions ${fpath})
 fi
 
 
 # set homebrew installation paths
-if command -v brew && [[ -d "$(brew --prefix)/share/zsh/site-functions" ]]; then
+if command -v brew &>/dev/null && [[ -d "$(brew --prefix)/share/zsh/site-functions" ]]; then
     fpath=("$(brew --prefix)/share/zsh/site-functions" ${fpath})
 fi
 
