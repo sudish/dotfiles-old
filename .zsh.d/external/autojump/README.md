@@ -22,7 +22,7 @@ can be used with `autojump` can be used with `j` and vice versa.
 
         j foo
 
--   Jump To A Child Directory
+-   Jump To A Child Directory:
 
     Sometimes it's convenient to jump to a child directory
     (sub-directory of current directory) rather than typing out the full
@@ -38,7 +38,7 @@ can be used with `autojump` can be used with `j` and vice versa.
 
         jo music
 
-    Opening a file manager to a child directory is also supported.
+    Opening a file manager to a child directory is also supported:
 
         jco images
 
@@ -64,7 +64,12 @@ INSTALLATION
 ### REQUIREMENTS
 
 -   Python v2.6+
--   Bash v4.0+, zsh, fish, or clink (Windows)
+-   Supported shells:
+    -   bash v4.0+
+    -   zsh
+    -   fish
+    -   tcsh (experimental)
+    -   clink on Windows (experimental)
 
 ### AUTOMATIC
 
@@ -110,7 +115,7 @@ Grab a copy of autojump:
 Run the installation script and follow on screen instructions.
 
     cd autojump
-    ./install.py or ./uinstall.py
+    ./install.py or ./uninstall.py
 
 KNOWN ISSUES
 ------------

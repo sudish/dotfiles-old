@@ -51,10 +51,10 @@ def entriefy(data):
 def load(config):
     """Returns a dictonary (key=path, value=weight) loaded from data file."""
     xdg_aj_home = os.path.join(
-            os.path.expanduser('~'),
-            '.local',
-            'share',
-            'autojump')
+        os.path.expanduser('~'),
+        '.local',
+        'share',
+        'autojump')
 
     if is_osx() and os.path.exists(xdg_aj_home):
         migrate_osx_xdg_data(config)
@@ -76,9 +76,9 @@ def load(config):
                 'r', encoding='utf-8',
                 errors='replace') as f:
             return dict(
-                    imap(
-                        tupleize,
-                        ifilter(correct_length, imap(parse, f))))
+                imap(
+                    tupleize,
+                    ifilter(correct_length, imap(parse, f))))
     except (IOError, EOFError):
         return load_backup(config)
 
@@ -119,8 +119,9 @@ def save(config, data):
 
     # atomically save by writing to temporary file and moving to destination
     try:
-        # write to temp file
         temp = NamedTemporaryFile(delete=False)
+        # Windows cannot reuse the same open file name
+        temp.close()
 
         with open(temp.name, 'w', encoding='utf-8', errors='replace') as f:
             for path, weight in data.items():
@@ -137,5 +138,5 @@ def save(config, data):
 
     # create backup file if it doesn't exist or is older than BACKUP_THRESHOLD
     if not os.path.exists(config['backup_path']) or \
-            (time() - os.path.getmtime(config['backup_path']) > BACKUP_THRESHOLD): #noqa
+            (time() - os.path.getmtime(config['backup_path']) > BACKUP_THRESHOLD):  # noqa
         shutil.copy(config['data_path'], config['backup_path'])
