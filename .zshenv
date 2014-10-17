@@ -23,6 +23,7 @@ fi
 # Set a reasonable path
 unsetopt ksh_arrays
 path=(
+    ~/src/apache-maven-3.2.3/bin
     ~/bin
     $ZDIR/external/autojump/bin
     ~/.cabal/bin
