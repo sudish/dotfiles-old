@@ -127,6 +127,10 @@ if [[ $uname = Solaris ]] ; then
     alias tnetstat='netstat -f inet -P tcp'
 fi
 
+unalias run-help
+autoload run-help
+HELPDIR=/usr/local/share/zsh/help
+
 # color_xterm needs to be told the hard way
 #ttyctl -u
 #stty 38400 imaxbel iexten echoctl echoke \
