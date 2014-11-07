@@ -1,3 +1,5 @@
+export AUTOJUMP_SOURCED=1
+
 # set user installation paths
 if [[ -d ~/.autojump/ ]]; then
     export PATH=~/.autojump/bin:"${PATH}"
@@ -52,17 +54,18 @@ esac
 
 # default autojump command
 j() {
-    if [[ ${@} =~ ^-{1,2}.* ]]; then
+    if [[ ${1} == -* ]] && [[ ${1} != "--" ]]; then
         autojump ${@}
         return
     fi
 
-    new_path="$(autojump ${@})"
-    if [[ -d "${new_path}" ]]; then
-        echo -e "\\033[31m${new_path}\\033[0m"
-        cd "${new_path}"
+    output="$(autojump ${@})"
+    if [[ -d "${output}" ]]; then
+        echo -e "\\033[31m${output}\\033[0m"
+        cd "${output}"
     else
         echo "autojump: directory '${@}' not found"
+        echo "\n${output}\n"
         echo "Try \`autojump --help\` for more information."
         false
     fi
@@ -71,8 +74,9 @@ j() {
 
 # jump to child directory (subdirectory of current path)
 jc() {
-    if [[ ${@} == -* ]]; then
+    if [[ ${1} == -* ]] && [[ ${1} != "--" ]]; then
         autojump ${@}
+        return
     else
         j $(pwd) ${@}
     fi
@@ -81,29 +85,30 @@ jc() {
 
 # open autojump results in file browser
 jo() {
-    if [[ ${@} == -* ]]; then
+    if [[ ${1} == -* ]] && [[ ${1} != "--" ]]; then
         autojump ${@}
         return
     fi
 
-    new_path="$(autojump ${@})"
-    if [[ -d "${new_path}" ]]; then
+    output="$(autojump ${@})"
+    if [[ -d "${output}" ]]; then
         case ${OSTYPE} in
-            linux-gnu)
-                xdg-open "${new_path}"
+            linux*)
+                xdg-open "${output}"
                 ;;
             darwin*)
-                open "${new_path}"
+                open "${output}"
                 ;;
             cygwin)
-                cygstart "" $(cygpath -w -a ${new_path})
+                cygstart "" $(cygpath -w -a ${output})
                 ;;
             *)
-                echo "Unknown operating system." 1>&2
+                echo "Unknown operating system: ${OSTYPE}." 1>&2
                 ;;
         esac
     else
         echo "autojump: directory '${@}' not found"
+        echo "\n${output}\n"
         echo "Try \`autojump --help\` for more information."
         false
     fi
@@ -112,8 +117,9 @@ jo() {
 
 # open autojump results (child directory) in file browser
 jco() {
-    if [[ ${@} == -* ]]; then
+    if [[ ${1} == -* ]] && [[ ${1} != "--" ]]; then
         autojump ${@}
+        return
     else
         jo $(pwd) ${@}
     fi
