@@ -4,6 +4,7 @@
 	co = checkout
         #up = remote update --prune
 	de = describe --all
+        k = !gitk --all
 	l  = log --stat --decorate
 	lc = log ORIG_HEAD.. --stat --no-merges --decorate
 	lg = log --oneline --decorate
