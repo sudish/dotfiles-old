@@ -117,6 +117,9 @@ alias t='tmux'
 alias rl='rlwrap -D 2 -p RED -r -s 1000'
 alias be='bundle exec'
 
+# global aliases, active anywhere on a line
+alias -g '*F'='**/*(.)'  # grep foo *F -> all files, including subdirs
+
 cdg() {
     local gitroot
     gitroot=`git rev-parse --show-toplevel 2>/dev/null` && cd $gitroot
