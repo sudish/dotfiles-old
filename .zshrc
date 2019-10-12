@@ -52,7 +52,7 @@ setopt \
     list_types long_list_jobs magic_equal_subst mark_dirs no_clobber \
     no_no_match prompt_subst pushd_ignore_dups pushd_minus pushd_silent \
     pushd_to_home sun_keyboard_hack transient_rprompt 2>/dev/null
-unsetopt bg_nice bsd_echo chase_links correct_all list_ambiguous \
+unsetopt beep bg_nice bsd_echo chase_links correct_all list_ambiguous \
     mail_warning multi_func_def xxx 2>/dev/null
 
 DIRSTACKSIZE=20
@@ -78,17 +78,14 @@ fi
 # enable color ls o/p
 LS_COLOR_OPTS='--color=tty'
 ls $LS_COLOR_OPTS >&| /dev/null || unset LS_COLOR_OPTS
+l () { LC_COLLATE=C ls $LS_COLOR_OPTS -al $* }
+alias ls="LC_COLLATE=C ls $LS_COLOR_OPTS -F"
 
 # enable color grep/ack o/p
 GREP_COLOR_OPTS='--color=auto'
 grep $GREP_COLOR_OPTS localhost /etc/hosts >&| /dev/null || \
     unset GREP_COLOR_OPTS
 ACK_COLOR_MATCH='bold red'
-
-# miscellaneous functions
-l  ()       { ls $LS_COLOR_OPTS -al $* }
-lh ()       { ls $LS_COLOR_OPTS -alh $* }
-lf ()       { ls $LS_COLOR_OPTS -F $* }
 
 # push long, commonly used, commands into the edit buffer to save typing
 sj_configure () {
@@ -107,7 +104,6 @@ sjcc () {
 alias grep="grep $GREP_COLOR_OPTS"
 alias fgrep="fgrep $GREP_COLOR_OPTS"
 alias egrep="egrep $GREP_COLOR_OPTS"
-alias ls="ls $LS_COLOR_OPTS -F"
 alias jobs='\jobs -lp' m='less -R' md=mkdir
 alias s=screen d='dirs -v' wh='whence -csa' bc='bc -l'
 alias h=history hs='fc -RI'
