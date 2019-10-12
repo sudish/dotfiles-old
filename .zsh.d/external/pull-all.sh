@@ -10,8 +10,9 @@ branch=master
 function update_subtree {
   subtree=$1
   remote=$2
+  dir=${3:-$ext_dir}
 
-  git subtree pull -m "Update subtree: $subtree" --squash -P $ext_dir/$subtree $remote $branch
+  git subtree pull -m "Update subtree: $subtree" --squash -P $dir/$subtree $remote $branch
 }
 
 update_subtree autojump                     git://github.com/wting/autojump
@@ -23,3 +24,5 @@ update_subtree zsh-completions              git://github.com/zsh-users/zsh-compl
 update_subtree zsh-git-prompt               git://github.com/olivierverdier/zsh-git-prompt.git
 update_subtree zsh-history-substring-search git://github.com/zsh-users/zsh-history-substring-search.git
 update_subtree zsh-syntax-highlighting      git://github.com/zsh-users/zsh-syntax-highlighting.git
+
+update_subtree dracula                      git://github.com/dracula/vim.git .vim/pack/themes/start
