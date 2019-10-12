@@ -1,0 +1,6 @@
+# ZSH port of Fish history search (up arrow)
+# https://github.com/zsh-users/zsh-history-substring-search
+
+source $ZDIR/external/zsh-history-substring-search/zsh-history-substring-search.zsh
+bindkey '^[[A' history-substring-search-up
+bindkey '^[[B' history-substring-search-down
