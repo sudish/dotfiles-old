@@ -36,9 +36,6 @@ for file in zdirs zhosts; do
 done
 unset file
 
-# These lead to sundry madness under Linux, just say No! for now.
-[[ $uname = Linux ]] && unset LANG LC_ALL LC_CTYPE LC_COLLATE
-
 # zsh options.  some of these are defaults and should be pruned
 setopt \
     allexport always_last_prompt always_to_end append_history auto_list \
@@ -49,7 +46,7 @@ setopt \
     hist_ignore_all_dups hist_ignore_dups hist_lex_words hist_no_store \
     hist_reduce_blanks hist_save_no_dups \
     inc_append_history kshoptionprint list_beep list_packed \
-    list_types long_list_jobs magic_equal_subst mark_dirs no_clobber \
+    list_types long_list_jobs magic_equal_subst mark_dirs multibyte no_clobber \
     no_no_match prompt_subst pushd_ignore_dups pushd_minus pushd_silent \
     pushd_to_home sun_keyboard_hack transient_rprompt 2>/dev/null
 unsetopt beep bg_nice bsd_echo chase_links correct_all list_ambiguous \
