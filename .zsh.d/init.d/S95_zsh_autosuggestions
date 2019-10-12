@@ -1,4 +1,5 @@
 # Fish-like autosuggestions for zsh
 # https://github.com/zsh-users/zsh-autosuggestions
 
-is-at-least 4.3.10 && source $ZDIR/external/zsh-autosuggestions/zsh-autosuggestions.zsh
+ZSH_AUTOSUGGEST_HIGHLIGHT_STYLE="fg=250"
+source $ZDIR/external/zsh-autosuggestions/zsh-autosuggestions.zsh
