@@ -23,6 +23,7 @@
 # usage:
 #   filter-select [-t title] [-A assoc-array-name]
 #                 [-d array-of-description] [-D assoc-array-of-descrption]
+#                 [-s initial-filter-contents]
 #                 [-n] [-r] [-m] [-e exit-zle-widget-name]... [--] [arg]...
 #   filter-select -i
 #
@@ -38,6 +39,9 @@
 #       it is used to display and filter candidates.
 #
 #       if not specified, copied from candidates.
+#
+#     -s initial-filter-contents
+#        initial contents of the filter buffer that users type into
 #
 #     -n
 #       assign a number to the description when -d is not specified
@@ -110,6 +114,8 @@
 #
 #     If you want to search these metacharacters, please doubly escape them.
 
+typeset -ga reply_marked
+
 function filter-select() {
     emulate -L zsh
     setopt local_options extended_glob
@@ -122,9 +128,10 @@ function filter-select() {
     local -a orig_region_highlight words
     orig_region_highlight=("${region_highlight[@]}")
 
-    local key cand lines selected cand_disp buffer_pre_zle last_buffer=''
+    local key cand lines selected cand_disp buffer_pre_zle last_buffer initbuffer=''
     local opt pattern msg unused title='' exit_pattern nl=$'\n'
     local selected_index mark_idx_disp hi start end spec
+    local desc desc_num desc_disp bounds
 
     local -a displays matched_desc_keys match mbegin mend outs exit_wigdets
     local -a init_region_highlight marked_lines
@@ -153,7 +160,7 @@ function filter-select() {
     descriptions=()
     exit_wigdets=(accept-line accept-search send-break)
 
-    while getopts 't:A:d:D:nrme:i' opt; do
+    while getopts 't:A:d:D:nrme:s:i' opt; do
         case "${opt}" in
             t)
                 title="${OPTARG}"
@@ -188,6 +195,9 @@ function filter-select() {
             e)
                 exit_wigdets+="${OPTARG}"
                 ;;
+            s)
+                initbuffer="${OPTARG}"
+                ;;
             i)
                 # do nothing. only keybinds are initialized
                 return
@@ -203,7 +213,7 @@ function filter-select() {
         candidates+=( $i "${cand}" )
     done
 
-    if (( $#descriptions == 0 )); then
+    if (( ${#descriptions} == 0 )); then
         # copy candidates
         descriptions=("${(@kv)candidates}")
         # add number
@@ -230,7 +240,7 @@ function filter-select() {
     bounds=''
 
     # clear edit buffer
-    BUFFER=''
+    BUFFER="$initbuffer"
 
     # display original edit buffer's contants as PREDISPLAY
     PREDISPLAY="${orig_predisplay}${orig_lbuffer}${orig_rbuffer}${orig_postdisplay}${nl}"
@@ -241,8 +251,8 @@ function filter-select() {
         if [[ "${hi}" == P* ]]; then
             init_region_highlight+="${hi}"
         else
-            print -r -- "${hi}" | read start end spec
-            init_region_highlight+="P$(( start + $#orig_predisplay )) $(( end + $#orig_predisplay )) $spec"
+            print -r -- "${hi}" | read -d ' ' start end spec
+            init_region_highlight+="P$(( start + ${#orig_predisplay} )) $(( end + ${#orig_predisplay} )) $spec"
         fi
     done
 
@@ -261,7 +271,7 @@ function filter-select() {
             set-mark-command)
                 if (( markable )); then
                     # check if ${selected_index} is already in the marked_lines
-                    if (( ${marked_lines[(ie)${selected_index}]} <= $#marked_lines )); then
+                    if (( ${marked_lines[(ie)${selected_index}]} <= ${#marked_lines} )); then
                         # remove selected_index
                         marked_lines=("${(@)marked_lines:#${selected_index}}")
                     else
@@ -348,7 +358,7 @@ function filter-select() {
             displays=()
             offset="${#BUFFER}"
             if [[ -n "${title}" ]]; then
-                offset+=$(( 1 + $#title ))
+                offset+=$(( 1 + ${#title} ))
             fi
 
             selected=""
@@ -390,14 +400,16 @@ function filter-select() {
 
                     desc_disp="${desc}"
 
-                    # escape \r\n\t\
-                    desc_disp="${desc_disp//\\/\\\\}"
-                    desc_disp="${desc_disp//$'\n'/\\n}"
-                    desc_disp="${desc_disp//$'\r'/\\r}"
-                    desc_disp="${desc_disp//$'\t'/\\t}"
+                    if zstyle -T ':filter-select' escape-descriptions ; then
+                        # escape \r\n\t\
+                        desc_disp="${desc_disp//\\/\\\\}"
+                        desc_disp="${desc_disp//$'\n'/\\n}"
+                        desc_disp="${desc_disp//$'\r'/\\r}"
+                        desc_disp="${desc_disp//$'\t'/\\t}"
+                    fi
 
                     mark_idx="${marked_lines[(ie)${i}]}"
-                    (( is_marked = mark_idx <= $#marked_lines ))
+                    (( is_marked = mark_idx <= ${#marked_lines} ))
 
                     if (( is_marked )); then
                         mark_idx_disp=" (${mark_idx})"
@@ -405,9 +417,9 @@ function filter-select() {
                         mark_idx_disp=""
                     fi
 
-                    if (( ${(m)#desc_disp} + $#mark_idx_disp > COLUMNS - 1 )); then
+                    if (( ${(m)#desc_disp} + ${#mark_idx_disp} > COLUMNS - 1 )); then
                         # strip long line
-                        desc_disp="${(mr:$(( COLUMNS - $#mark_idx_disp - 6 )):::::)desc_disp} ...${mark_idx_disp}"
+                        desc_disp="${(mr:$(( COLUMNS - ${#mark_idx_disp} - 6 )):::::)desc_disp} ...${mark_idx_disp}"
                     else
                         desc_disp="${desc_disp}${mark_idx_disp}"
                     fi
@@ -443,7 +455,7 @@ function filter-select() {
             POSTDISPLAY=$'\n'
             if [[ -n "${title}" ]]; then
                 POSTDISPLAY+="${title}"$'\n'
-                region_highlight+="${#BUFFER} $(( $#BUFFER + $#title + 1 )) ${hi_title}"
+                region_highlight+="${#BUFFER} $(( ${#BUFFER} + ${#title} + 1 )) ${hi_title}"
             fi
 
             if (( ${#displays} == 0 )); then
@@ -498,7 +510,7 @@ function filter-select() {
     else
         reply=("${bounds}" "${selected}")
         reply_marked=()
-        if (( $#marked_lines > 0 )); then
+        if (( ${#marked_lines} > 0 )); then
             for i in "${(@)marked_lines}"; do
                 reply_marked+="${candidates[${i}]}"
             done
@@ -623,7 +635,7 @@ function _filter-select-buffer-words() {
         : ${(A)a::=${a/#'~(#i)*\^'/'~(#i)(#s)'}}
     fi
     : ${(PA)place::=$a}
-    (( $#a > 1 )) || (( $#a == 1 )) && [[ -n "$a" ]]
+    (( ${#a} > 1 )) || (( ${#a} == 1 )) && [[ -n "$a" ]]
 }
 
 function _filter-select-init-keybind() {
@@ -640,10 +652,10 @@ function _filter-select-init-keybind() {
 
         bindkey -M filterselect '^J' accept-line
         bindkey -M filterselect '^M' accept-line
-        bindkey -M filterselect '^[^J' accept-search
-        bindkey -M filterselect '^[^M' accept-search
+        bindkey -M filterselect '\e^J' accept-search
+        bindkey -M filterselect '\e^M' accept-search
 
-        bindkey -M filterselect '^[^G' send-break
+        bindkey -M filterselect '\e^G' send-break
         bindkey -M filterselect '^G' send-break
 
         bindkey -M filterselect '^@' set-mark-command
@@ -652,12 +664,12 @@ function _filter-select-init-keybind() {
         bindkey -M filterselect '^?' backward-delete-char
 
         bindkey -M filterselect '^F' forward-char
-        bindkey -M filterselect '^[[C' forward-char
-        bindkey -M filterselect '^[OC' forward-char
+        bindkey -M filterselect '\e[C' forward-char
+        bindkey -M filterselect '\eOC' forward-char
 
         bindkey -M filterselect '^B' backward-char
-        bindkey -M filterselect '^[[D' backward-char
-        bindkey -M filterselect '^[OD' backward-char
+        bindkey -M filterselect '\e[D' backward-char
+        bindkey -M filterselect '\eOD' backward-char
 
         bindkey -M filterselect '^A' beginning-of-line
         bindkey -M filterselect '^E' end-of-line
@@ -668,31 +680,31 @@ function _filter-select-init-keybind() {
 
         # move cursor down/up
         bindkey -M filterselect '^N' down-line-or-history
-        bindkey -M filterselect '^[[B' down-line-or-history
-        bindkey -M filterselect '^[OB' down-line-or-history
+        bindkey -M filterselect '\e[B' down-line-or-history
+        bindkey -M filterselect '\eOB' down-line-or-history
         bindkey -M filterselect '^P' up-line-or-history
-        bindkey -M filterselect '^[[A' up-line-or-history
-        bindkey -M filterselect '^[OA' up-line-or-history
+        bindkey -M filterselect '\e[A' up-line-or-history
+        bindkey -M filterselect '\eOA' up-line-or-history
 
         # page down/up
         bindkey -M filterselect '^V' forward-word
-        bindkey -M filterselect '^[[6~' forward-word
+        bindkey -M filterselect '\e[6~' forward-word
 
-        bindkey -M filterselect '^[V' backward-word
-        bindkey -M filterselect '^[v' backward-word
-        bindkey -M filterselect '^[[5~' backward-word
+        bindkey -M filterselect '\eV' backward-word
+        bindkey -M filterselect '\ev' backward-word
+        bindkey -M filterselect '\e[5~' backward-word
 
         # home/end
-        bindkey -M filterselect '^[<' beginning-of-history
-        bindkey -M filterselect '^[[1~' beginning-of-history
+        bindkey -M filterselect '\e<' beginning-of-history
+        bindkey -M filterselect '\e[1~' beginning-of-history
 
-        bindkey -M filterselect '^[>' end-of-history
-        bindkey -M filterselect '^[[4~' end-of-history
+        bindkey -M filterselect '\e>' end-of-history
+        bindkey -M filterselect '\e[4~' end-of-history
     fi
 }
 
 function _filter-select-read-keys() {
-    local key key2 key3 key4
+    local key key2 key3 nkey
     integer ret
 
     read -k key
@@ -701,25 +713,30 @@ function _filter-select-read-keys() {
     if [[ '#key' -eq '#\\e' ]]; then
         # M-...
         read -t $(( KEYTIMEOUT / 1000 )) -k key2
-        if [[ "${key2}" == ['['O] ]]; then
-            # cursor keys
+        if [[ "${key2}" == 'O' ]]; then
+            # ^[O (SS3) affects next character only.
+            # Example: cursor keys on some terminals.
             read -k key3
             ret=$?
-            if [[ "${key3}" == [0-9] ]]; then
-                # Home, End, PgUp, PgDn ...
-                read -k key4
-                ret=$?
-                reply="${key}${key2}${key3}${key4}"
-            else
-                reply="${key}${key2}${key3}"
-            fi
+            reply="${key}${key2}${key3}"
         else
-            reply="${key}${key2}"
+            if [[ "${key2}" == '[' ]]; then
+                # ^[[ (CSI) starts a sequence of [0-9;?] terminated by [@-~].
+                # Examples: Home, End, PgUp, PgDn ...
+                reply="${key}${key2}"
+                while true; do
+                    read -k nkey
+                    reply+=$nkey
+                    ret=$?
+                    (( $ret == 0 )) && [[ "${nkey}" =~ '^[0-9;?]$' ]] || break
+                done
+            else
+                reply="${key}${key2}"
+            fi
         fi
     else
         reply="${key}"
     fi
-
     return $ret
 }
 
