@@ -36,6 +36,9 @@ fi
 typeset -A sj_git
 sj_git=()
 
+# use zsh-git-prompt to parse status
+gitstatus=$HOME/.zsh.d/external/zsh-git-prompt/gitstatus.py
+
 sj_git_status_update() {
     local git_dir branch
 
@@ -65,31 +68,66 @@ sj_git_status_update() {
         branch="$(git symbolic-ref HEAD 2>/dev/null)"
     else
         if [[ -f $git_dir/BISECT_LOG ]]; then
-	    sj_git[state]="|BISECTING"
-	fi
+            sj_git[state]="|BISECTING"
+        fi
         branch=$(git symbolic-ref HEAD 2>/dev/null) || \
-	    branch=$(git describe --exact-match HEAD 2>/dev/null) || \
-	    branch="$(cut -c1-7 "$git_dir/HEAD")..."
+            branch=$(git describe --exact-match HEAD 2>/dev/null) || \
+            branch="$(cut -c1-7 "$git_dir/HEAD")..."
     fi
 
     sj_git[stash]=
     if [[ -e $git_dir/refs/stash ]]; then
-	sj_git[stash]='$'
+        sj_git[stash]='$'
     fi
 
     sj_git[svn]=
     if [[ -e $git_dir/svn/.metadata ]]; then
-	sj_git[svn]='S'
+        sj_git[svn]='S'
     fi
 
-    sj_git[status]=
-    git diff --no-ext-diff --ignore-submodules --quiet --exit-code \
-	|| sj_git[status]+='*'
-    if git rev-parse --quiet --verify HEAD >/dev/null; then
-	git diff-index --cached --quiet --ignore-submodules HEAD -- \
-	    || sj_git[status]+='+'
-    else
-	sj_git[status]+='#'
+#    sj_git[status]=
+#    git diff --no-ext-diff --ignore-submodules --quiet --exit-code || sj_git[status]+='*'
+#    if git rev-parse --quiet --verify HEAD >/dev/null; then
+#        git diff-index --cached --quiet --ignore-submodules HEAD -- || sj_git[status]+='+'
+#    else
+#        sj_git[status]+='#'
+#    fi
+
+    local _git_status=`python $gitstatus 2>/dev/null`
+    local __status_array=("${(@s: :)_git_status}")
+    local __branch=$__status_array[1]
+    local __ahead=$__status_array[2]
+    local __behind=$__status_array[3]
+    local __staged=$__status_array[4]
+    local __conflicts=$__status_array[5]
+    local __changed=$__status_array[6]
+    local __untracked=$__status_array[7]
+    local __status=""
+
+    if [ -n "$__status_array" ]; then
+        if [ "$__behind" -ne "0" ]; then
+            __status="$__status%F{red}↓$__behind%f"
+        fi
+        if [ "$__ahead" -ne "0" ]; then
+              __status="$__status%F{250}↑$__ahead%f"
+        fi
+        __status="$__status%F{245}|%f"
+        if [ "$__conflicts" -ne "0" ]; then
+              __status="${__status}%F{magenta}x$__conflicts%f"
+        fi
+        if [ "$__staged" -ne "0" ]; then
+              __status="$__status%F{green}+$__staged%f"
+        fi
+        if [ "$__changed" -ne "0" ]; then
+              __status="$__status%F{red}*$__changed%f"
+        fi
+        if [ "$__untracked" -ne "0" ]; then
+              __status="$__status%F{178}&$__untracked%f"
+        fi
+        if [ "$__changed" -eq "0" ] && [ "$__conflicts" -eq "0" ] && [ "$__staged" -eq "0" ] && [ "$__untracked" -eq "0" ]; then
+              __status="$__status%F{green}●%f"
+        fi
+        sj_git[status]=$__status
     fi
 
     local git_full_dir
@@ -102,8 +140,8 @@ sj_git_status_update() {
 
 sj_vcs_ps1() {
     if [[ -z $sj_git[dir] ]]; then
-	echo " $vcs_info_msg_0_"
-	return
+        echo " $vcs_info_msg_0_"
+        return
     fi
 
     local col
