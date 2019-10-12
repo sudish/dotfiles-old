@@ -1,0 +1,4 @@
+# Tracks your most used directories, based on 'frecency'.
+# https://github.com/rupa/z
+
+source $ZDIR/external/zsh-256color/zsh-256color.plugin.zsh
