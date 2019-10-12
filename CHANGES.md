@@ -1,5 +1,13 @@
 ## Summary of release changes, see commit history for more details:
-## https://github.com/joelthelion/autojump/commits/master/
+## https://github.com/wting/autojump/commits/master/
+
+### Release v22.4.0:
+- minor zsh performance improvement
+
+### Release v22.3.0:
+- use colors only if stdout is a terminal
+- updated RedHat docs
+- misc bug fixes for fish and Clink versions
 
 ### Release v22.2.2:
 
