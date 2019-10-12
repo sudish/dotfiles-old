@@ -27,9 +27,9 @@
 #
 # Distributed under the [MIT License](http://creativecommons.org/licenses/MIT/)
 
-for prefix in /usr /usr/local
+for prefix in /usr /usr/local /opt/local
   if test -f $prefix/share/fish/completions/git.fish
-    . $prefix/share/fish/completions/git.fish
+    source $prefix/share/fish/completions/git.fish
     break
   end
 end
