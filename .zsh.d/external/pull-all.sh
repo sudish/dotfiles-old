@@ -14,7 +14,7 @@ function update_subtree {
   git subtree pull -m "Update subtree: $subtree" --squash -P $ext_dir/$subtree $remote $branch
 }
 
-update_subtree autojump                git://github.com/joelthelion/autojump
+update_subtree autojump                git://github.com/wting/autojump
 update_subtree git-flow-completion     git://github.com/bobthecow/git-flow-completion
 update_subtree z                       git://github.com/rupa/z.git
 update_subtree zaw                     git://github.com/zsh-users/zaw.git
