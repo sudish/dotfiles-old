@@ -1,0 +1,4 @@
+# Fish-like autosuggestions for zsh
+# https://github.com/zsh-users/zsh-autosuggestions
+
+is-at-least 4.3.10 && source $ZDIR/external/zsh-autosuggestions/zsh-autosuggestions.zsh
